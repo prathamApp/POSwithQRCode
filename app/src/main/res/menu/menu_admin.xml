@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".AdminActivity">
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/admin_icon"
+        android:orderInCategory="200"
+        android:title="@string/action_settings"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_leaderboard"
+        android:icon="@drawable/groupicon"
+        android:orderInCategory="100"
+        android:title="Leaderboard"
+        app:showAsAction="always" />
+</menu>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="base">#FFF</color>
+    <color name="solid_background">#00749E</color>
+    <color name="text_hint">#909090</color>
+    <color name="button">#2E96BB</color>
+
+    <color name="colorPrimary">#F50057</color>
+    <color name="colorPrimaryDark">#F50057</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorAuthenticate">#ff404d</color>
+    <color name="colorAuthenticateBtn">#32c45b</color>
+    <color name="colorResultBg">#9cfcffa9</color>
+    <color name="viewBg">#f1f5f8</color>
+    <color name="ratingEmpty">#847878</color>
+    <color name="ratingFilled">#FFC107</color>
+    <color name="album_title">#4c4c4c</color>
+    <color name="selected">#4c4c4c</color>
+</resources>

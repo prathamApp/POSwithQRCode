@@ -1,0 +1,228 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.example.pef.prathamopenschool.SyncActivity">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@drawable/icon" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginBottom="32dp"
+            android:layout_marginTop="32dp"
+            android:background="@color/solid_background"
+            android:text="      Choose Your Action Here      "
+            android:textAlignment="center"
+            android:textColor="#FFF"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/pull"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/push"
+            android:layout_alignLeft="@+id/push"
+            android:layout_alignRight="@+id/push"
+            android:layout_alignStart="@+id/push"
+            android:layout_below="@+id/title"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:background="@color/button"
+            android:onClick="pullDataOffline"
+            android:text="@string/pull"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
+
+
+        <Button
+            android:id="@+id/push"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/title"
+            android:layout_alignStart="@+id/title"
+            android:layout_below="@+id/pull"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="31dp"
+            android:background="@color/button"
+            android:gravity="center"
+            android:onClick="transferData"
+            android:text="@string/transferUsage"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/ReceiveProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/push"
+            android:layout_alignLeft="@+id/push"
+            android:layout_alignRight="@+id/push"
+            android:layout_alignStart="@+id/push"
+            android:layout_alignTop="@+id/message"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="13dp"
+            android:background="@color/button"
+            android:onClick="ReceiveProfiles"
+            android:text="@string/ReceiveProfiles"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/pull"
+            android:layout_alignBottom="@+id/pull"
+            android:layout_alignEnd="@+id/title"
+            android:layout_alignLeft="@+id/pushDataToServer"
+            android:layout_alignRight="@+id/title"
+            android:layout_alignStart="@+id/pushDataToServer"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/button"
+            android:onClick="AssignGroups"
+            android:text="Assign groups"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/pushDataToServer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/push"
+            android:layout_alignRight="@+id/title"
+            android:layout_alignTop="@+id/push"
+            android:layout_gravity="center"
+            android:layout_marginRight="16dp"
+            android:background="@color/button"
+            android:onClick="pushToServer"
+            android:text="@string/PushServer"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/push"
+            android:layout_centerVertical="true"
+            android:layout_margin="16dp"
+            android:layout_marginTop="20dp"
+            android:textColor="#000000"
+            android:textSize="25sp" />
+
+        <Button
+            android:id="@+id/btn_StudentProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/ReceiveProfile"
+            android:layout_alignEnd="@+id/pushDataToServer"
+            android:layout_alignLeft="@+id/pushDataToServer"
+            android:layout_alignRight="@+id/pushDataToServer"
+            android:layout_alignStart="@+id/pushDataToServer"
+            android:layout_alignTop="@+id/ReceiveProfile"
+            android:background="@color/button"
+            android:onClick="goToStudentProfiles"
+            android:text="Add New Student"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btn_ShareStudentProfiles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/ReceiveProfile"
+            android:layout_alignLeft="@+id/ReceiveProfile"
+            android:layout_alignRight="@+id/ReceiveProfile"
+            android:layout_alignStart="@+id/ReceiveProfile"
+            android:layout_below="@+id/ReceiveProfile"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/button"
+            android:onClick="goToShareStudentProfiles"
+            android:text="  Share Student Profiles  "
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btn_AddNewGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/btn_StudentProfile"
+            android:layout_alignLeft="@+id/btn_StudentProfile"
+            android:layout_alignRight="@+id/btn_StudentProfile"
+            android:layout_alignStart="@+id/btn_StudentProfile"
+            android:layout_alignTop="@+id/btn_ShareStudentProfiles"
+            android:background="@color/button"
+            android:onClick="goToAddNewGroup"
+            android:text="Add New Group"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btn_AddNewCrl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/btn_ShareStudentProfiles"
+            android:layout_alignLeft="@+id/btn_ShareStudentProfiles"
+            android:layout_alignRight="@+id/btn_ShareStudentProfiles"
+            android:layout_alignStart="@+id/btn_ShareStudentProfiles"
+            android:layout_below="@+id/btn_ShareStudentProfiles"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/button"
+            android:onClick="goToAddNewCrl"
+            android:text="  Add New CRL  "
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btn_AddNewUnit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/btn_AddNewGroup"
+            android:layout_alignStart="@+id/btn_AddNewGroup"
+            android:layout_alignTop="@+id/btn_AddNewCrl"
+            android:background="@color/button"
+            android:text="Add New Unit"
+            android:onClick="goToAddNewUnit"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:layout_alignBottom="@+id/btn_AddNewCrl" />
+
+        <Button
+            android:id="@+id/btn_EditUChildList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="goToSelectUnitForEdit"
+            android:layout_below="@+id/btn_AddNewUnit"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"
+            android:layout_alignStart="@+id/btn_AddNewUnit"
+            android:background="@color/button"
+            android:text="  Edit U Child List  "
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:layout_alignEnd="@+id/btn_AddNewUnit" />
+
+
+    </RelativeLayout>
+
+</ScrollView>

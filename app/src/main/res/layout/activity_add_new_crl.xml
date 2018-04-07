@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"
+        tools:context="com.example.pef.prathamopenschool.AddNewCrl">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/solid_background"
+            android:drawableLeft="@drawable/icon"
+            android:gravity="center"
+            android:paddingLeft="16dp"
+            android:text="Add New CRL"
+            android:textColor="#FFFFFF"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
+        <!-- <EditText
+             android:id="@+id/edt_CrlID"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_below="@+id/title"
+             android:layout_margin="32dp"
+             android:hint="Enter CRLID"
+             android:inputType="number"
+             android:singleLine="true"
+             android:textColor="#000000"
+             android:textColorHint="@color/text_hint"
+             android:textSize="16sp" />
+ -->
+        <EditText
+            android:id="@+id/edt_Fname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title"
+            android:layout_margin="32dp"
+            android:hint="First Name"
+            android:inputType="textCapWords"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textColorHint="@color/text_hint"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/edt_Lname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edt_Fname"
+            android:layout_margin="32dp"
+            android:hint="Last Name"
+            android:inputType="textCapWords"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textColorHint="@color/text_hint"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/edt_Username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edt_Lname"
+            android:layout_margin="32dp"
+            android:hint="Username"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textColorHint="@color/text_hint"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/edt_Password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edt_Username"
+            android:layout_margin="32dp"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textColorHint="@color/text_hint"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/edt_Mobile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edt_Password"
+            android:layout_margin="32dp"
+            android:digits="0123456789"
+            android:hint="Mobile"
+            android:inputType="phone"
+            android:maxLength="10"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textColorHint="@color/text_hint"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/edt_Email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edt_Mobile"
+            android:layout_margin="32dp"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textColorHint="@color/text_hint"
+            android:textSize="16sp" />
+
+        <Spinner
+            android:id="@+id/spinner_State"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edt_Email"
+            android:layout_margin="32dp"
+            android:textColor="#000000"
+            android:textColorHint="@color/text_hint"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/btn_Submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/spinner_State"
+            android:layout_margin="16dp"
+            android:background="@color/button"
+            android:text="Submit"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btn_Clear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_Submit"
+            android:layout_margin="16dp"
+            android:background="@color/button"
+            android:text="Clear"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+</ScrollView>
+

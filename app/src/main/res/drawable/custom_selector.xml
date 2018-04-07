@@ -1,0 +1,18 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="wrap_content" android:layout_height="wrap_content">
+
+    <item>
+
+        <layer-list>
+
+
+            <item android:bottom="2dp" android:left="2dp">
+
+                <shape android:layout_width="match_parent">
+
+                    <gradient android:angle="270" android:startColor="#FFFFFF" android:endColor="@color/button" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+
+</selector>

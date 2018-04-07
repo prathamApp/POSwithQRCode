@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Pratham Digital</string>
+    <string name="PushServer">\tPush To Server\t</string>
+    <string name="transferUsage">\tTransfer Usage\t</string>
+    <string name="pull">Pull Data</string>
+    <string name="ReceiveProfiles">\tReceive Profiles\t</string>
+    <string name="title_activity_sync">SyncActivity</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="backdrop_title">PRATHAM DIGITAL</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+
+    <string name="title_activity_main">MultiPhotoSelect</string>
+
+    <string name="permission_rationale">"Storage permission is needed for fetching images from Gallery."</string>
+
+    <!-- Content descriptions -->
+    <string name="universal_child_list">Universal Child List</string>
+
+
+</resources>

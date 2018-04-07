@@ -1,0 +1,134 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        android:background="#FFFFFF"
+        android:orientation="vertical"
+        tools:context="com.example.pef.prathamopenschool.LogInPage">
+
+        <!--<ImageView
+
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:src="@drawable/supporters"
+            />-->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:layout_marginBottom="64dp"
+            android:layout_marginTop="16dp"
+            android:paddingLeft="16dp"
+            android:drawableLeft="@drawable/icon"
+            android:background="@color/solid_background"
+            android:text="Which group are you from ?"
+            android:textColor="#FFFFFF"
+            android:textSize="32sp" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbarAlwaysDrawVerticalTrack="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#EEE0B1"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/otherGroups1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#EEE0B1"
+                    android:orientation="vertical"/>
+
+                <LinearLayout
+                    android:id="@+id/otherGroups2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#EEE0B1"
+                    android:orientation="vertical"/>
+
+            </LinearLayout>
+        </ScrollView>
+
+        <!--
+            <AllSpinners
+                android:id="@+id/spinner1"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@android:drawable/btn_dropdown"
+                android:spinnerMode="dropdown" />
+
+            <AllSpinners
+                android:id="@+id/spinner2"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_alignBottom="@id/spinner1"
+                android:background="@android:drawable/btn_dropdown"
+                android:spinnerMode="dropdown" />
+
+            <AllSpinners
+                android:id="@+id/spinner3"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_alignBottom="@id/spinner2"
+                android:background="@android:drawable/btn_dropdown"
+                android:spinnerMode="dropdown" />
+
+            <AllSpinners
+                android:id="@+id/spinner4"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_alignBottom="@id/spinner3"
+                android:background="@android:drawable/btn_dropdown"
+                android:spinnerMode="dropdown" />
+
+            <AllSpinners
+                android:id="@+id/spinner5"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_alignBottom="@id/spinner4"
+                android:background="@android:drawable/btn_dropdown"
+                android:spinnerMode="dropdown" />-->
+
+        <!-- <EditText
+             android:id="@+id/txtPassword"
+             android:inputType="textPassword"
+             android:hint="enter password"
+             android:layout_gravity="center"
+             android:layout_alignBottom="@id/spinner5"
+             android:layout_marginTop="15dp"
+             android:layout_width="350dp"
+             android:layout_height="wrap_content" />-->
+
+        <Button
+            android:layout_width="wrap_content"
+            android:textColor="#ffffff"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="64dp"
+            android:background="@color/button"
+            android:onClick="goToNextPage"
+            android:text="LogIn"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+</ScrollView>

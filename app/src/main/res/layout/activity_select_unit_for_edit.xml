@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.example.pef.prathamopenschool.SelectUnitForEdit">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/solid_background"
+            android:drawableLeft="@drawable/icon"
+            android:gravity="center"
+            android:paddingLeft="16dp"
+            android:text="Select Unit To Edit"
+            android:textColor="#FFFFFF"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title"
+            android:layout_margin="16dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+
+            <!--Select State Drop Down List-->
+            <Spinner
+                android:id="@+id/spinner_UnitSelectState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="32dp"
+                android:textAlignment="center" />
+
+            <!--Select Block Drop Down List-->
+            <Spinner
+                android:id="@+id/spinner_UnitSelectBlock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="32dp"
+                android:textAlignment="center" />
+
+            <!--Select Unit Drop Down List-->
+            <Spinner
+                android:id="@+id/spinner_SelectUnit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="32dp"
+                android:textAlignment="center" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="32dp"
+                android:id="@+id/tv_Villagename"
+                android:textSize="16sp"
+                android:text=""
+                android:textColor="@color/text_hint"
+                android:hint=" Village Name "/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="32dp"
+                android:id="@+id/tv_Schoolname"
+                android:textSize="16sp"
+                android:text=""
+                android:textColor="@color/text_hint"
+                android:hint=" School Name "/>
+
+
+            <Button
+                android:id="@+id/btn_Submit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:background="@color/button"
+                android:text="  Edit Universal Child List  "
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</ScrollView>

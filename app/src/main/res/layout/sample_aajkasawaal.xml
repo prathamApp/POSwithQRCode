@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/sampleAajkaSawaal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/img_title"
+                android:layout_width="220dp"
+                android:layout_height="125dp"
+                app:srcCompat="@drawable/aajkasawal_title" />
+
+            <TextView
+                android:id="@+id/tv_question"
+                android:layout_width="700dp"
+                android:layout_height="125dp"
+                android:background="@drawable/que_box"
+                android:gravity="center"
+                android:maxLines="2"
+                android:paddingLeft="50dp"
+                android:paddingRight="50dp"
+                android:text="sampleहवा का घनत्व कब कम होता है ?वा का घनत्व कब कम होता हैवा का घनत्व कब कम होता हैवा "
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="4dp"
+            android:weightSum="2">
+
+            <Button
+                android:id="@+id/opt1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/ans_box_left"
+                android:gravity="center"
+                android:maxLines="2"
+                android:onClick="oneRadioButtonClicked"
+                android:padding="10dp"
+                android:text="तापमान से घनत्व में कोई परिवर्तन नहीं होता है"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="normal" />
+
+            <Button
+                android:id="@+id/opt2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/ans_box_right"
+                android:gravity="center"
+                android:maxLines="2"
+                android:onClick="oneRadioButtonClicked"
+                android:padding="10dp"
+                android:text="जब हवा ठंडी होती है"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="normal" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="4dp"
+            android:weightSum="2">
+
+            <Button
+                android:id="@+id/opt3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/ans_box_left"
+                android:gravity="center"
+                android:maxLines="2"
+                android:onClick="oneRadioButtonClicked"
+                android:padding="10dp"
+                android:text="पता नहीं"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="normal" />
+
+            <Button
+                android:id="@+id/opt4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/ans_box_right"
+                android:gravity="center"
+                android:maxLines="2"
+                android:onClick="oneRadioButtonClicked"
+                android:padding="10dp"
+                android:text="जब हवा गर्म होती है"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="normal" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <ImageButton
+                android:id="@+id/btn_submit"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:background="@drawable/submit_ans"
+                android:scaleType="fitCenter" />
+
+            <ImageButton
+                android:id="@+id/btn_videoHint"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_marginLeft="128dp"
+                android:background="@drawable/video_hint"
+                android:scaleType="fitCenter" />
+
+            <ImageButton
+                android:id="@+id/btn_skip"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_marginLeft="128dp"
+                android:background="@drawable/skip_que"
+                android:scaleType="fitCenter" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <!--CORRECT ANSWER-->
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/aajkaSawaal_correct"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp"
+            android:gravity="center_horizontal"
+            android:text="Correct Answer !!!"
+            android:textColor="#FFC107"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="300dp"
+            android:background="@drawable/correct_ans"
+            android:scaleType="fitCenter" />
+
+    </LinearLayout>
+
+    <!--WRONG ANSWER-->
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/aajkaSawaal_wrong"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical|center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_wrong_ans"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:gravity="center_horizontal"
+            android:text="Wrong Answer !!!"
+            android:textColor="#FFC107"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="300dp"
+            android:background="@drawable/wrong_ans"
+            android:scaleType="fitCenter" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

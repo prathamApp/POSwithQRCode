@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"
+        tools:context="com.example.pef.prathamopenschool.AddStudentProfiles">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/solid_background"
+            android:drawableLeft="@drawable/icon"
+            android:gravity="center"
+            android:paddingLeft="16dp"
+            android:text="Add New Student"
+            android:textColor="#FFFFFF"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
+        <!--Select State Drop Down List-->
+        <Spinner
+            android:id="@+id/spinner_SelectState"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="32dp"
+            android:textAlignment="center" />
+
+        <!--Select Block Drop Down List-->
+        <Spinner
+            android:id="@+id/spinner_SelectBlock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/spinner_SelectState"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="32dp"
+            android:textAlignment="center" />
+
+        <!--Village Drop Down List-->
+        <Spinner
+            android:id="@+id/spinner_selectVillage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/spinner_SelectBlock"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="32dp"
+            android:textAlignment="center" />
+
+
+        <!--Select Groups-->
+        <Spinner
+            android:id="@+id/spinner_SelectGroups"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/spinner_selectVillage"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="32dp"
+            android:textAlignment="center" />
+
+        <EditText
+            android:id="@+id/edt_FirstName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/spinner_SelectGroups"
+            android:layout_margin="32dp"
+            android:hint="Enter First Name"
+            android:inputType="textCapWords"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textColorHint="@color/text_hint"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/edt_MiddleName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edt_FirstName"
+            android:layout_margin="32dp"
+            android:hint="Enter Middle Name"
+            android:inputType="textCapWords"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textColorHint="@color/text_hint"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/edt_LastName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edt_MiddleName"
+            android:layout_margin="32dp"
+            android:hint="Enter Last Name"
+            android:inputType="textCapWords"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textColorHint="@color/text_hint"
+            android:textSize="16sp" />
+
+
+        <EditText
+            android:id="@+id/edt_Age"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edt_LastName"
+            android:layout_margin="32dp"
+            android:digits="0123456789"
+            android:hint="Enter Age"
+            android:inputType="number"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textColorHint="@color/text_hint"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/edt_Class"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edt_Age"
+            android:layout_margin="32dp"
+            android:digits="0123456789"
+            android:hint="Enter Class"
+            android:inputType="number"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textColorHint="@color/text_hint"
+            android:textSize="16sp" />
+
+
+        <!--Radio Button to Select Gender-->
+        <RadioGroup
+            android:id="@+id/rg_Gender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edt_Class"
+            android:layout_margin="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="Select Gender"
+                android:textColor="@color/button"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <RadioButton
+                android:id="@+id/rb_Male"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:checked="true"
+                android:text="Male"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <RadioButton
+                android:id="@+id/rb_Female"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="Female"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/btn_Capture"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rg_Gender"
+            android:layout_margin="16dp"
+            android:background="@color/button"
+            android:text="Take Photo"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_Capture"
+            android:layout_centerHorizontal="true" />
+
+        <Button
+            android:id="@+id/btn_Submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageView"
+            android:layout_margin="16dp"
+            android:background="@color/button"
+            android:text="Submit"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+
+        <Button
+            android:id="@+id/btn_Clear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_Submit"
+            android:layout_margin="16dp"
+            android:background="@color/button"
+            android:text="Clear"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+
+    </RelativeLayout>
+
+</ScrollView>

@@ -1,0 +1,48 @@
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    card_view:cardUseCompatPadding="true"
+    card_view:cardCornerRadius="4dp"
+    card_view:cardElevation="4dp">
+
+    <RelativeLayout
+        android:id="@+id/rlCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/tabThumbnail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="img"
+            android:layout_alignParentTop="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/cover"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:id="@+id/tabTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tabThumbnail"
+            android:layout_alignLeft="@+id/tabThumbnail"
+            android:text="hii"
+            android:inputType="text"
+            android:textColor="#000"
+            android:layout_marginTop="8dp"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/tabPhase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tabTitle"
+            android:layout_alignLeft="@+id/tabTitle"
+            android:text="hello"
+            android:textSize="12sp"
+            android:layout_marginTop="4dp"/>
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

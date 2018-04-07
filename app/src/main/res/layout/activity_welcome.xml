@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/solid_background"
+    tools:context="com.example.pef.prathamopenschool.WelcomeActivity">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@drawable/icon" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="32dp"
+        android:background="@color/button"
+        android:clickable="true"
+        android:onClick="goToAdminPage"
+        android:text="  Admin Login  "
+        android:textColor="#FFFFFF"
+        android:textSize="25dp"
+        android:textStyle="bold" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btn_KhelPuri"
+        android:layout_alignBottom="@+id/btn_KhelPuri"
+        android:layout_toLeftOf="@+id/btn_KhelPuri"
+        android:layout_toStartOf="@+id/btn_KhelPuri"
+        android:background="#ffffff"
+        android:drawableTop="@drawable/hlearning_logo"
+        android:onClick="goToStudentLogin"
+        android:textStyle="bold"
+        android:text="Dekho To Seekho\n(08-14 Yrs)"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/btn_KhelPuri"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="64dp"
+        android:layout_marginRight="64dp"
+        android:background="#ffffff"
+        android:text="Khel Puri\n(06-14 yrs)"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btn_KhelPuri"
+        android:layout_alignBottom="@+id/btn_KhelPuri"
+        android:layout_toEndOf="@+id/btn_KhelPuri"
+        android:layout_toRightOf="@+id/btn_KhelPuri"
+        android:background="#ffffff"
+        android:text="Khel Badi\n(03-06 YRS)"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+</RelativeLayout>
