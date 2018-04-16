@@ -29,7 +29,7 @@ public class LogsDBHelper extends DBHelper {
 
     public boolean DeleteAll() {
         try {
-            // database = getWritableDatabase();
+             database = getWritableDatabase();
             long resultCount = database.delete(TABLENAME, null, null);
             database.close();
             return true;
@@ -85,7 +85,7 @@ public class LogsDBHelper extends DBHelper {
         contentValues.put("ExceptionStackTrace",logs.exceptionStackTrace);
         contentValues.put("MethodName",logs.methodName);
         contentValues.put("Type",logs.errorType);
-        contentValues.put("GroupId",logs.groupId);
+        contentValues.put("GroupId",logs.groupId == null ? "" : logs.groupId);
         contentValues.put("DeviceId",logs.deviceId);
 
         contentValues.put("LogDetail","ErrorLogs");

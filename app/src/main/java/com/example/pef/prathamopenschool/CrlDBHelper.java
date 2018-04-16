@@ -24,6 +24,18 @@ public class CrlDBHelper extends DBHelper {
 
     }
 
+    public boolean DeleteAll() {
+        try {
+            database = getWritableDatabase();
+            long resultCount = database.delete("CRL", null, null);
+            database.close();
+            return true;
+        } catch (Exception ex) {
+            _PopulateLogValues(ex, "DeleteAll");
+            return false;
+        }
+    }
+
     private void _PopulateLogValues(Exception ex, String method) {
 
         Logs logs = new Logs();
@@ -41,7 +53,7 @@ public class CrlDBHelper extends DBHelper {
         contentValues.put("ExceptionStackTrace", logs.exceptionStackTrace);
         contentValues.put("MethodName", logs.methodName);
         contentValues.put("Type", logs.errorType);
-        contentValues.put("GroupId", logs.groupId);
+        contentValues.put("GroupId", logs.groupId == null ? "" : logs.groupId);
         contentValues.put("DeviceId", logs.deviceId);
 
         contentValues.put("LogDetail", "CrlLog");

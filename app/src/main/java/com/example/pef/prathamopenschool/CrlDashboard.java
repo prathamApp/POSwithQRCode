@@ -159,7 +159,7 @@ public class CrlDashboard extends AppCompatActivity {
                 checkPOSInternalStructure("transferredUsage");
                 checkPOSInternalStructure("pushedUsage");
                 //checkPOSInternalStructure("databaseBackup");
-
+                checkPOSDBBackups();
             } catch (Exception e) {
                 e.getMessage();
             }
@@ -173,6 +173,12 @@ public class CrlDashboard extends AppCompatActivity {
 
         }
 
+    }
+
+    private void checkPOSDBBackups() {
+        File destFolder = new File(Environment.getExternalStorageDirectory() + "/.POSDBBackups");
+        if (!destFolder.exists())
+            destFolder.mkdir();
     }
 
 

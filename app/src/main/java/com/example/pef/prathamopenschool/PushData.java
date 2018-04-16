@@ -27,6 +27,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +95,8 @@ public class PushData extends AppCompatActivity {
         isConnected = ConnectivityReceiver.isConnected();
     }
 
-    // Push Data
+
+    // Push received Data from bluetooth folder
     public void pushToServer(View v) throws IOException, ExecutionException, InterruptedException {
 
         // Checking Internet Connection
@@ -230,12 +233,51 @@ public class PushData extends AppCompatActivity {
 
     /* ***************************  PUSH Self DATA ********************************************************************/
 
+    public void copyDirectoryOneLocationToAnotherLocation(File sourceLocation, File targetLocation)
+            throws IOException {
+
+        if (sourceLocation.isDirectory()) {
+            if (!targetLocation.exists()) {
+                targetLocation.mkdir();
+            }
+
+            String[] children = sourceLocation.list();
+            for (int i = 0; i < sourceLocation.listFiles().length; i++) {
+
+                copyDirectoryOneLocationToAnotherLocation(new File(sourceLocation, children[i]),
+                        new File(targetLocation, children[i]));
+            }
+        } else {
+
+            InputStream in = new FileInputStream(sourceLocation);
+
+            OutputStream out = new FileOutputStream(targetLocation);
+
+            // Copy the bits from instream to outstream
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            in.close();
+            out.close();
+        }
+
+    }
 
     public void pushSelfData(View view) {
 
         // Transfer Data Over Bluetooth
-
         createJsonforTransfer();
+
+        // Copy files from POSDBbackups to received usage for pushing
+        File src = new File(Environment.getExternalStorageDirectory() + "/.POSDBBackups");
+        File dest = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/receivedUsage/");
+        try {
+            copyDirectoryOneLocationToAnotherLocation(src, dest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 //************************** integrate push data code here********************/
 
         String fileName = "";
@@ -257,31 +299,30 @@ public class PushData extends AppCompatActivity {
 
     }
 
-
-    // Transfer Data Over Bluetooth
-    public void transferData(View v) {
-
-        createJsonforTransfer();
-//************************** integrate push data code here********************/
-
-        String fileName = "";
-
-        ArrayList<String> arrayList = new ArrayList<String>();
-        _array = new JSONArray();
-
-        //  test();
-        //test function is used only for reading database file from assets
-        //Used when we want to push data from our side.
-
-        //enableBlu();
-        progress = new ProgressDialog(PushData.this);
-        progress.setMessage("Please Wait...");
-        progress.setCanceledOnTouchOutside(false);
-        progress.show();
-
-        TreansferFile("pushNewDataToServer-");
-
-    }
+//    // Transfer Data Over Bluetooth
+//    public void transferData(View v) {
+//
+//        createJsonforTransfer();
+////************************** integrate push data code here********************/
+//
+//        String fileName = "";
+//
+//        ArrayList<String> arrayList = new ArrayList<String>();
+//        _array = new JSONArray();
+//
+//        //  test();
+//        //test function is used only for reading database file from assets
+//        //Used when we want to push data from our side.
+//
+//        //enableBlu();
+//        progress = new ProgressDialog(PushData.this);
+//        progress.setMessage("Please Wait...");
+//        progress.setCanceledOnTouchOutside(false);
+//        progress.show();
+//
+//        TreansferFile("pushNewDataToServer-");
+//
+//    }
 
     public void createJsonforTransfer() {
         //we will push logs and scores directly to the server
@@ -565,17 +606,26 @@ public class PushData extends AppCompatActivity {
         }
     }
 
-    public void TreansferFile(String filename) {
 
+    // push self usage
+    public void TreansferFile(String filename) {
         {
+            // check file exists in posdb backups or not ?
+            File receivedUsageFolder = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/receivedUsage");
+            File[] folderContent = receivedUsageFolder.listFiles();
+            int fileCount = 0;
+            for (int k = 0; k < folderContent.length; k++) {
+                if (folderContent[k].getName().contains("pushNewDataToServer")) {
+                    fileCount++;
+                }
+            }
+
             // File Creation
             file = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/receivedUsage/" + filename + (deviceId.equals(null) ? "0000" : deviceId) + ".json");
             int x = 0;
-            if (file.exists()) {
+            if (file.exists() || fileCount > 0) {
 
                 try {
-                    // File Sending
-
                     // Checking Internet Connection
                     checkConnection();
 
@@ -590,13 +640,12 @@ public class PushData extends AppCompatActivity {
                         //Moving to Receive usage
                         String path = Environment.getExternalStorageDirectory() + "/.POSinternal/receivedUsage/";
 
-                        File blueToothDir = new File(path);
+                        File selfUsageDir = new File(path);
                         String destFolder = Environment.getExternalStorageDirectory() + "/.POSinternal/pushedUsage";
-                        if (!blueToothDir.exists()) {
+                        if (!selfUsageDir.exists()) {
                             Toast.makeText(this, "receivedUsage folder does not exist", Toast.LENGTH_SHORT).show();
                         } else {
-
-                            File[] files = blueToothDir.listFiles();
+                            File[] files = selfUsageDir.listFiles();
                             Toast.makeText(this, "Pushing data to server Please wait...", Toast.LENGTH_SHORT).show();
                             for (int i = 0; i < files.length; i++) {
                                 if (files[i].getName().contains("pushNewDataToServer")) {
@@ -621,6 +670,13 @@ public class PushData extends AppCompatActivity {
                                 Toast.makeText(this, "Data succesfully pushed to the server !!!", Toast.LENGTH_LONG).show();
                                 Toast.makeText(this, "Files moved in pushedUsage folder !!!", Toast.LENGTH_SHORT).show();
 
+                                // Delete POSBackups folder
+                                try {
+                                    deletePOSBackupFiles();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
                                 // Clear Records Dialog Box
                                 clearRecordsOrNot();
 
@@ -640,6 +696,20 @@ public class PushData extends AppCompatActivity {
                 progress.dismiss();
                 Toast.makeText(getApplicationContext(), "File not found in receivedUsage content", Toast.LENGTH_LONG).show();
             }
+        }
+    }
+
+    private void deletePOSBackupFiles() {
+        try {
+            File dir = new File(Environment.getExternalStorageDirectory() + "/.POSDBBackups");
+            if (dir.isDirectory()) {
+                String[] children = dir.list();
+                for (int i = 0; i < children.length; i++) {
+                    new File(dir, children[i]).delete();
+                }
+            }
+        } catch (Exception e) {
+
         }
     }
 

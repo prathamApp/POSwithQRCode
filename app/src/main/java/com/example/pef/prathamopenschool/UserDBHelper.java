@@ -21,6 +21,19 @@ public class UserDBHelper extends DBHelper {
         database = getWritableDatabase();
     }
 
+    public boolean DeleteAll() {
+        try {
+            database = getWritableDatabase();
+            long resultCount = database.delete("Users", null, null);
+            database.close();
+            return true;
+        } catch (Exception ex) {
+            _PopulateLogValues(ex, "DeleteAll");
+            return false;
+        }
+    }
+
+
     private void _PopulateLogValues(Exception ex, String method) {
 
         Logs logs = new Logs();

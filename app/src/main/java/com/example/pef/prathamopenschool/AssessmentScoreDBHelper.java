@@ -26,6 +26,17 @@ public class AssessmentScoreDBHelper extends DBHelper {
         database = this.getWritableDatabase();
     }
 
+    public boolean DeleteAll() {
+        try {
+            database = getWritableDatabase();
+            long resultCount = database.delete("AssessmentScores", null, null);
+            database.close();
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
 
     public boolean Add(AssessmentScore score) {
         try {

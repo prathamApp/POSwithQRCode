@@ -1,11 +1,13 @@
 package com.example.pef.prathamopenschool;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -54,6 +56,7 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
     PlayVideo playVideo;
     boolean timer;
     int btnPressed = 0;
+    ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,19 +114,28 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
 
                         Toast.makeText(context, "Connected to the Internet !!!", Toast.LENGTH_SHORT).show();
                         // Executed When internet
+                        pd = new ProgressDialog(PullData.this);
+                        pd.setCancelable(false);
+                        pd.setMessage("Pulling Data Online ... Please Wait ...");
+                        pd.show();
+                        startPullingOnline();
+
+                        // Flag is set to true for executing code on onBackPressed
+                        flag = true;
+
 
                         /*UpdateJsonOnline("http://www.api.prathamcms.org/api/crl/get", "Crl", selectedState, "1");
                         UpdateJsonOnline("http://www.api.prathamcms.org/api/village/get", "Village", selectedState, "1");
                         UpdateJsonOnline("http://www.api.prathamcms.org/api/group/get", "Group", selectedState, "1");
                         UpdateJsonOnline("http://www.api.prathamcms.org/api/student/get", "Student", selectedState, "1");*/
 
-                        try {
+                        /*try {
                             MultiPhotoSelectActivity.dilog.showDilog(PullData.this, "Pulling Data Online !!!");
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
-                        Thread mThread = new Thread() {
+*/
+                        /*Thread mThread = new Thread() {
                             @Override
                             public void run() {
 
@@ -135,7 +147,7 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
                                     UpdateJsonOnline(Utility.getProperty("HLpullGroupsURL", context), "Group", selectedState, "1");
                                     UpdateJsonOnline(Utility.getProperty("HLpullStudentsURL", context), "Student", selectedState, "1");
                                 } else if (MultiPhotoSelectActivity.programID.equals("3")) {
-                                    //For HLearning Pull URLs
+                                    //For Second Chance Pull URLs
                                     UpdateJsonOnline(Utility.getProperty("HLpullCrlsURL", context), "Crl", selectedState, "3");
                                     UpdateJsonOnline(Utility.getProperty("HLpullVillagesURL", context), "Village", selectedState, "3");
                                     UpdateJsonOnline(Utility.getProperty("HLpullGroupsURL", context), "Group", selectedState, "3");
@@ -155,11 +167,10 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
                                 }
 
                                 MultiPhotoSelectActivity.dilog.dismissDilog();
-                                // Flag is set to true for executing code on onBackPressed
-                                flag = true;
+
                             }
                         };
-                        mThread.start();
+                        mThread.start();*/
 
                     } else if (isConnected == false) {
 
@@ -215,8 +226,7 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
                                     PullData.this.runOnUiThread(new Runnable() {
                                         public void run() {
                                             Toast.makeText(PullData.this, "Database Updated", Toast.LENGTH_LONG).show();
-                                            Intent i = getBaseContext().getPackageManager()
-                                                    .getLaunchIntentForPackage(getBaseContext().getPackageName());
+                                            Intent i = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
                                             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                             startActivity(i);
                                         }
@@ -244,6 +254,28 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
 
 
     }
+
+    private void startPullingOnline() {
+        if (MultiPhotoSelectActivity.programID.equals("1")) {
+            //For HLearning Pull URLs
+            Log.d("Json : ", "CRL");
+            UpdateJsonOnline(Utility.getProperty("HLpullCrlsURL", PullData.this), "Crl", selectedState, "1");
+        } else if (MultiPhotoSelectActivity.programID.equals("2")) {
+            //For RI pull URLS
+            Log.d("Json : ", "CRL");
+            UpdateJsonOnline(Utility.getProperty("RIpullCrlsURL", PullData.this), "Crl", selectedState, "2");
+        } else if (MultiPhotoSelectActivity.programID.equals("3")) {
+            //For Second Chance Pull URLs
+            Log.d("Json : ", "CRL");
+            UpdateJsonOnline(Utility.getProperty("HLpullCrlsURL", PullData.this), "Crl", selectedState, "3");
+        } else if (MultiPhotoSelectActivity.programID.equals("4")) {
+            //For PI Pull URLs
+            Log.d("Json : ", "CRL");
+            UpdateJsonOnline(Utility.getProperty("PIpullCrlsURL", PullData.this), "Crl", selectedState, "3");
+        }
+
+    }
+
 
     /* @Override
      public void onBackPressed() {
@@ -297,11 +329,57 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
 
     // Refer : http://www.journaldev.com/13629/okhttp-android-example-tutorial
     // Online
-    private void UpdateJsonOnline(String baseurl, final String filename, String state, String programid) {
+//    private void UpdateJsonOnline(String baseurl, final String filename, String state, String programid) {
+//
+//        OkHttpClient client = new OkHttpClient();
+//
+//        //String baseUrl = "http://www.api.prathamcms.org/api/crl/get";
+//        HttpUrl.Builder urlBuilder = HttpUrl.parse(baseurl).newBuilder();
+//        urlBuilder.addQueryParameter("state", state);
+//        urlBuilder.addQueryParameter("programid", programid);
+//        String url = urlBuilder.build().toString();
+//        Request request = new Request.Builder()
+//                .url(url)
+//                .build();
+//
+//        client.newCall(request).enqueue(new Callback() {
+//            @Override
+//            public void onFailure(Call call, IOException e) {
+//                call.cancel();
+//            }
+//
+//            @Override
+//            public void onResponse(Call call, Response response) throws IOException {
+//
+//                final String myResponse = response.body().string();
+//
+//                PullData.this.runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//
+//                        try {
+//                            File outFile = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/", filename + ".json");
+//                            FileOutputStream out = new FileOutputStream(outFile, false);
+//                            byte[] contents = myResponse.toString().getBytes();
+//                            out.write(contents);
+//                            out.flush();
+//                            out.close();
+//                            Toast.makeText(PullData.this, "Pulled From Server !!! " + filename, Toast.LENGTH_SHORT).show();
+//
+//                        } catch (Exception e) {
+//                            Toast.makeText(context, "Error" + filename + e.getMessage(), Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                });
+//
+//            }
+//        });
+//    }
+
+    private void UpdateJsonOnline(String baseurl, final String filename, String state, final String programid) {
 
         OkHttpClient client = new OkHttpClient();
 
-        //String baseUrl = "http://www.api.prathamcms.org/api/crl/get";
         HttpUrl.Builder urlBuilder = HttpUrl.parse(baseurl).newBuilder();
         urlBuilder.addQueryParameter("state", state);
         urlBuilder.addQueryParameter("programid", programid);
@@ -320,26 +398,129 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
             public void onResponse(Call call, Response response) throws IOException {
 
                 final String myResponse = response.body().string();
+                try {
+                    File outFile = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/", filename + ".json");
+                    FileOutputStream out = new FileOutputStream(outFile, false);
+                    byte[] contents = myResponse.toString().getBytes();
+                    out.write(contents);
+                    out.flush();
+                    out.close();
 
-                PullData.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        try {
-                            File outFile = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/", filename + ".json");
-                            FileOutputStream out = new FileOutputStream(outFile, false);
-                            byte[] contents = myResponse.toString().getBytes();
-                            out.write(contents);
-                            out.flush();
-                            out.close();
-                            Toast.makeText(PullData.this, "Pulled From Server !!! " + filename, Toast.LENGTH_SHORT).show();
-
-                        } catch (Exception e) {
-                            Toast.makeText(context, "Error" + filename + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(PullData.this, "" + filename + " pulled ...", Toast.LENGTH_SHORT).show();
                         }
-                    }
-                });
+                    });
 
+                    switch (programid) {
+                        case "1":
+                            if (filename.equalsIgnoreCase("CRL")) {
+                                Log.d("Json : ", "Village");
+                                UpdateJsonOnline(Utility.getProperty("HLpullVillagesURL", PullData.this), "Village", selectedState, programid);
+                            } else if (filename.equalsIgnoreCase("Village")) {
+                                Log.d("Json : ", "Group");
+                                UpdateJsonOnline(Utility.getProperty("HLpullGroupsURL", PullData.this), "Group", selectedState, programid);
+                            } else if (filename.equalsIgnoreCase("Group")) {
+                                Log.d("Json : ", "Student");
+                                UpdateJsonOnline(Utility.getProperty("HLpullStudentsURL", PullData.this), "Student", selectedState, programid);
+                            } else {
+                                Log.d("Json : ", "DONE");
+                                if (pd != null && pd.isShowing())
+                                    pd.dismiss();
+                                btnPressed = 1;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(PullData.this, "Data Successfully Pulled from Server !!! ", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                            }
+                            break;
+                        case "2":
+                            if (filename.equalsIgnoreCase("CRL")) {
+                                Log.d("Json : ", "Village");
+                                UpdateJsonOnline(Utility.getProperty("RIpullVillagesURL", PullData.this), "Village", selectedState, programid);
+                            } else if (filename.equalsIgnoreCase("Village")) {
+                                Log.d("Json : ", "Group");
+                                UpdateJsonOnline(Utility.getProperty("RIpullGroupsURL", PullData.this), "Group", selectedState, programid);
+                            } else if (filename.equalsIgnoreCase("Group")) {
+                                Log.d("Json : ", "Student");
+                                UpdateJsonOnline(Utility.getProperty("RIpullStudentsURL", PullData.this), "Student", selectedState, programid);
+                            } else {
+                                Log.d("Json : ", "DONE");
+                                if (pd != null && pd.isShowing())
+                                    pd.dismiss();
+                                btnPressed = 1;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(PullData.this, "Data Successfully Pulled from Server !!! ", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                            }
+                            break;
+
+
+                        case "3":
+                            if (filename.equalsIgnoreCase("CRL")) {
+                                Log.d("Json : ", "Village");
+                                UpdateJsonOnline(Utility.getProperty("HLpullVillagesURL", PullData.this), "Village", selectedState, programid);
+                            } else if (filename.equalsIgnoreCase("Village")) {
+                                Log.d("Json : ", "Group");
+                                UpdateJsonOnline(Utility.getProperty("HLpullGroupsURL", PullData.this), "Group", selectedState, programid);
+                            } else if (filename.equalsIgnoreCase("Group")) {
+                                Log.d("Json : ", "Student");
+                                UpdateJsonOnline(Utility.getProperty("HLpullStudentsURL", PullData.this), "Student", selectedState, programid);
+                            } else {
+                                Log.d("Json : ", "DONE");
+                                if (pd != null && pd.isShowing())
+                                    pd.dismiss();
+                                btnPressed = 1;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(PullData.this, "Data Successfully Pulled from Server !!! ", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                            }
+                            break;
+
+
+                        case "4":
+                            if (filename.equalsIgnoreCase("CRL")) {
+                                Log.d("Json : ", "Village");
+                                UpdateJsonOnline(Utility.getProperty("PIpullVillagesURL", PullData.this), "Village", selectedState, programid);
+                            } else if (filename.equalsIgnoreCase("Village")) {
+                                Log.d("Json : ", "Group");
+                                UpdateJsonOnline(Utility.getProperty("PIpullGroupsURL", PullData.this), "Group", selectedState, programid);
+                            } else if (filename.equalsIgnoreCase("Group")) {
+                                Log.d("Json : ", "Student");
+                                UpdateJsonOnline(Utility.getProperty("PIpullStudentsURL", PullData.this), "Student", selectedState, programid);
+                            } else {
+                                Log.d("Json : ", "DONE");
+                                if (pd != null && pd.isShowing())
+                                    pd.dismiss();
+                                btnPressed = 1;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(PullData.this, "Data Successfully Pulled from Server !!! ", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                            break;
+                    }
+
+//                    Toast.makeText(PullData.this, "Pulled From Server !!! " + filename, Toast.LENGTH_SHORT).show();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+//                    Toast.makeText(PullData.this, "Error" + filename + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

@@ -23,6 +23,19 @@ public class AserDBHelper extends DBHelper {
         Util = new Utility();
     }
 
+    public boolean DeleteAll() {
+        try {
+            database = getWritableDatabase();
+            long resultCount = database.delete("Aser", null, null);
+            database.close();
+            return true;
+        } catch (Exception ex) {
+            _PopulateLogValues(ex, "DeleteAll");
+            return false;
+        }
+    }
+
+
     private void _PopulateLogValues(Exception ex, String method) {
 
         Logs logs = new Logs();
@@ -40,7 +53,7 @@ public class AserDBHelper extends DBHelper {
         contentValues.put("ExceptionStackTrace", logs.exceptionStackTrace);
         contentValues.put("MethodName", logs.methodName);
         contentValues.put("Type", logs.errorType);
-        contentValues.put("GroupId", logs.groupId);
+        contentValues.put("GroupId", logs.groupId == null ? "" : logs.groupId);
         contentValues.put("DeviceId", logs.deviceId);
 
         contentValues.put("LogDetail", "AserLog");
@@ -316,7 +329,7 @@ public class AserDBHelper extends DBHelper {
             contentValues.put("DeviceId", obj.DeviceId);
             contentValues.put("FLAG", obj.FLAG);
             // new entries
-            contentValues.put("sharedBy", obj.sharedBy == null  ? "" : obj.sharedBy);
+            contentValues.put("sharedBy", obj.sharedBy == null ? "" : obj.sharedBy);
             contentValues.put("SharedAtDateTime", obj.SharedAtDateTime == null ? "" : obj.SharedAtDateTime);
             contentValues.put("appVersion", obj.appVersion == null ? "" : obj.appVersion);
             contentValues.put("appName", obj.appName == null ? "" : obj.appName);

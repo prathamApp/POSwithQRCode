@@ -20,7 +20,6 @@ public class VillageDBHelper extends DBHelper {
         super(context);
         c = context;
         database = getWritableDatabase();
-
     }
 
     private void _PopulateLogValues(Exception ex, String method) {
@@ -40,7 +39,7 @@ public class VillageDBHelper extends DBHelper {
         contentValues.put("ExceptionStackTrace", logs.exceptionStackTrace);
         contentValues.put("MethodName", logs.methodName);
         contentValues.put("Type", logs.errorType);
-        contentValues.put("GroupId", logs.groupId);
+        contentValues.put("GroupId", logs.groupId == null ? "" : logs.groupId);
         contentValues.put("DeviceId", logs.deviceId);
 
         contentValues.put("LogDetail", "VillageLog");

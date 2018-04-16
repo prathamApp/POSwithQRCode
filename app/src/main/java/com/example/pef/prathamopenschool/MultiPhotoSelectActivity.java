@@ -758,8 +758,8 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
             setTitle("Pratham Digital - Second Chance");
         else if (MultiPhotoSelectActivity.programID.equals("4"))
             setTitle("Pratham Digital - Pratham Institute");
-
-
+        s = new StatusDBHelper(this);
+        appName = s.initialDataAvailable("appName");
         if (appName == false) {
             s = new StatusDBHelper(MultiPhotoSelectActivity.this);
             // app name

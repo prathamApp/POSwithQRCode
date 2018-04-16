@@ -136,20 +136,52 @@ public class SignInActivity extends AppCompatActivity implements LocationListene
 
         androidIDAvailable = s.initialDataAvailable("AndroidID");
         SerialIDAvailable = s.initialDataAvailable("SerialID");
-
         apkVersion = s.initialDataAvailable("apkVersion");
         appName = s.initialDataAvailable("appName");
 
+        if (appName == false) {
+            s = new StatusDBHelper(this);
+            // app name
+            if (MultiPhotoSelectActivity.programID.equals("1"))
+                s.insertInitialData("appName", "Pratham Digital - H Learning");
+            else if (MultiPhotoSelectActivity.programID.equals("2"))
+                s.insertInitialData("appName", "Pratham Digital - Read India");
+            else if (MultiPhotoSelectActivity.programID.equals("3"))
+                s.insertInitialData("appName", "Pratham Digital - Second Chance");
+            else if (MultiPhotoSelectActivity.programID.equals("4"))
+                s.insertInitialData("appName", "Pratham Digital - Pratham Institute");
+
+        } else {
+            s = new StatusDBHelper(this);
+            // app name
+            if (MultiPhotoSelectActivity.programID.equals("1"))
+                s.Update("appName", "Pratham Digital - H Learning");
+            else if (MultiPhotoSelectActivity.programID.equals("2"))
+                s.Update("appName", "Pratham Digital - Read India");
+            else if (MultiPhotoSelectActivity.programID.equals("3"))
+                s.Update("appName", "Pratham Digital - Second Chance");
+            else if (MultiPhotoSelectActivity.programID.equals("4"))
+                s.Update("appName", "Pratham Digital - Pratham Institute");
+
+        }
+
+        String deviceID = "";
+        deviceID = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+
         if (androidIDAvailable == false) {
             s = new StatusDBHelper(this);
-            String deviceID = "";
-            deviceID = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
             s.insertInitialData("AndroidID", deviceID);
+        } else {
+            s = new StatusDBHelper(this);
+            s.Update("AndroidID", deviceID);
         }
 
         if (SerialIDAvailable == false) {
             s = new StatusDBHelper(this);
             s.insertInitialData("SerialID", Build.SERIAL);
+        } else {
+            s = new StatusDBHelper(this);
+            s.Update("SerialID", Build.SERIAL);
         }
 
         if (apkVersion == false) {
@@ -254,6 +286,10 @@ public class SignInActivity extends AppCompatActivity implements LocationListene
     @Override
     protected void onResume() {
         super.onResume();
+
+        // Reset Timer
+        MyApplication.resetGPSFixTimer();
+        MyApplication.startGPSFixTimer();
 
         // session
         MultiPhotoSelectActivity.duration = MultiPhotoSelectActivity.timeout;
@@ -844,10 +880,14 @@ public class SignInActivity extends AppCompatActivity implements LocationListene
         boolean latitudeAvailable = false;
         boolean longitudeAvailable = false;
         boolean GPSDateTimeAvailable = false;
+        boolean gpsFixDuration = false;
+
 
         latitudeAvailable = s.initialDataAvailable("Latitude");
         longitudeAvailable = s.initialDataAvailable("Longitude");
         GPSDateTimeAvailable = s.initialDataAvailable("GPSDateTime");
+        gpsFixDuration = s.initialDataAvailable("gpsFixDuration");
+
 
         if (latitudeAvailable == false) {
             s = new StatusDBHelper(this);
@@ -858,23 +898,29 @@ public class SignInActivity extends AppCompatActivity implements LocationListene
             s.insertInitialData("Longitude", String.valueOf(location.getLongitude()));
 
         }
+
         if (GPSDateTimeAvailable == false) {
             s = new StatusDBHelper(this);
             s.insertInitialData("GPSDateTime", gpsDateTime);
-
             // Reset Timer
             MyApplication.resetTimer();
-
             MyApplication.startTimer();
         } else {
             s = new StatusDBHelper(this);
             s.Update("GPSDateTime", gpsDateTime);
-
             // Reset Timer
-
             MyApplication.resetTimer();
-
             MyApplication.startTimer();
+        }
+
+        // GPS Fix Time
+        if (gpsFixDuration == false) {
+            s = new StatusDBHelper(this);
+            s.insertInitialData("gpsFixDuration", "");
+        } else {
+            s = new StatusDBHelper(this);
+            s.Update("gpsFixDuration", "" + MyApplication.getGPSFixTimerCount());
+//            Toast.makeText(this, "GPSFixDuration = " + MyApplication.getGPSFixTimerCount(), Toast.LENGTH_SHORT).show();
         }
 
         BackupDatabase.backup(this);

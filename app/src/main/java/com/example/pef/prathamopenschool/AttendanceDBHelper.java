@@ -21,6 +21,7 @@ public class AttendanceDBHelper extends DBHelper {
         database = this.getWritableDatabase();
     }
 
+
     public String GetStudentId(String SessionId) {
 
         String presentStudentId;
@@ -52,7 +53,7 @@ public class AttendanceDBHelper extends DBHelper {
         contentValues.put("ExceptionStackTrace", logs.exceptionStackTrace);
         contentValues.put("MethodName", logs.methodName);
         contentValues.put("Type", logs.errorType);
-        contentValues.put("GroupId", logs.groupId);
+        contentValues.put("GroupId", logs.groupId == null ? "" : logs.groupId);
         contentValues.put("DeviceId", logs.deviceId);
 
         contentValues.put("LogDetail", "AttendanceLog");

@@ -1,5 +1,6 @@
 package com.example.pef.prathamopenschool;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
@@ -27,7 +28,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +66,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity {
     TextView tv;
     ArrayList<String> path = new ArrayList<String>();
 
+    int cnt = 0;
     /*@Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -68,6 +74,8 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity {
         this.finish();
         startActivity(intent);
     }*/
+
+    ArrayList<Uri> uris = new ArrayList<Uri>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -229,6 +237,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity {
 
 
     // Transfer Data Over Bluetooth
+    @SuppressLint("StaticFieldLeak")
     public void transferData(View v) {
 
         // Generate Json file
@@ -573,6 +582,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity {
         }
     }
 
+    // transfer usage files via bluetooth
     public void TreansferFile(String filename) {
 
         // progress.dismiss();
@@ -601,7 +611,21 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity {
                     if (!found) {
                         Toast.makeText(this, "Bluetooth not in list", Toast.LENGTH_SHORT).show();
                     } else {
-                        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+                        // old
+                        uris.add(Uri.fromFile(file));
+                        cnt++;
+                        // Dbbackup files
+                        File dbFiles = new File(Environment.getExternalStorageDirectory() + "/.POSDBBackups");
+                        File[] files = dbFiles.listFiles();
+                        for (int i = 0; i < files.length; i++) {
+                            if (files[i].getName().contains("pushNewDataToServer")) {
+                                cnt++;
+                                uris.add(Uri.fromFile(files[i]));
+                            }
+                        }
+//                        Toast.makeText(CrlPullPushTransferUsageScreen.this, "Transferred Files : " + cnt, Toast.LENGTH_SHORT).show();
+                        intent.setAction(android.content.Intent.ACTION_SEND_MULTIPLE);
+                        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
                         intent.setClassName(packageName, className);
 
                         // Treat Like Capture
@@ -659,13 +683,100 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity {
                         // continue with delete
                         clearDBRecords();
                         tv.setVisibility(View.VISIBLE);
-                        tv.setText("File Transferred Successfully !!!");
+                        tv.setText("Total " + cnt + " files Transferred Successfully !!!");
+                        // move file to pushed usage from transferred usage
+                        File srcFolder = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/transferredUsage");
+                        File destFolder = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/pushedUsage");
+                        try {
+                            copyFolder(srcFolder, destFolder);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        // move files from POSBackups to pushed usage
+                        File src = new File(Environment.getExternalStorageDirectory() + "/.POSDBBackups");
+                        File dest = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/pushedUsage");
+                        try {
+                            copyFolder(src, dest);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        // delete POSDBBackups & Transferred Usage
+                        try {
+                            deleteTransferredUsage();
+                            deletePOSBackupFiles();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
                     }
                 })
 
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setCancelable(false)
                 .show();
+    }
+
+    public static void copyFolder(File src, File dest)
+            throws IOException {
+
+        if (src.isDirectory()) {
+
+            //if directory not exists, create it
+            if (!dest.exists()) {
+                dest.mkdir();
+                System.out.println("Directory copied from "
+                        + src + "  to " + dest);
+            }
+
+            //list all the directory contents
+            String files[] = src.list();
+
+            for (String file : files) {
+                //construct the src and dest file structure
+                File srcFile = new File(src, file);
+                File destFile = new File(dest, file);
+                //recursive copy
+                copyFolder(srcFile, destFile);
+            }
+
+        } else {
+            //if file, then copy it
+            //Use bytes stream to support all file types
+            InputStream in = new FileInputStream(src);
+            OutputStream out = new FileOutputStream(dest);
+
+            byte[] buffer = new byte[1024];
+
+            int length;
+            //copy the file content in bytes
+            while ((length = in.read(buffer)) > 0) {
+                out.write(buffer, 0, length);
+            }
+
+            in.close();
+            out.close();
+            System.out.println("File copied from " + src + " to " + dest);
+        }
+    }
+
+    private void deleteTransferredUsage() {
+        File dir = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/transferredUsage");
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                new File(dir, children[i]).delete();
+            }
+        }
+    }
+
+    private void deletePOSBackupFiles() {
+        File dir = new File(Environment.getExternalStorageDirectory() + "/.POSDBBackups");
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                new File(dir, children[i]).delete();
+            }
+        }
     }
 
     private void clearDBRecords() {

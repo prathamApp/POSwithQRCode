@@ -21,8 +21,8 @@ import java.util.TimerTask;
 public class MyApplication extends Application {
 
     private static MyApplication mInstance;
-    static int count;
-    static Timer gpsTimer;
+    static int count, gpsFixCount;
+    static Timer gpsTimer, gpsFixTimer;
 
     @Override
     public void onCreate() {
@@ -38,6 +38,7 @@ public class MyApplication extends Application {
     public void setConnectivityListener(ConnectivityReceiver.ConnectivityReceiverListener listener) {
         ConnectivityReceiver.connectivityReceiverListener = listener;
     }
+
 
     public static void startTimer() {
         gpsTimer = new Timer();
@@ -99,5 +100,27 @@ public class MyApplication extends Application {
 
         return updatedTime;
     }
+
+    public static void startGPSFixTimer() {
+        gpsFixTimer = new Timer();
+        gpsFixTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                gpsFixCount++;
+            }
+        }, 1000, 1000);
+    }
+    public static void resetGPSFixTimer() {
+        if (gpsFixTimer != null) {
+            gpsFixTimer.cancel();
+            gpsFixCount = 0;
+        } else {
+            gpsFixCount = 00;
+        }
+    }
+    public static int getGPSFixTimerCount() {
+        return gpsFixCount;
+    }
+
 
 }

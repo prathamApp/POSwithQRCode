@@ -219,6 +219,8 @@ public class AssignGroups extends AppCompatActivity {
 
                                     StatusDBHelper statusDBHelper = new StatusDBHelper(context);
 
+
+
                                     statusDBHelper.Update("group1", (group1));
                                     statusDBHelper.Update("group2", (group2));
                                     statusDBHelper.Update("group3", (group3));
