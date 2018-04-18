@@ -5,6 +5,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -438,7 +439,26 @@ public class splashScreenVideo extends AppCompatActivity {
         }
         if (apkVersion == false) {
             s = new StatusDBHelper(this);
-            s.insertInitialData("apkVersion", "apkVersion");
+            PackageInfo pInfo = null;
+            String verCode = "";
+            try {
+                pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+                verCode = pInfo.versionName;
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+            s.insertInitialData("apkVersion", verCode);
+        } else {
+            s = new StatusDBHelper(this);
+            PackageInfo pInfo = null;
+            String verCode = "";
+            try {
+                pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+                verCode = pInfo.versionName;
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+            s.Update("apkVersion", verCode);
         }
         if (appName == false) {
             s = new StatusDBHelper(this);
@@ -992,6 +1012,7 @@ public class splashScreenVideo extends AppCompatActivity {
                 obj.put("SerialID", statusDBHelper.getValue("SerialID"));
                 obj.put("apkVersion", statusDBHelper.getValue("apkVersion"));
                 obj.put("appName", statusDBHelper.getValue("appName"));
+                obj.put("gpsFixDuration", statusDBHelper.getValue("gpsFixDuration"));
 
                 String requestString = "{ " +
                         "\"metadata\": " + obj + "," +
