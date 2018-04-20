@@ -9,6 +9,12 @@ package com.example.pef.prathamopenschool;
 // Class for Checking internet connection
 
 import android.app.Application;
+import android.content.Context;
+import android.content.pm.PackageManager;
+
+import net.vrallev.android.cat.Cat;
+
+import org.apache.commons.net.ftp.FTPClient;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,12 +29,29 @@ public class MyApplication extends Application {
     private static MyApplication mInstance;
     static int count, gpsFixCount;
     static Timer gpsTimer, gpsFixTimer;
+    public static String networkSSID = "PrathamHotSpot";
+    public static FTPClient ftpClient;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
         mInstance = this;
+    }
+
+
+    public static Context getAppContext() {
+        return mInstance.getApplicationContext();
+    }
+
+    public static String path = "";
+
+    public static String getPath() {
+        return path;
+    }
+
+    public static void setPath(String path) {
+        MyApplication.path = path;
     }
 
     public static synchronized MyApplication getInstance() {
@@ -110,6 +133,7 @@ public class MyApplication extends Application {
             }
         }, 1000, 1000);
     }
+
     public static void resetGPSFixTimer() {
         if (gpsFixTimer != null) {
             gpsFixTimer.cancel();
@@ -118,9 +142,21 @@ public class MyApplication extends Application {
             gpsFixCount = 00;
         }
     }
+
     public static int getGPSFixTimerCount() {
         return gpsFixCount;
     }
 
 
+    public static String getVersion() {
+        Context context = getAppContext();
+        String packageName = context.getPackageName();
+        try {
+            PackageManager pm = context.getPackageManager();
+            return pm.getPackageInfo(packageName, 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            Cat.e("Unable to find the name " + packageName + " in the package");
+            return null;
+        }
+    }
 }

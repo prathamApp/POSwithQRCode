@@ -2,12 +2,9 @@ package com.example.pef.prathamopenschool;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -22,6 +19,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.pef.prathamopenschool.ftpSettings.ConnectToHotspot;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,7 +45,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity {
     CrlDBHelper cdb;
     AserDBHelper aserdb;
     Context c;
-    static BluetoothAdapter btAdapter;
+    //    static BluetoothAdapter btAdapter;
     Intent intent = null;
     int res;
     private static final int DISCOVER_DURATION = 3000;
@@ -65,7 +64,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity {
     boolean timer;
     TextView tv;
     ArrayList<String> path = new ArrayList<String>();
-
+    FTPConnect ftpConnect;
     int cnt = 0;
     /*@Override
     public void onBackPressed() {
@@ -100,7 +99,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity {
 
         tv = (TextView) findViewById(R.id.message);
         tv.setVisibility(View.GONE);
-
+        ftpConnect = new FTPConnect(CrlPullPushTransferUsageScreen.this, CrlPullPushTransferUsageScreen.this);
 
     }
 
@@ -562,7 +561,8 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity {
         OutputStreamWriter osw = null;
 
         try {
-            String MainPath = Environment.getExternalStorageDirectory() + "/.POSinternal/transferredUsage/" + fName + ".json";
+//            String MainPath = Environment.getExternalStorageDirectory() + "/.POSinternal/transferredUsage/" + fName + ".json";
+            String MainPath = Environment.getExternalStorageDirectory() + "/.POSDBBackups/" + fName + ".json";
             File file = new File(MainPath);
             try {
                 path.add(MainPath);
@@ -587,64 +587,71 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity {
     public void TreansferFile(String filename) {
 
         // progress.dismiss();
-        btAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (btAdapter == null) {
-            Toast.makeText(getApplicationContext(), "This device doesn't give bluetooth support.", Toast.LENGTH_LONG).show();
-        } else {
-            intent = new Intent();
-            intent.setAction(Intent.ACTION_SEND);
-            intent.setType("text/plain");
-            file = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/transferredUsage/" + filename + (deviceId.equals(null) ? "0000" : deviceId) + ".json");
-            int x = 0;
-            if (file.exists()) {
-                PackageManager pm = getPackageManager();
-                List<ResolveInfo> appsList = pm.queryIntentActivities(intent, 0);
-                if (appsList.size() > 0) {
+//        btAdapter = BluetoothAdapter.getDefaultAdapter();
+//        if (btAdapter == null) {
+//            Toast.makeText(getApplicationContext(), "This device doesn't give bluetooth support.", Toast.LENGTH_LONG).show();
+//        } else {
+//            intent = new Intent();
+//            intent.setAction(Intent.ACTION_SEND);
+//            intent.setType("text/plain");
+//            file = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/transferredUsage/" + filename + (deviceId.equals(null) ? "0000" : deviceId) + ".json");
+        file = new File(Environment.getExternalStorageDirectory() + "/.POSDBBackups/" + filename + (deviceId.equals(null) ? "0000" : deviceId) + ".json");
+        int x = 0;
+        if (file.exists()) {
+//                PackageManager pm = getPackageManager();
+//                List<ResolveInfo> appsList = pm.queryIntentActivities(intent, 0);
+//                if (appsList.size() > 0) {
 
-                    for (ResolveInfo info : appsList) {
-                        packageName = info.activityInfo.packageName;
-                        if (packageName.equals("com.android.bluetooth")) {
-                            className = info.activityInfo.name;
-                            found = true;
-                            break;// found
-                        }
-                    }
-                    if (!found) {
-                        Toast.makeText(this, "Bluetooth not in list", Toast.LENGTH_SHORT).show();
-                    } else {
-                        // old
-                        uris.add(Uri.fromFile(file));
-                        cnt++;
-                        // Dbbackup files
-                        File dbFiles = new File(Environment.getExternalStorageDirectory() + "/.POSDBBackups");
-                        File[] files = dbFiles.listFiles();
-                        for (int i = 0; i < files.length; i++) {
-                            if (files[i].getName().contains("pushNewDataToServer")) {
-                                cnt++;
-                                uris.add(Uri.fromFile(files[i]));
-                            }
-                        }
-//                        Toast.makeText(CrlPullPushTransferUsageScreen.this, "Transferred Files : " + cnt, Toast.LENGTH_SHORT).show();
-                        intent.setAction(android.content.Intent.ACTION_SEND_MULTIPLE);
-                        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-                        intent.setClassName(packageName, className);
+//                    for (ResolveInfo info : appsList) {
+//                        packageName = info.activityInfo.packageName;
+//                        if (packageName.equals("com.android.bluetooth")) {
+//                            className = info.activityInfo.name;
+//                            found = true;
+//                            break;// found
+//                        }
+//                    }
+//                    if (!found) {
+//                        Toast.makeText(this, "Bluetooth not in list", Toast.LENGTH_SHORT).show();
+//                    } else {
+            // old
+            uris.add(Uri.fromFile(file));
+            cnt++;
 
-                        // Treat Like Capture
-                        startActivityForResult(intent, 3);
-                        //setResult(1);
-
-                        // Gets Executed First
-                        //Toast.makeText(CrlPullPushTransferUsageScreen.this, "Data Transferred Successfully !!!", Toast.LENGTH_SHORT).show();
-
-                        //sendBroadcast(intent);
-                    }
+            // Dbbackup files
+            File dbFiles = new File(Environment.getExternalStorageDirectory() + "/.POSDBBackups");
+            File[] files = dbFiles.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                if (files[i].getName().contains("pushNewDataToServer")) {
+                    cnt++;
+                    uris.add(Uri.fromFile(files[i]));
                 }
-            } else {
-                if (progress.isShowing())
-                    progress.dismiss();
-                Toast.makeText(getApplicationContext(), "File not found in transferredUsage content", Toast.LENGTH_LONG).show();
             }
+
+            // Creating FTP HotSpot
+            MyApplication.setPath(dbFiles.getAbsolutePath());
+            ftpConnect.createFTPHotspot();
+
+//                        Toast.makeText(CrlPullPushTransferUsageScreen.this, "Transferred Files : " + cnt, Toast.LENGTH_SHORT).show();
+//                        intent.setAction(android.content.Intent.ACTION_SEND_MULTIPLE);
+//                        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+//                        intent.setClassName(packageName, className);
+
+            // Treat Like Capture
+//                        startActivityForResult(intent, 3);
+            //setResult(1);
+
+            // Gets Executed First
+            //Toast.makeText(CrlPullPushTransferUsageScreen.this, "Data Transferred Successfully !!!", Toast.LENGTH_SHORT).show();
+
+            //sendBroadcast(intent);
+//                    }
+//                }
+        } else {
+            if (progress.isShowing())
+                progress.dismiss();
+            Toast.makeText(getApplicationContext(), "File not found in transferredUsage content", Toast.LENGTH_LONG).show();
         }
+//        }
     }
 
 
@@ -685,15 +692,15 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity {
                         clearDBRecords();
                         tv.setVisibility(View.VISIBLE);
                         tv.setText("Total " + cnt + " files Transferred Successfully !!!");
-                        // move file to pushed usage from transferred usage
+                        /*// move file to pushed usage from transferred usage
                         File srcFolder = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/transferredUsage");
                         File destFolder = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/pushedUsage");
                         try {
                             copyFolder(srcFolder, destFolder);
                         } catch (IOException e) {
                             e.printStackTrace();
-                        }
-                        // move files from POSBackups to pushed usage
+                        }*/
+                        // move files from POSBackups to pushed usage ( also includes transfer usage )
                         File src = new File(Environment.getExternalStorageDirectory() + "/.POSDBBackups");
                         File dest = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/pushedUsage");
                         try {
@@ -703,7 +710,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity {
                         }
                         // delete POSDBBackups & Transferred Usage
                         try {
-                            deleteTransferredUsage();
+//                            deleteTransferredUsage();
                             deletePOSBackupFiles();
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -858,5 +865,9 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity {
                     }
                 })
                 .setNegativeButton(android.R.string.no, null).show();
+    }
+
+    public void recieveUsage(View view) {
+        ftpConnect.connectFTPHotspot();
     }
 }

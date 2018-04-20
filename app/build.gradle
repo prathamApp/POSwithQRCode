@@ -27,10 +27,20 @@ android {
         exclude "META-INF/MSFTSIG.RSA"
     }
 
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
 }
 
 dependencies {
-
+    compileOnly 'org.projectlombok:lombok:1.16.12'
+    annotationProcessor 'org.projectlombok:lombok:1.16.12'
+    implementation 'net.vrallev.android:cat:1.0.5'
+    implementation files('libs/commons-net-3.6.jar')
+    implementation files('libs/commons-net-3.6-sources.jar')
+    implementation files('libs/ftp4j-1.7.2.jar')
+    implementation 'commons-io:commons-io:2.5'
     implementation files('libs/universal-image-loader-1.6.1-with-src.jar')
     implementation 'me.dm7.barcodescanner:zxing:1.9.8'
     implementation 'com.android.support:support-v4:26.+'
