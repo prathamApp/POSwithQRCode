@@ -260,18 +260,18 @@ public class ShareProfiles extends AppCompatActivity implements FTPInterface.Pus
 //                    Toast.makeText(ShareProfiles.this, "No new data found !!!", Toast.LENGTH_SHORT).show();
                 } else {
                     // Creating Json Zip
-//                    try {
-//                        String paths[] = new String[path.size()];
-//                        int size = path.size();
-//                        for (int i = 0; i < size; i++) {
-//                            paths[i] = path.get(i);
-//                        }
-//                        // Compressing Files
-//                        Compress mergeFiles = new Compress(paths, Environment.getExternalStorageDirectory() + "/.POSinternal/sharableContent/NewProfiles.zip");
-//                        mergeFiles.zip();
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
+                    try {
+                        String paths[] = new String[path.size()];
+                        int size = path.size();
+                        for (int i = 0; i < size; i++) {
+                            paths[i] = path.get(i);
+                        }
+                        // Compressing Files
+                        Compress mergeFiles = new Compress(paths, Environment.getExternalStorageDirectory() + "/.POSinternal/sharableContent/NewProfiles.zip");
+                        mergeFiles.zip();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 //                    MultiPhotoSelectActivity.dilog.dismissDilog();
                     if (pd != null)
                         pd.dismiss();
@@ -617,7 +617,7 @@ public class ShareProfiles extends AppCompatActivity implements FTPInterface.Pus
 //        intent.setAction(Intent.ACTION_SEND);
         // intent.setClassName("com.lenovo.anyshare.gps", "com.lenovo.anyshare.share.ShareActivity");
 //        intent.setType("text/plain");
-        file = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/sharableContent" /*+ filename + ".zip"*/);
+        file = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/sharableContent/" + filename + ".zip");
 
         int x = 0;
         if (file.exists()) {

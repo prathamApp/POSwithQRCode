@@ -923,6 +923,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
         snackbar.show();
     }
 
+
     @Override
     public void onFilesRecievedComplete(String typeOfFile) {
         if (typeOfFile.equalsIgnoreCase("TransferUsage")) {

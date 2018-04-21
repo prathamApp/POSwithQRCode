@@ -1,10 +1,14 @@
 package com.example.pef.prathamopenschool;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,12 +16,17 @@ import android.os.CountDownTimer;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -82,11 +91,16 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
     JSONArray crlJsonArray, studentsJsonArray, grpJsonArray;
     public ProgressDialog progressDialog;
 
+    LinearLayout ftpDialogLayout;
+    EditText edt_HostName;
+    EditText edt_Port;
+    Button btn_Connect;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crl_share_receive_profiles);
-        ftpConnect =new FTPConnect(CrlShareReceiveProfiles.this, CrlShareReceiveProfiles.this,
+        ftpConnect = new FTPConnect(CrlShareReceiveProfiles.this, CrlShareReceiveProfiles.this,
                 CrlShareReceiveProfiles.this);
 
         MainActivity.sessionFlg = false;
@@ -237,11 +251,32 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 //            }
 //        });
 //        dialog.show();
-        ftpConnect.connectFTPHotspot("ReceiveProfiles");
+//        ftpConnect.connectFTPHotspot("ReceiveProfiles");
         //todo recieve zips and extract
 //        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 //        intent.setType("*/*");
 //        startActivityForResult(intent, 5);
+// Display ftp dialog
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.connect_to_ftpserver_dialog);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        ftpDialogLayout = dialog.findViewById(R.id.ftpDialog);
+        edt_HostName = dialog.findViewById(R.id.edt_HostName);
+        edt_Port = dialog.findViewById(R.id.edt_Port);
+        btn_Connect = dialog.findViewById(R.id.btn_Connect);
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(true);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.show();
+
+        btn_Connect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ftpConnect.connectFTPHotspot("ReceiveProfiles");
+            }
+        });
     }
 
     // receive profiles after picker code
@@ -258,7 +293,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 
         if (recieveProfilePath.endsWith("NewProfiles.zip")) {
 
-            new RecieveFiles(TargetPath, recieveProfilePath).execute();
+//            new RecieveFiles(TargetPath, recieveProfilePath).execute();
 /*  //Checking if src file exist or not (pravin)
                     newProfile = new File(shareItPath);
                     if (!newProfile.exists()) {
@@ -315,7 +350,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 
         // Delete Receive Folder Contents after Transferring
         try {
-            String directoryToDelete = Environment.getExternalStorageDirectory() + "/.POSinternal/ReceivedContent";
+            String directoryToDelete = Environment.getExternalStorageDirectory() + "/.POSinternal/receivedUsage";
 
             File dir = new File(directoryToDelete);
             for (File file : dir.listFiles())
@@ -390,7 +425,6 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
         if (FlagShareOff == true) {
             // Delete Sent Json Zip File
             try {
-
                 wipeSharedJson();
             } catch (Exception e) {
 
@@ -953,7 +987,29 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 
     public void goToReceiveOff(View view) {
 
-        ftpConnect.connectFTPHotspot("ReceiveJson");
+        // Display ftp dialog
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.connect_to_ftpserver_dialog);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+        ftpDialogLayout = dialog.findViewById(R.id.ftpDialog);
+        edt_HostName = dialog.findViewById(R.id.edt_HostName);
+        edt_Port = dialog.findViewById(R.id.edt_Port);
+        btn_Connect = dialog.findViewById(R.id.btn_Connect);
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(true);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.show();
+
+        btn_Connect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ftpConnect.connectFTPHotspot("ReceiveJson");
+            }
+        });
+
 
         //todo connect ftp hotspot and download files
 //        Toast.makeText(CrlShareReceiveProfiles.this, "Receive Offline Clicked !!!", Toast.LENGTH_SHORT).show();
@@ -1013,16 +1069,13 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 
 
     void SetInitialValuesReceiveOff() throws JSONException {
-
         // insert your code to run only when application is started first time here
         context = this;
-
         //CRL Initial DB Process
         CrlDBHelper db = new CrlDBHelper(context);
         // For Loading CRL Json From External Storage (Assets)
         JSONArray crlJsonArray = new JSONArray(loadCrlJSONFromAssetReceiveOff());
         for (int i = 0; i < crlJsonArray.length(); i++) {
-
             JSONObject clrJsonObject = crlJsonArray.getJSONObject(i);
             Crl crlobj = new Crl();
             crlobj.CRLId = clrJsonObject.getString("CRLId");
@@ -1035,7 +1088,6 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
             crlobj.State = clrJsonObject.getString("State");
             crlobj.Email = clrJsonObject.getString("Email");
             crlobj.newCrl = true;
-
             // new entries default values
             try {
                 crlobj.sharedBy = clrJsonObject.getString("sharedBy");
@@ -1051,20 +1103,15 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
                 crlobj.CreatedOn = "";
                 e.printStackTrace();
             }
-
-
             db.updateJsonData(crlobj);
             BackupDatabase.backup(context);
         }
-
         //Villages Initial DB Process
         VillageDBHelper database = new VillageDBHelper(context);
         // For Loading Villages Json From External Storage (Assets)
         JSONArray villagesJsonArray = new JSONArray(loadVillageJSONFromAssetReceiveOff());
-
         for (int j = 0; j < villagesJsonArray.length(); j++) {
             JSONObject villagesJsonObject = villagesJsonArray.getJSONObject(j);
-
             Village villageobj = new Village();
             villageobj.VillageID = villagesJsonObject.getInt("VillageId");
             villageobj.VillageCode = villagesJsonObject.getString("VillageCode");
@@ -1073,11 +1120,9 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
             villageobj.District = villagesJsonObject.getString("District");
             villageobj.State = villagesJsonObject.getString("State");
             villageobj.CRLID = villagesJsonObject.getString("CRLId");
-
             database.updateJsonData(villageobj);
             BackupDatabase.backup(context);
         }
-
     }
 
     // Reading CRL Json From Internal Memory
@@ -1172,7 +1217,6 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         try {
-
             if (requestCode == 0) {
                 Intent crlsharercv = new Intent(this, CrlShareReceiveProfiles.class);
                 finish();
@@ -1180,8 +1224,6 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
             } else if (requestCode == 5) {
                 // Receive Profiles
                 // Path Declaration
-
-
             } else if (requestCode == SDCardLocationChooser) {
                 Uri treeUri = data.getData();
                 String path = SDCardUtil.getFullPathFromTreeUri(treeUri, this);
@@ -1192,13 +1234,10 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
                 try {
                     // check path is correct or not
                     extractToSDCard(path, treeUri);
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-
-
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(CrlShareReceiveProfiles.this, "You haven't selected anything !!!", Toast.LENGTH_SHORT).show();
@@ -1313,26 +1352,55 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 
     @Override
     public void showDialog() {
-
+        // Manually connect to PrathamHotSpot if not connected to PrathamHotSpot
+        Snackbar snackbar = Snackbar
+                .make(ftpDialogLayout, "Manually connect to PrathamHotspot !!!", Snackbar.LENGTH_INDEFINITE)
+                .setAction("Ok", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        final Intent intent = new Intent(Intent.ACTION_MAIN, null);
+                        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                        final ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.wifi.WifiSettings");
+                        intent.setComponent(cn);
+                        intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
+                });
+        snackbar.setActionTextColor(Color.RED);
+        View sbView = snackbar.getView();
+        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(Color.YELLOW);
+        snackbar.show();
     }
 
     @Override
     public void onFilesRecievedComplete(String typeOfFile) {
         if (typeOfFile.equalsIgnoreCase("ReceiveProfiles")) {
+            TargetPath = Environment.getExternalStorageDirectory() + "/.POSinternal/receivedUsage/";
+            File NewProfilesExists = new File(TargetPath + "NewProfiles.zip");
+            if (NewProfilesExists.exists())
+                new RecieveFiles(TargetPath, NewProfilesExists.getAbsolutePath()).execute();
 
         } else if (typeOfFile.equalsIgnoreCase("ReceiveJson")) {
+            // Update DB
+            try {
+                // Add Initial Entries of CRL & Village Json to Database
+                SetInitialValuesReceiveOff();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
         }
     }
 
     public class RecieveFiles extends AsyncTask<Void, Integer, String> {
 
-        //        String targetPath;
+        String targetPath;
         String recieveProfilePath;
         ProgressDialog dialog;
 
         public RecieveFiles(String targetPath, String recieveProfilePath) {
-//            this.targetPath = targetPath;
+            this.targetPath = targetPath;
             this.recieveProfilePath = recieveProfilePath;
         }
 
@@ -1351,13 +1419,13 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
             // Extraction of contents
             newProfile = new File(recieveProfilePath);
             Compress extract = new Compress();
-            ReceivePath = recieveProfilePath.replace("content://com.estrongs.files", "");
+//            ReceivePath = recieveProfilePath.replace("content://com.estrongs.files", "");
 
-            Log.d("ReceivePath :::", ReceivePath);
-            Log.d("TargetPath :::", TargetPath);
+            Log.d("ReceivePath :::", recieveProfilePath);
+            Log.d("TargetPath :::", targetPath);
 
             // Exctracting Data
-            List<String> unzippedFileNames = extract.unzip(ReceivePath, TargetPath);
+            List<String> unzippedFileNames = extract.unzip(recieveProfilePath, targetPath);
 
             // Inserting All Jsons in Database
             try {
@@ -1366,7 +1434,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
                 // Error causing here
                 newProfile.delete();
                 // Transfer Student's Profiles from Receive folder to Student Profiles
-                File src = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/ReceivedContent");
+                File src = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/receivedUsage");
                 File dest = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/StudentProfiles");
                 try {
                     if (!src.exists()) {
@@ -1407,6 +1475,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
             tv_Groups.setText("Groups Received : " + grp);
 
             Toast.makeText(c, "Profiles received", Toast.LENGTH_LONG).show();
+
         }
     }
 }
