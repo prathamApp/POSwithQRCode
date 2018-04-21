@@ -1,11 +1,14 @@
 package com.example.pef.prathamopenschool;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
+import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
@@ -13,8 +16,9 @@ import android.util.Log;
 import com.example.pef.prathamopenschool.ftpSettings.ConnectToHotspot;
 import com.example.pef.prathamopenschool.ftpSettings.CreateWifiAccessPoint;
 import com.example.pef.prathamopenschool.ftpSettings.CreateWifiAccessPointOnHigherAPI;
+import com.example.pef.prathamopenschool.ftpSettings.FsService;
 import com.example.pef.prathamopenschool.ftpSettings.WifiAPController;
-import com.google.gson.Gson;
+import com.example.pef.prathamopenschool.ftpSettings.WifiApControl;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -32,7 +36,9 @@ import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
-public class FTPConnect implements FolderClick {
+import static android.content.Context.ACTIVITY_SERVICE;
+
+public class FTPConnect implements FTPInterface.FTPConnectInterface {
     private Context context;
     public Activity activity;
     String treeUri;
@@ -40,10 +46,17 @@ public class FTPConnect implements FolderClick {
     FTPClient tempFtpClient = null;
     private DocumentFile tempUri;
     private File tempFile;
+    FTPInterface.PushPullInterface pushPullInterface;
+    String typeOfFile = "";
 
-    public FTPConnect(Context context, Activity activity) {
+    public FTPConnect(Context context) {
+        this.context = context;
+    }
+
+    public FTPConnect(Context context, Activity activity, FTPInterface.PushPullInterface pushPullInterface) {
         this.context = context;
         this.activity = activity;
+        this.pushPullInterface = pushPullInterface;
     }
 
     public void createFTPHotspot() {
@@ -61,13 +74,18 @@ public class FTPConnect implements FolderClick {
         }
     }
 
-    public void connectFTPHotspot() {
+    public void connectFTPHotspot(String typeOfFile) {
+        this.typeOfFile = typeOfFile;
         new ConnectToHotspot(context, FTPConnect.this).execute();
     }
 
     @Override
-    public void onConnectionEshtablished() {
-        new ListFilesOnFTP(false, null, false).execute();
+    public void onConnectionEshtablished(boolean connected) {
+        if (MyApplication.ftpClient != null && connected) {
+            new ListFilesOnFTP(false, null, false).execute();
+        } else {
+            pushPullInterface.showDialog();
+        }
     }
 
     @Override
@@ -188,7 +206,8 @@ public class FTPConnect implements FolderClick {
             e.printStackTrace();
         } finally {
             //Todo copy json to database
-            if (aFile.getName().endsWith(".json")) {
+            if (aFile.getName().endsWith(".json") && !typeOfFile.equalsIgnoreCase("ReceiveProfiles")
+                    && !typeOfFile.equalsIgnoreCase("TransferUsage")&& !typeOfFile.equalsIgnoreCase("ReceiveJson")) {
                 Log.d("json_path:::", tempFile.getAbsolutePath() + "");
                 Log.d("json_path:::", aFile.getName() + "");
                 //Todo read json from file
@@ -202,6 +221,8 @@ public class FTPConnect implements FolderClick {
 //                Gson gson = new Gson();
 //                Modal_DownloadContent download_content = gson.fromJson(jsonObject.toString(), Modal_DownloadContent.class);
 //                addContentToDatabase(download_content);
+            }else {
+                pushPullInterface.onFilesRecievedComplete(typeOfFile);
             }
         }
     }
@@ -326,6 +347,28 @@ public class FTPConnect implements FolderClick {
                 return null;
             }
         }
+
+        @Override
+        protected void onPostExecute(FTPFile[] ftpFiles) {
+            super.onPostExecute(ftpFiles);
+            if (ftpFiles.length > 0) {
+                for (FTPFile temp_file : ftpFiles) {
+                    if (typeOfFile.equalsIgnoreCase("ReceiveProfiles")) {
+                        tempFtpClient=MyApplication.ftpClient;
+                        File f=new File(Environment.getExternalStorageDirectory()+"/.POSinternal/receivedUsage");
+                        new DownloadTHroughFTP(null, f, false, temp_file).execute();
+                    } else if (typeOfFile.equalsIgnoreCase("TransferUsage")) {
+                        tempFtpClient=MyApplication.ftpClient;
+                        File f=new File(Environment.getExternalStorageDirectory()+"/.POSinternal/transferredUsage");
+                        new DownloadTHroughFTP(null, f, false, temp_file).execute();
+                    } else if (typeOfFile.equalsIgnoreCase("ReceiveJson")) {
+                        tempFtpClient=MyApplication.ftpClient;
+                        File f=new File(Environment.getExternalStorageDirectory()+"/.POSinternal/Json");
+                        new DownloadTHroughFTP(null, f, false, temp_file).execute();
+                    }
+                }
+            }
+        }
     }
 
     public class DownloadTHroughFTP extends AsyncTask<Void, Void, Void> {
@@ -360,6 +403,47 @@ public class FTPConnect implements FolderClick {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+        }
+    }
+
+    public void startServer() {
+        context.sendBroadcast(new Intent(FsService.ACTION_START_FTPSERVER));
+    }
+
+    public void stopServer() {
+        context.sendBroadcast(new Intent(FsService.ACTION_STOP_FTPSERVER));
+    }
+
+    // Checking FTP Service is on or not
+    public boolean checkServiceRunning() {
+        ActivityManager manager = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (service.service.getClassName().contains("ftpSettings.FsService")) {
+                return true;
+            }
+/*
+            if ("ftpSettings.FsService".contains(service.service.getClassName())) {
+                return true;
+            }
+*/
+        }
+        return false;
+    }
+
+    // Turns off WiFi HotSpot
+    public void turnOnOffHotspot(boolean isTurnToOn) {
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+
+        WifiApControl apControl = WifiApControl.getApControl(wifiManager);
+        if (apControl != null) {
+
+            // TURN OFF YOUR WIFI BEFORE ENABLE HOTSPOT
+            //if (isWifiOn(context) && isTurnToOn) {
+            //  turnOnOffWifi(context, false);
+            //}
+
+            apControl.setWifiApEnabled(apControl.getWifiApConfiguration(),
+                    isTurnToOn);
         }
     }
 }

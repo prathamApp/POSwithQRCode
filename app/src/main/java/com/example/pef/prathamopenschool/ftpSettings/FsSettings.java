@@ -74,7 +74,7 @@ public class FsSettings {
             // but this will probably not be what the user wants
             return MyApplication.getAppContext().getFilesDir();
         }
-        chrootDir = new File(MyApplication.getPath()+"/PraDigi/");
+        chrootDir = new File(MyApplication.getPath());
         return chrootDir;
     }
 

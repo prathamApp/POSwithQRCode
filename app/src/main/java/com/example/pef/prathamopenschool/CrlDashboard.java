@@ -518,6 +518,11 @@ public class CrlDashboard extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        FTPConnect ftpConnect=new FTPConnect(CrlDashboard.this);
+        if (ftpConnect.checkServiceRunning()) {
+            ftpConnect.stopServer();
+        }
+        ftpConnect.turnOnOffHotspot(false);
         super.onBackPressed();
     }
 }

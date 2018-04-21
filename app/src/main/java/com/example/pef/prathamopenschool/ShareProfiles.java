@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ShareProfiles extends AppCompatActivity {
+public class ShareProfiles extends AppCompatActivity implements FTPInterface.PushPullInterface {
 
     List<Student> Students;
     StudentDBHelper sdb;
@@ -260,18 +260,18 @@ public class ShareProfiles extends AppCompatActivity {
 //                    Toast.makeText(ShareProfiles.this, "No new data found !!!", Toast.LENGTH_SHORT).show();
                 } else {
                     // Creating Json Zip
-                    try {
-                        String paths[] = new String[path.size()];
-                        int size = path.size();
-                        for (int i = 0; i < size; i++) {
-                            paths[i] = path.get(i);
-                        }
-                        // Compressing Files
-                        Compress mergeFiles = new Compress(paths, Environment.getExternalStorageDirectory() + "/.POSinternal/sharableContent/NewProfiles.zip");
-                        mergeFiles.zip();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+//                    try {
+//                        String paths[] = new String[path.size()];
+//                        int size = path.size();
+//                        for (int i = 0; i < size; i++) {
+//                            paths[i] = path.get(i);
+//                        }
+//                        // Compressing Files
+//                        Compress mergeFiles = new Compress(paths, Environment.getExternalStorageDirectory() + "/.POSinternal/sharableContent/NewProfiles.zip");
+//                        mergeFiles.zip();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
 //                    MultiPhotoSelectActivity.dilog.dismissDilog();
                     if (pd != null)
                         pd.dismiss();
@@ -436,41 +436,44 @@ public class ShareProfiles extends AppCompatActivity {
         if (Crls == null || Crls.isEmpty()) {
             //  Toast.makeText(ShareProfiles.this, "There are No new Crls !!!", Toast.LENGTH_SHORT).show();
         } else {
-            try {
-                for (int x = 0; x < Crls.size(); x++) {
-                    crlObj = new JSONObject();
-                    Crl crl = Crls.get(x);
-                    crlObj.put("CRLID", crl.CRLId);
-                    crlObj.put("FirstName", crl.FirstName);
-                    crlObj.put("LastName", crl.LastName);
-                    crlObj.put("UserName", crl.UserName);
-                    crlObj.put("PassWord", crl.Password);
-                    Integer pid = crl.ProgramId;
-                    crlObj.put("ProgramId", pid == null ? 0 : crl.ProgramId);
-                    crlObj.put("Mobile", crl.Mobile);
-                    crlObj.put("State", crl.State);
-                    crlObj.put("Email", crl.Email);
-                    crlObj.put("CreatedBy", crl.CreatedBy.equals(null) ? "Created By" : crl.CreatedBy);
-                    crlObj.put("NewFlag", crl.newCrl == null ? false : !crl.newCrl);
+            if (Crls == null) {
+            } else {
+                try {
+                    for (int x = 0; x < Crls.size(); x++) {
+                        crlObj = new JSONObject();
+                        Crl crl = Crls.get(x);
+                        crlObj.put("CRLID", crl.CRLId);
+                        crlObj.put("FirstName", crl.FirstName);
+                        crlObj.put("LastName", crl.LastName);
+                        crlObj.put("UserName", crl.UserName);
+                        crlObj.put("PassWord", crl.Password);
+                        Integer pid = crl.ProgramId;
+                        crlObj.put("ProgramId", pid == null ? 0 : crl.ProgramId);
+                        crlObj.put("Mobile", crl.Mobile);
+                        crlObj.put("State", crl.State);
+                        crlObj.put("Email", crl.Email);
+                        crlObj.put("CreatedBy", crl.CreatedBy.equals(null) ? "Created By" : crl.CreatedBy);
+                        crlObj.put("NewFlag", crl.newCrl == null ? false : !crl.newCrl);
 
-                    // new entries
-                    stat = new StatusDBHelper(ShareProfiles.this);
-                    crlObj.put("sharedBy", stat.getValue("AndroidID"));
-                    crlObj.put("SharedAtDateTime", util.GetCurrentDateTime(false).toString());
-                    crlObj.put("appVersion", stat.getValue("apkVersion"));
-                    crlObj.put("appName", stat.getValue("appName"));
-                    crlObj.put("CreatedOn", crl.CreatedOn == null ? "" : crl.CreatedOn);
+                        // new entries
+                        stat = new StatusDBHelper(ShareProfiles.this);
+                        crlObj.put("sharedBy", stat.getValue("AndroidID"));
+                        crlObj.put("SharedAtDateTime", util.GetCurrentDateTime(false).toString());
+                        crlObj.put("appVersion", stat.getValue("apkVersion"));
+                        crlObj.put("appName", stat.getValue("appName"));
+                        crlObj.put("CreatedOn", crl.CreatedOn == null ? "" : crl.CreatedOn);
 
-                    newCrlArray.put(crlObj);
+                        newCrlArray.put(crlObj);
+                    }
+
+                    String requestString = String.valueOf(newCrlArray);
+
+                    WriteSettings(getApplicationContext(), requestString, "Crl");
+                    // TreansferFile("Crl");
+
+                } catch (Exception ex) {
+                    ex.getMessage();
                 }
-
-                String requestString = String.valueOf(newCrlArray);
-
-                WriteSettings(getApplicationContext(), requestString, "Crl");
-                // TreansferFile("Crl");
-
-            } catch (Exception ex) {
-                ex.getMessage();
             }
         }
     }
@@ -614,7 +617,7 @@ public class ShareProfiles extends AppCompatActivity {
 //        intent.setAction(Intent.ACTION_SEND);
         // intent.setClassName("com.lenovo.anyshare.gps", "com.lenovo.anyshare.share.ShareActivity");
 //        intent.setType("text/plain");
-        file = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/sharableContent/" + filename + ".zip");
+        file = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/sharableContent" /*+ filename + ".zip"*/);
 
         int x = 0;
         if (file.exists()) {
@@ -649,7 +652,10 @@ public class ShareProfiles extends AppCompatActivity {
             tv_Crls.setText("CRLs Shared : " + crl);
             tv_Groups.setText("Groups Shared : " + grp);
 
-            new FTPConnect(ShareProfiles.this,ShareProfiles.this).createFTPHotspot();
+            MyApplication.setPath(Environment.getExternalStorageDirectory() + "/.POSinternal/sharableContent/");
+            new FTPConnect(ShareProfiles.this, ShareProfiles.this, ShareProfiles.this).createFTPHotspot();
+
+            //todo check for crl json and stop ftp server sfter transfer
 //                    }
 //                }
         } else
@@ -762,4 +768,13 @@ public class ShareProfiles extends AppCompatActivity {
     }
 
 
+    @Override
+    public void showDialog() {
+
+    }
+
+    @Override
+    public void onFilesRecievedComplete(String typeOfFile) {
+
+    }
 }

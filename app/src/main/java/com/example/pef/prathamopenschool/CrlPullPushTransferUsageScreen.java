@@ -1,10 +1,14 @@
 package com.example.pef.prathamopenschool;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -12,15 +16,19 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.provider.Settings;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.example.pef.prathamopenschool.ftpSettings.ConnectToHotspot;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,7 +44,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CrlPullPushTransferUsageScreen extends AppCompatActivity {
+public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements FTPInterface.PushPullInterface {
 
     public static ProgressDialog progress;
     public static JSONArray _array;
@@ -66,15 +74,14 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity {
     ArrayList<String> path = new ArrayList<String>();
     FTPConnect ftpConnect;
     int cnt = 0;
-    /*@Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Intent intent = new Intent(this,CrlDashboard.class);
-        this.finish();
-        startActivity(intent);
-    }*/
 
     ArrayList<Uri> uris = new ArrayList<Uri>();
+
+    LinearLayout ftpDialogLayout;
+    EditText edt_HostName;
+    EditText edt_Port;
+    Button btn_Connect;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +106,8 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity {
 
         tv = (TextView) findViewById(R.id.message);
         tv.setVisibility(View.GONE);
-        ftpConnect = new FTPConnect(CrlPullPushTransferUsageScreen.this, CrlPullPushTransferUsageScreen.this);
+        ftpConnect = new FTPConnect(CrlPullPushTransferUsageScreen.this, CrlPullPushTransferUsageScreen.this,
+                CrlPullPushTransferUsageScreen.this);
 
     }
 
@@ -614,8 +622,8 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity {
 //                        Toast.makeText(this, "Bluetooth not in list", Toast.LENGTH_SHORT).show();
 //                    } else {
             // old
-            uris.add(Uri.fromFile(file));
-            cnt++;
+//            uris.add(Uri.fromFile(file));
+//            cnt++;
 
             // Dbbackup files
             File dbFiles = new File(Environment.getExternalStorageDirectory() + "/.POSDBBackups");
@@ -868,6 +876,65 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity {
     }
 
     public void recieveUsage(View view) {
-        ftpConnect.connectFTPHotspot();
+        // Display ftp dialog
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.connect_to_ftpserver_dialog);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+        ftpDialogLayout = dialog.findViewById(R.id.ftpDialog);
+        edt_HostName = dialog.findViewById(R.id.edt_HostName);
+        edt_Port = dialog.findViewById(R.id.edt_Port);
+        btn_Connect = dialog.findViewById(R.id.btn_Connect);
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(true);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.show();
+
+        btn_Connect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ftpConnect.connectFTPHotspot("TransferUsage");
+            }
+        });
+    }
+
+    @Override
+    public void showDialog() {
+        // Manually connect to PrathamHotSpot if not connected to PrathamHotSpot
+        Snackbar snackbar = Snackbar
+                .make(ftpDialogLayout, "Manually connect to PrathamHotspot !!!", Snackbar.LENGTH_INDEFINITE)
+                .setAction("Ok", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        final Intent intent = new Intent(Intent.ACTION_MAIN, null);
+                        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                        final ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.wifi.WifiSettings");
+                        intent.setComponent(cn);
+                        intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
+                });
+        snackbar.setActionTextColor(Color.RED);
+        View sbView = snackbar.getView();
+        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(Color.YELLOW);
+        snackbar.show();
+    }
+
+    @Override
+    public void onFilesRecievedComplete(String typeOfFile) {
+        if (typeOfFile.equalsIgnoreCase("TransferUsage")) {
+
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (ftpConnect.checkServiceRunning()) {
+            ftpConnect.stopServer();
+        }
+        super.onBackPressed();
     }
 }

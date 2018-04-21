@@ -1,28 +1,25 @@
 package com.example.pef.prathamopenschool.ftpSettings;
 
 import android.app.ProgressDialog;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.pef.prathamopenschool.FolderClick;
+import com.example.pef.prathamopenschool.FTPConnect;
+import com.example.pef.prathamopenschool.FTPInterface;
 import com.example.pef.prathamopenschool.MyApplication;
 
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
+
+import java.io.IOException;
 
 import static android.content.Context.WIFI_SERVICE;
-import static com.example.pef.prathamopenschool.MyApplication.ftpClient;
 import static com.example.pef.prathamopenschool.MyApplication.networkSSID;
 
 public class ConnectToHotspot extends AsyncTask<Void, Void, Void> {
@@ -30,11 +27,16 @@ public class ConnectToHotspot extends AsyncTask<Void, Void, Void> {
     private Context context;
     private boolean connected = false;
     FTPClient client1;
-    FolderClick folderClick;
+    FTPInterface.FTPConnectInterface ftpConnectInterface;
+    String ipaddress;
+    String port;
 
-    public ConnectToHotspot(Context context, FolderClick folderClick) {
+    public ConnectToHotspot(Context context, FTPInterface.FTPConnectInterface ftpConnectInterface
+            , String ipaddress, String port) {
         this.context = context;
-        this.folderClick = folderClick;
+        this.ftpConnectInterface = ftpConnectInterface;
+        this.ipaddress = ipaddress.replace("ftp://","");
+        this.port = port;
     }
 
     @Override
@@ -51,6 +53,7 @@ public class ConnectToHotspot extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... voids) {
         // Check if already connected to PrathamHotspot
         String SSID = getWifiName(context).replace("\"", "");
+        client1 = new FTPClient();
         if (SSID.equalsIgnoreCase(networkSSID)) {
             // Connected to PrathamHotspot
             connected = true;
@@ -75,9 +78,8 @@ public class ConnectToHotspot extends AsyncTask<Void, Void, Void> {
         if (connected) {
             // todo if connected to FTP Server
 //            final FTPClient[] client = new FTPClient[1];
-            client1 = new FTPClient();
             try {
-                client1.connect("ftp://192.168.43.1", 2121);
+                client1.connect(ipaddress, Integer.parseInt(port));
                 client1.login("ftp", "ftp");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -92,7 +94,7 @@ public class ConnectToHotspot extends AsyncTask<Void, Void, Void> {
         if (pd != null)
             pd.dismiss();
         MyApplication.ftpClient = client1;
-        folderClick.onConnectionEshtablished();
+        ftpConnectInterface.onConnectionEshtablished(client1.isConnected());
         Toast.makeText(context, "hotspot connected", Toast.LENGTH_SHORT).show();
     }
 

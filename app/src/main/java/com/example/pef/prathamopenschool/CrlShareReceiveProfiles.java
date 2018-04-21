@@ -1,19 +1,15 @@
 package com.example.pef.prathamopenschool;
 
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
@@ -47,7 +43,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CrlShareReceiveProfiles extends AppCompatActivity implements ExtractInterface {
+public class CrlShareReceiveProfiles extends AppCompatActivity implements ExtractInterface, FTPInterface.PushPullInterface {
 
     StudentDBHelper sdb;
     Context context;
@@ -55,11 +51,12 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
     AserDBHelper adb;
     CrlDBHelper cdb;
     Context c;
+    FTPConnect ftpConnect;
     ArrayList<String> path = new ArrayList<String>();
     int res;
     private static final int DISCOVER_DURATION = 3000;
     private static final int REQUEST_BLU = 1;
-//    static BluetoothAdapter btAdapter;
+    //    static BluetoothAdapter btAdapter;
     Intent intent = null;
     String packageName = null;
     public static ProgressDialog progress;
@@ -89,6 +86,8 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crl_share_receive_profiles);
+        ftpConnect =new FTPConnect(CrlShareReceiveProfiles.this, CrlShareReceiveProfiles.this,
+                CrlShareReceiveProfiles.this);
 
         MainActivity.sessionFlg = false;
         sessionContex = this;
@@ -238,7 +237,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 //            }
 //        });
 //        dialog.show();
-        new FTPConnect(CrlShareReceiveProfiles.this,CrlShareReceiveProfiles.this).connectFTPHotspot();
+        ftpConnect.connectFTPHotspot("ReceiveProfiles");
         //todo recieve zips and extract
 //        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 //        intent.setType("*/*");
@@ -252,7 +251,6 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 //        } catch (Exception e) {
 //            e.getMessage();
 //        }
-
         TargetPath = Environment.getExternalStorageDirectory() + "/.POSinternal/ReceivedContent/";
         // Checking that file is appropriate or not
         //content://com.estrongs.files/storage/emulated/0/SHAREit/files/NewProfiles.zip
@@ -379,7 +377,9 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
+        if (ftpConnect.checkServiceRunning()) {
+            ftpConnect.stopServer();
+        }
         // Delete Received Files
         try {
             wipeReceivedData();
@@ -842,47 +842,47 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 
     public void goToShareOff(View view) {
 
-        FlagShareOff = true;
-        File newJason = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/NewJson.zip");
-        if (newJason.exists()) {
-            newJason.delete();
-        }
+//        FlagShareOff = true;
+//        File newJason = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/NewJson.zip");
+//        if (newJason.exists()) {
+//            newJason.delete();
+//        }
+//
+//        MultiPhotoSelectActivity.dilog.showDilog(c, "Collecting data for transfer");
 
-        MultiPhotoSelectActivity.dilog.showDilog(c, "Collecting data for transfer");
-
-        Thread mThread = new Thread() {
-            @Override
-            public void run() {
-                // Creating Json Zip
-                try {
-
-                    path.add(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/Crl.json");
-                    path.add(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/Group.json");
-                    path.add(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/Student.json");
-                    path.add(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/Village.json");
-                    path.add(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/Config.json");
-
-                    String paths[] = new String[path.size()];
-                    for (int i = 0; i < path.size(); i++) {
-                        paths[i] = path.get(i);
-                    }
-                    // Compressing Files
-                    Compress mergeFiles = new Compress(paths, Environment.getExternalStorageDirectory() + "/.POSinternal/Json/NewJson.zip");
-                    mergeFiles.zip();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                MultiPhotoSelectActivity.dilog.dismissDilog();
-                CrlShareReceiveProfiles.this.runOnUiThread(new Runnable() {
-                    public void run() {
-                        Toast.makeText(CrlShareReceiveProfiles.this, " Data collected Successfully !!!", Toast.LENGTH_SHORT).show();
-                        // Transferring Created Zip
-                        TreansferFile("NewJson");
-                    }
-                });
-            }
-        };
-        mThread.start();
+//        Thread mThread = new Thread() {
+//            @Override
+//            public void run() {
+//                // Creating Json Zip
+//                try {
+//
+//                    path.add(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/Crl.json");
+//                    path.add(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/Group.json");
+//                    path.add(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/Student.json");
+//                    path.add(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/Village.json");
+//                    path.add(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/Config.json");
+//
+//                    String paths[] = new String[path.size()];
+//                    for (int i = 0; i < path.size(); i++) {
+//                        paths[i] = path.get(i);
+//                    }
+//                    // Compressing Files
+//                    Compress mergeFiles = new Compress(paths, Environment.getExternalStorageDirectory() + "/.POSinternal/Json/NewJson.zip");
+//                    mergeFiles.zip();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//                MultiPhotoSelectActivity.dilog.dismissDilog();
+//                CrlShareReceiveProfiles.this.runOnUiThread(new Runnable() {
+//                    public void run() {
+//                        Toast.makeText(CrlShareReceiveProfiles.this, " Data collected Successfully !!!", Toast.LENGTH_SHORT).show();
+//                        // Transferring Created Zip
+        TreansferFile("NewJson");
+//                    }
+//                });
+//            }
+//        };
+//        mThread.start();
     }
 
     public void TreansferFile(String filename) {
@@ -909,10 +909,10 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 //            intent = new Intent();
 //            intent.setAction(Intent.ACTION_SEND);
 //            intent.setType("text/plain");
-            file = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/" + filename + ".zip");
+        file = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/Json"/* + filename + ".zip"*/);
 
-            int x = 0;
-            if (file.exists()) {
+        int x = 0;
+        if (file.exists()) {
 
 //                PackageManager pm = getPackageManager();
 //                List<ResolveInfo> appsList = pm.queryIntentActivities(intent, 0);
@@ -929,16 +929,19 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 //                    if (!found) {
 //                        Toast.makeText(this, "Bluetooth not in list", Toast.LENGTH_SHORT).show();
 //                    } else {
-                new FTPConnect(CrlShareReceiveProfiles.this,CrlShareReceiveProfiles.this).createFTPHotspot();
+            MyApplication.setPath(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/");
+            ftpConnect.createFTPHotspot();
 
+            //todo ftp connect dialog same for every recieve
+            //todo show count on that dialog
 //                        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
 //                        intent.setClassName(packageName, className);
 //                        startActivityForResult(intent, 0);
-                        //sendBroadcast(intent);
+            //sendBroadcast(intent);
 //                    }
 //                }
-            } else
-                Toast.makeText(getApplicationContext(), "File not found", Toast.LENGTH_LONG).show();
+        } else
+            Toast.makeText(getApplicationContext(), "File not found", Toast.LENGTH_LONG).show();
 //        }
     }
 
@@ -950,59 +953,61 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 
     public void goToReceiveOff(View view) {
 
-        //todo connect ftp hotspot and download files
-        Toast.makeText(CrlShareReceiveProfiles.this, "Receive Offline Clicked !!!", Toast.LENGTH_SHORT).show();
+        ftpConnect.connectFTPHotspot("ReceiveJson");
 
-        FlagReceiveOff = true;
+        //todo connect ftp hotspot and download files
+//        Toast.makeText(CrlShareReceiveProfiles.this, "Receive Offline Clicked !!!", Toast.LENGTH_SHORT).show();
+
+//        FlagReceiveOff = true;
 
         // Path Declaration
-        ReceivePath = Environment.getExternalStorageDirectory() + "/bluetooth/NewJson.zip";
-        TargetPath = Environment.getExternalStorageDirectory() + "/.POSinternal/Json/";
+//        ReceivePath = Environment.getExternalStorageDirectory() + "/bluetooth/NewJson.zip";
+//        TargetPath = Environment.getExternalStorageDirectory() + "/.POSinternal/Json/";
 
         //Checking if src file exist or not (pravin)
-        newJson = new File(ReceivePath);
-        if (!newJson.exists()) {
-            Toast.makeText(this, "NewJson.zip not exist", Toast.LENGTH_SHORT).show();
-        } else {
-            MultiPhotoSelectActivity.dilog.showDilog(c, "Collecting transfered data");
-
-            Thread mThread = new Thread() {
-                @Override
-                public void run() {
-                    wipeJsonFolder();
-
-                    // Extraction of contents
-                    Compress extract = new Compress();
-                    List<String> unzippedFileNames = extract.unzip(ReceivePath, TargetPath);
-
-                    MultiPhotoSelectActivity.dilog.dismissDilog();
-
-                    Runtime rs = Runtime.getRuntime();
-                    rs.freeMemory();
-                    rs.gc();
-                    rs.freeMemory();
-
-                    CrlShareReceiveProfiles.this.runOnUiThread(new Runnable() {
-                        public void run() {
-                            Toast.makeText(CrlShareReceiveProfiles.this, "Files Received & Updated Successfully !!!", Toast.LENGTH_SHORT).show();
-                            newJson.delete();
-
-                            // Update DB
-
-                            try {
-                                // Add Initial Entries of CRL & Village Json to Database
-                                SetInitialValuesReceiveOff();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-
-                        }
-                    });
-                }
-            };
-            mThread.start();
-        }
+//        newJson = new File(ReceivePath);
+//        if (!newJson.exists()) {
+//            Toast.makeText(this, "NewJson.zip not exist", Toast.LENGTH_SHORT).show();
+//        } else {
+//            MultiPhotoSelectActivity.dilog.showDilog(c, "Collecting transfered data");
+//
+//            Thread mThread = new Thread() {
+//                @Override
+//                public void run() {
+//                    wipeJsonFolder();
+//
+//                    // Extraction of contents
+//                    Compress extract = new Compress();
+//                    List<String> unzippedFileNames = extract.unzip(ReceivePath, TargetPath);
+//
+//                    MultiPhotoSelectActivity.dilog.dismissDilog();
+//
+//                    Runtime rs = Runtime.getRuntime();
+//                    rs.freeMemory();
+//                    rs.gc();
+//                    rs.freeMemory();
+//
+//                    CrlShareReceiveProfiles.this.runOnUiThread(new Runnable() {
+//                        public void run() {
+//                            Toast.makeText(CrlShareReceiveProfiles.this, "Files Received & Updated Successfully !!!", Toast.LENGTH_SHORT).show();
+//                            newJson.delete();
+//
+//                            // Update DB
+//
+//                            try {
+//                                // Add Initial Entries of CRL & Village Json to Database
+//                                SetInitialValuesReceiveOff();
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
+//
+//
+//                        }
+//                    });
+//                }
+//            };
+//            mThread.start();
+//        }
 
     }
 
@@ -1303,6 +1308,20 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
     public void dismissProgress() {
         if (progressDialog != null) {
             progressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void showDialog() {
+
+    }
+
+    @Override
+    public void onFilesRecievedComplete(String typeOfFile) {
+        if (typeOfFile.equalsIgnoreCase("ReceiveProfiles")) {
+
+        } else if (typeOfFile.equalsIgnoreCase("ReceiveJson")) {
+
         }
     }
 
