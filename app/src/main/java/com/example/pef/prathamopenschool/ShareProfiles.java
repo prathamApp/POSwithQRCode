@@ -610,10 +610,10 @@ public class ShareProfiles extends AppCompatActivity {
 //            Toast.makeText(getApplicationContext(), "This device doesn't give bluetooth support.", Toast.LENGTH_LONG).show();
 //        } else {
 
-        intent = new Intent();
-        intent.setAction(Intent.ACTION_SEND);
+//        intent = new Intent();
+//        intent.setAction(Intent.ACTION_SEND);
         // intent.setClassName("com.lenovo.anyshare.gps", "com.lenovo.anyshare.share.ShareActivity");
-        intent.setType("text/plain");
+//        intent.setType("text/plain");
         file = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/sharableContent/" + filename + ".zip");
 
         int x = 0;
@@ -634,9 +634,9 @@ public class ShareProfiles extends AppCompatActivity {
 //                    if (!found) {
 //                        Toast.makeText(this, "Bluetooth not in list", Toast.LENGTH_SHORT).show();
 //                    } else {
-            intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+//            intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
 //                        intent.setClassName(packageName, className);
-            startActivity(Intent.createChooser(intent, "Select SHAREit App from the list"));
+//            startActivity(Intent.createChooser(intent, "Select SHAREit App from the list"));
 
             // Display Count
             tv_Students.setVisibility(View.VISIBLE);
@@ -648,6 +648,8 @@ public class ShareProfiles extends AppCompatActivity {
             tv_Students.setText("Students Shared : " + std);
             tv_Crls.setText("CRLs Shared : " + crl);
             tv_Groups.setText("Groups Shared : " + grp);
+
+            new FTPConnect(ShareProfiles.this,ShareProfiles.this).createFTPHotspot();
 //                    }
 //                }
         } else

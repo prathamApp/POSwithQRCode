@@ -9,5 +9,4 @@ import org.apache.commons.net.ftp.FTPFile;
 public interface FolderClick {
     public void onConnectionEshtablished();
     public void onFolderClicked(int position, String name);
-    public void onDownload(int position, FTPFile name);
 }

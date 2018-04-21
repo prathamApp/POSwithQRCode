@@ -23,9 +23,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 public class FTPConnect implements FolderClick {
@@ -34,6 +38,8 @@ public class FTPConnect implements FolderClick {
     String treeUri;
     ArrayList<Integer> level = new ArrayList<>();
     FTPClient tempFtpClient = null;
+    private DocumentFile tempUri;
+    private File tempFile;
 
     public FTPConnect(Context context, Activity activity) {
         this.context = context;
@@ -69,7 +75,6 @@ public class FTPConnect implements FolderClick {
 
     }
 
-    @Override
     public void onDownload(int position, FTPFile name) {
         File final_file = null;
         DocumentFile finalDocumentFile = null;
@@ -129,6 +134,7 @@ public class FTPConnect implements FolderClick {
         }
         DocumentFile finalDocumentFile1 = finalDocumentFile;
         File final_file1 = final_file;
+        new DownloadTHroughFTP(finalDocumentFile1, final_file1, isSdCard, name);
     }
 
 
@@ -173,7 +179,7 @@ public class FTPConnect implements FolderClick {
         try {
             tempFile = new File(tempFile, aFile.getName());
             Log.d("tempFile::", tempFile.getAbsolutePath());
-            OutputStream outputStream = ShowFilesOnDevice.this.getContentResolver().openOutputStream(Uri.fromFile(tempFile));
+            OutputStream outputStream = context.getContentResolver().openOutputStream(Uri.fromFile(tempFile));
             client1.setFileType(FTP.BINARY_FILE_TYPE);
             client1.retrieveFile(aFile.getName(), outputStream);
         } catch (FileNotFoundException e) {
@@ -193,9 +199,9 @@ public class FTPConnect implements FolderClick {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                Gson gson = new Gson();
-                Modal_DownloadContent download_content = gson.fromJson(jsonObject.toString(), Modal_DownloadContent.class);
-                addContentToDatabase(download_content);
+//                Gson gson = new Gson();
+//                Modal_DownloadContent download_content = gson.fromJson(jsonObject.toString(), Modal_DownloadContent.class);
+//                addContentToDatabase(download_content);
             }
         }
     }
@@ -261,11 +267,32 @@ public class FTPConnect implements FolderClick {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                Gson gson = new Gson();
-                Modal_DownloadContent download_content = gson.fromJson(jsonObject.toString(), Modal_DownloadContent.class);
-                addContentToDatabase(download_content);
+//                Gson gson = new Gson();
+//                Modal_DownloadContent download_content = gson.fromJson(jsonObject.toString(), Modal_DownloadContent.class);
+//                addContentToDatabase(download_content);
             }
         }
+    }
+
+    // Reading Json From Internal Storage
+    public String loadJSONFromAsset(String path) {
+        String JsonStr = null;
+        try {
+            File queJsonSDCard = new File(path);
+            FileInputStream stream = new FileInputStream(queJsonSDCard);
+            try {
+                FileChannel fc = stream.getChannel();
+                MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
+                JsonStr = Charset.defaultCharset().decode(bb).toString();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                stream.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return JsonStr;
     }
 
     public class ListFilesOnFTP extends AsyncTask<Void, Void, FTPFile[]> {
@@ -302,6 +329,18 @@ public class FTPConnect implements FolderClick {
     }
 
     public class DownloadTHroughFTP extends AsyncTask<Void, Void, Void> {
+        DocumentFile finalDocumentFile1;
+        File final_file1;
+        boolean isSdCard;
+        FTPFile name;
+
+        public DownloadTHroughFTP(DocumentFile finalDocumentFile1, File final_file1, boolean isSdCard, FTPFile name) {
+            this.finalDocumentFile1 = finalDocumentFile1;
+            this.final_file1 = final_file1;
+            this.isSdCard = isSdCard;
+            this.name = name;
+        }
+
         @Override
         protected Void doInBackground(Void... voids) {
             if (name.isDirectory()) {
@@ -313,7 +352,7 @@ public class FTPConnect implements FolderClick {
                 if (isSdCard)
                     downloadFile(tempFtpClient, name, finalDocumentFile1);
                 else
-                    downloadFile(tempFtpClient, name, finalDocumentFile1);
+                    downloadFileToInternal(tempFtpClient, name, final_file1);
             }
             return null;
         }

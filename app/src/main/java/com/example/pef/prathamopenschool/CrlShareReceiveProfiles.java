@@ -59,7 +59,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
     int res;
     private static final int DISCOVER_DURATION = 3000;
     private static final int REQUEST_BLU = 1;
-    static BluetoothAdapter btAdapter;
+//    static BluetoothAdapter btAdapter;
     Intent intent = null;
     String packageName = null;
     public static ProgressDialog progress;
@@ -219,26 +219,27 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
     public void ReceiveProfiles(View view) {
 
         // file picker
-        DialogProperties properties = new DialogProperties();
-        properties.selection_mode = DialogConfigs.SINGLE_MODE;
-        properties.selection_type = DialogConfigs.FILE_SELECT;
-        properties.root = new File(Environment.getExternalStorageDirectory().getAbsolutePath());
-        properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
-        properties.offset = new File(DialogConfigs.DEFAULT_DIR);
-        properties.extensions = null;
-        FilePickerDialog dialog = new FilePickerDialog(CrlShareReceiveProfiles.this, properties);
-        dialog.setTitle("Select a File");
-        dialog.setDialogSelectionListener(new DialogSelectionListener() {
-            @Override
-            public void onSelectedFilePaths(String[] files) {
-                //files is the array of the paths of files selected by the Application User.
-                Log.d("path:::", files[0]);
-                shareItPath = files[0];
-                recieveProfiles(shareItPath);
-            }
-        });
-        dialog.show();
-
+//        DialogProperties properties = new DialogProperties();
+//        properties.selection_mode = DialogConfigs.SINGLE_MODE;
+//        properties.selection_type = DialogConfigs.FILE_SELECT;
+//        properties.root = new File(Environment.getExternalStorageDirectory().getAbsolutePath());
+//        properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
+//        properties.offset = new File(DialogConfigs.DEFAULT_DIR);
+//        properties.extensions = null;
+//        FilePickerDialog dialog = new FilePickerDialog(CrlShareReceiveProfiles.this, properties);
+//        dialog.setTitle("Select a File");
+//        dialog.setDialogSelectionListener(new DialogSelectionListener() {
+//            @Override
+//            public void onSelectedFilePaths(String[] files) {
+//                //files is the array of the paths of files selected by the Application User.
+//                Log.d("path:::", files[0]);
+//                shareItPath = files[0];
+//                recieveProfiles(shareItPath);
+//            }
+//        });
+//        dialog.show();
+        new FTPConnect(CrlShareReceiveProfiles.this,CrlShareReceiveProfiles.this).connectFTPHotspot();
+        //todo recieve zips and extract
 //        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 //        intent.setType("*/*");
 //        startActivityForResult(intent, 5);
@@ -887,58 +888,58 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
     public void TreansferFile(String filename) {
 
         int resultCode = 1;
-        res = resultCode;
-        if (res == 0) {
-            if (btAdapter.isEnabled()) {
+//        res = resultCode;
+//        if (res == 0) {
+//            if (btAdapter.isEnabled()) {
+//
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                    }
+//                }, 30000);
+//            }
+//        } else if (!(resultCode == DISCOVER_DURATION && REQUEST_BLU == 1)) {
+//            // Toast.makeText(this, "BT cancelled", Toast.LENGTH_SHORT).show();
+//        }
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                    }
-                }, 30000);
-            }
-        } else if (!(resultCode == DISCOVER_DURATION && REQUEST_BLU == 1)) {
-            // Toast.makeText(this, "BT cancelled", Toast.LENGTH_SHORT).show();
-        }
-
-        btAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (btAdapter == null) {
-            Toast.makeText(getApplicationContext(), "This device doesn't give bluetooth support.", Toast.LENGTH_LONG).show();
-        } else {
-            intent = new Intent();
-            intent.setAction(Intent.ACTION_SEND);
-            intent.setType("text/plain");
+//        btAdapter = BluetoothAdapter.getDefaultAdapter();
+//        if (btAdapter == null) {
+//            Toast.makeText(getApplicationContext(), "This device doesn't give bluetooth support.", Toast.LENGTH_LONG).show();
+//        } else {
+//            intent = new Intent();
+//            intent.setAction(Intent.ACTION_SEND);
+//            intent.setType("text/plain");
             file = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/" + filename + ".zip");
 
             int x = 0;
             if (file.exists()) {
 
-                PackageManager pm = getPackageManager();
-                List<ResolveInfo> appsList = pm.queryIntentActivities(intent, 0);
-                if (appsList.size() > 0) {
+//                PackageManager pm = getPackageManager();
+//                List<ResolveInfo> appsList = pm.queryIntentActivities(intent, 0);
+//                if (appsList.size() > 0) {
 
-                    for (ResolveInfo info : appsList) {
-                        packageName = info.activityInfo.packageName;
-                        if (packageName.equals("com.android.bluetooth")) {
-                            className = info.activityInfo.name;
-                            found = true;
-                            break;// found
-                        }
-                    }
-                    if (!found) {
-                        Toast.makeText(this, "Bluetooth not in list", Toast.LENGTH_SHORT).show();
-                    } else {
+//                    for (ResolveInfo info : appsList) {
+//                        packageName = info.activityInfo.packageName;
+//                        if (packageName.equals("com.android.bluetooth")) {
+//                            className = info.activityInfo.name;
+//                            found = true;
+//                            break;// found
+//                        }
+//                    }
+//                    if (!found) {
+//                        Toast.makeText(this, "Bluetooth not in list", Toast.LENGTH_SHORT).show();
+//                    } else {
+                new FTPConnect(CrlShareReceiveProfiles.this,CrlShareReceiveProfiles.this).createFTPHotspot();
 
-
-                        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
-                        intent.setClassName(packageName, className);
-                        startActivityForResult(intent, 0);
+//                        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+//                        intent.setClassName(packageName, className);
+//                        startActivityForResult(intent, 0);
                         //sendBroadcast(intent);
-                    }
-                }
+//                    }
+//                }
             } else
                 Toast.makeText(getApplicationContext(), "File not found", Toast.LENGTH_LONG).show();
-        }
+//        }
     }
 
 
@@ -949,6 +950,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 
     public void goToReceiveOff(View view) {
 
+        //todo connect ftp hotspot and download files
         Toast.makeText(CrlShareReceiveProfiles.this, "Receive Offline Clicked !!!", Toast.LENGTH_SHORT).show();
 
         FlagReceiveOff = true;
