@@ -111,14 +111,20 @@ public class PushData extends AppCompatActivity {
 
 
             //Moving to Receive usage
-            String path = Environment.getExternalStorageDirectory().toString() + "/Bluetooth";
-            File blueToothDir = new File(path);
-            String destFolder = Environment.getExternalStorageDirectory() + "/.POSinternal/pushedUsage";
-            if (!blueToothDir.exists()) {
-                btn_pushReceivedData.setClickable(true);
-                Toast.makeText(this, "Bluetooth folder does not exist", Toast.LENGTH_SHORT).show();
-            } else {
+//            String path = Environment.getExternalStorageDirectory().toString() + "/Bluetooth";
+//            File blueToothDir = new File(path);
+//            String destFolder = Environment.getExternalStorageDirectory() + "/.POSinternal/pushedUsage";
+//            if (!blueToothDir.exists()) {
+//                btn_pushReceivedData.setClickable(true);
+//                Toast.makeText(this, "Bluetooth folder does not exist", Toast.LENGTH_SHORT).show();
+//            } else
 
+            File srcFolder = new File(Environment.getExternalStorageDirectory() + "/.POSDBBackups");
+            String destFolder = Environment.getExternalStorageDirectory() + "/.POSinternal/pushedUsage";
+            if (!srcFolder.exists()) {
+                btn_pushReceivedData.setClickable(true);
+                Toast.makeText(this, ".POSDBBackups folder does not exist", Toast.LENGTH_SHORT).show();
+            } else {
                 progress = new ProgressDialog(PushData.this);
                 progress.setMessage("Please Wait...");
                 progress.setCanceledOnTouchOutside(false);
@@ -126,7 +132,7 @@ public class PushData extends AppCompatActivity {
 
                 cnt = 0;
 
-                File[] files = blueToothDir.listFiles();
+                File[] files = srcFolder.listFiles();
                 Toast.makeText(this, "Pushing data to server Please wait...", Toast.LENGTH_SHORT).show();
                 for (int i = 0; i < files.length; i++) {
                     if (files[i].getName().contains("pushNewDataToServer")) {

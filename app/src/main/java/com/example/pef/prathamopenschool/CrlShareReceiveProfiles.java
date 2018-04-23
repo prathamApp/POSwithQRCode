@@ -274,7 +274,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
         btn_Connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ftpConnect.connectFTPHotspot("ReceiveProfiles");
+                ftpConnect.connectFTPHotspot("ReceiveProfiles", edt_HostName.getText().toString(), edt_Port.getText().toString());
             }
         });
     }
@@ -417,7 +417,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
         }
         // Delete Received Files
         try {
-            wipeReceivedData();
+//            wipeReceivedData();
         } catch (Exception e) {
             e.getMessage();
         }
@@ -1006,7 +1006,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
         btn_Connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ftpConnect.connectFTPHotspot("ReceiveJson");
+                ftpConnect.connectFTPHotspot("ReceiveJson", edt_HostName.getText().toString(), edt_Port.getText().toString());
             }
         });
 
@@ -1376,7 +1376,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
     @Override
     public void onFilesRecievedComplete(String typeOfFile) {
         if (typeOfFile.equalsIgnoreCase("ReceiveProfiles")) {
-            TargetPath = Environment.getExternalStorageDirectory() + "/.POSinternal/receivedUsage/";
+            TargetPath = Environment.getExternalStorageDirectory() + "/.POSinternal/ReceivedContent/";
             File NewProfilesExists = new File(TargetPath + "NewProfiles.zip");
             if (NewProfilesExists.exists())
                 new RecieveFiles(TargetPath, NewProfilesExists.getAbsolutePath()).execute();

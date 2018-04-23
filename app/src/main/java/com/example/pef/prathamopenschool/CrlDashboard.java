@@ -71,6 +71,9 @@ public class CrlDashboard extends AppCompatActivity {
         // Execute File checking on diff thread
         new fileChecker().execute();
 
+        // delete zips
+        deleteZips();
+
         MainActivity.sessionFlg = false;
         sessionContex = this;
         playVideo = new PlayVideo();
@@ -80,6 +83,22 @@ public class CrlDashboard extends AppCompatActivity {
 
         currentAdmin = i.getStringExtra("UserName");
         // Toast.makeText(this, "Welcome " + currentAdmin, Toast.LENGTH_SHORT).show();
+    }
+
+    // Delete NewJson.zip from Bluetooth folder
+    private void deleteZips() {
+        try {
+            String posJsonDirectory = Environment.getExternalStorageDirectory() + "/.POSinternal/Json";
+            File delNewJsonZip = new File(posJsonDirectory);
+            for (File zipfile : delNewJsonZip.listFiles()) {
+                if (!zipfile.isDirectory()) {
+                    if (zipfile.getName().contains(".zip"))
+                        zipfile.delete();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void gotoTabReportActivity(View view) {
@@ -518,7 +537,7 @@ public class CrlDashboard extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        FTPConnect ftpConnect=new FTPConnect(CrlDashboard.this);
+        FTPConnect ftpConnect = new FTPConnect(CrlDashboard.this);
         if (ftpConnect.checkServiceRunning()) {
             ftpConnect.stopServer();
         }

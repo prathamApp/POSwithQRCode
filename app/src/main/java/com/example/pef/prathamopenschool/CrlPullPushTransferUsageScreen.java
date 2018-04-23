@@ -875,6 +875,9 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
                 .setNegativeButton(android.R.string.no, null).show();
     }
 
+
+    /************************************ RECEIVE USAGE **********************************************/
+
     public void recieveUsage(View view) {
         // Display ftp dialog
         Dialog dialog = new Dialog(this);
@@ -895,7 +898,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
         btn_Connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ftpConnect.connectFTPHotspot("TransferUsage");
+                ftpConnect.connectFTPHotspot("TransferUsage", edt_HostName.getText().toString(), edt_Port.getText().toString());
             }
         });
     }

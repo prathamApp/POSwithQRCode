@@ -74,9 +74,9 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
         }
     }
 
-    public void connectFTPHotspot(String typeOfFile) {
+    public void connectFTPHotspot(String typeOfFile, String ipaddress, String port) {
         this.typeOfFile = typeOfFile;
-        new ConnectToHotspot(context, FTPConnect.this).execute();
+        new ConnectToHotspot(context, FTPConnect.this, ipaddress, port).execute();
     }
 
     @Override
@@ -206,8 +206,7 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
             e.printStackTrace();
         } finally {
             //Todo copy json to database
-            if (aFile.getName().endsWith(".json") && !typeOfFile.equalsIgnoreCase("ReceiveProfiles")
-                    && !typeOfFile.equalsIgnoreCase("TransferUsage")&& !typeOfFile.equalsIgnoreCase("ReceiveJson")) {
+            if (aFile.getName().endsWith(".json") && typeOfFile.equalsIgnoreCase("ContentTransfer")) {
                 Log.d("json_path:::", tempFile.getAbsolutePath() + "");
                 Log.d("json_path:::", aFile.getName() + "");
                 //Todo read json from file
@@ -221,7 +220,11 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
 //                Gson gson = new Gson();
 //                Modal_DownloadContent download_content = gson.fromJson(jsonObject.toString(), Modal_DownloadContent.class);
 //                addContentToDatabase(download_content);
-            }else {
+            } else if(typeOfFile.equalsIgnoreCase("TransferUsage")) {
+                //todo parse and show count of files, score and deviceId
+                pushPullInterface.onFilesRecievedComplete(typeOfFile);
+            }else if(typeOfFile.equalsIgnoreCase("ReceiveProfiles") && !typeOfFile.equalsIgnoreCase("ReceiveJson")) {
+                //todo parse and show count of files
                 pushPullInterface.onFilesRecievedComplete(typeOfFile);
             }
         }
@@ -341,6 +344,7 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
                     tempFtpClient.changeToParentDirectory();
                 }
                 FTPFile[] files = tempFtpClient.listFiles();
+                // todo show count of files
                 return files;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -354,16 +358,16 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
             if (ftpFiles.length > 0) {
                 for (FTPFile temp_file : ftpFiles) {
                     if (typeOfFile.equalsIgnoreCase("ReceiveProfiles")) {
-                        tempFtpClient=MyApplication.ftpClient;
-                        File f=new File(Environment.getExternalStorageDirectory()+"/.POSinternal/receivedUsage");
+                        tempFtpClient = MyApplication.ftpClient;
+                        File f = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/ReceivedContent");
                         new DownloadTHroughFTP(null, f, false, temp_file).execute();
                     } else if (typeOfFile.equalsIgnoreCase("TransferUsage")) {
-                        tempFtpClient=MyApplication.ftpClient;
-                        File f=new File(Environment.getExternalStorageDirectory()+"/.POSinternal/transferredUsage");
+                        tempFtpClient = MyApplication.ftpClient;
+                        File f = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/transferredUsage");
                         new DownloadTHroughFTP(null, f, false, temp_file).execute();
                     } else if (typeOfFile.equalsIgnoreCase("ReceiveJson")) {
-                        tempFtpClient=MyApplication.ftpClient;
-                        File f=new File(Environment.getExternalStorageDirectory()+"/.POSinternal/Json");
+                        tempFtpClient = MyApplication.ftpClient;
+                        File f = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/Json");
                         new DownloadTHroughFTP(null, f, false, temp_file).execute();
                     }
                 }
