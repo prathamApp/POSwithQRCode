@@ -49,6 +49,7 @@ public class FsNotification extends BroadcastReceiver {
 
         // Instantiate a Notification
         int icon = R.mipmap.launcher_icon;
+
 //        int icon = R.mipmap.launcher_icon;
         CharSequence tickerText = String.format(context.getString(R.string.notification_server_starting), iptext);
         long when = System.currentTimeMillis();
