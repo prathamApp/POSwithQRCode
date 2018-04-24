@@ -26,6 +26,7 @@
     <string name="notification_server_starting">Starting at %s</string>
     <string name="notification_title">FTP Server is running</string>
     <string name="notification_text">at %s</string>
+    <string name="ftpIsRunningAt">FTP is running at %s</string>
     <string name="notification_stop_text">Stop server</string>
 
     <string name="activity_list_server_title">Favorites servers</string>

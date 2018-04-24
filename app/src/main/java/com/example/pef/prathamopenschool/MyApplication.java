@@ -11,6 +11,7 @@ package com.example.pef.prathamopenschool;
 import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 
 import net.vrallev.android.cat.Cat;
 
@@ -29,7 +30,7 @@ public class MyApplication extends Application {
     private static MyApplication mInstance;
     static int count, gpsFixCount;
     static Timer gpsTimer, gpsFixTimer;
-    public static String networkSSID = "PrathamHotSpot";
+    public static String networkSSID = "PrathamHotSpot-" + Build.SERIAL;
     public static FTPClient ftpClient;
 
     @Override

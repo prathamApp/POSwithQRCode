@@ -8,12 +8,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
-import com.example.pef.prathamopenschool.CrlPullPushTransferUsageScreen;
+import com.example.pef.prathamopenschool.MyApplication;
 import com.example.pef.prathamopenschool.R;
 
 import net.vrallev.android.cat.Cat;
 
 import java.net.InetAddress;
+
 public class FsNotification extends BroadcastReceiver {
 
     private final int NOTIFICATION_ID = 7891;
@@ -47,14 +48,15 @@ public class FsNotification extends BroadcastReceiver {
                 + FsSettings.getPortNumber() + "/";
 
         // Instantiate a Notification
-        int icon = R.mipmap.ic_launcher;
+        int icon = R.mipmap.launcher_icon;
 //        int icon = R.mipmap.launcher_icon;
         CharSequence tickerText = String.format(context.getString(R.string.notification_server_starting), iptext);
         long when = System.currentTimeMillis();
 
         // Define Notification's message and Intent
-        CharSequence contentTitle = context.getString(R.string.notification_title);
-        CharSequence contentText = String.format(context.getString(R.string.notification_text), iptext);
+//        CharSequence contentTitle = context.getString(R.string.notification_title);
+        CharSequence contentTitle = "" + MyApplication.networkSSID;
+        CharSequence contentText = String.format(context.getString(R.string.ftpIsRunningAt), iptext);
 
 //        Intent notificationIntent = new Intent(context, CrlPullPushTransferUsageScreen.class);
 //        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -84,7 +86,7 @@ public class FsNotification extends BroadcastReceiver {
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .addAction(stopIcon, stopText, stopPendingIntent)
-             //   .addAction(preferenceIcon, preferenceText, preferencePendingIntent)
+                //   .addAction(preferenceIcon, preferenceText, preferencePendingIntent)
                 .setShowWhen(false)
                 .build();
 
