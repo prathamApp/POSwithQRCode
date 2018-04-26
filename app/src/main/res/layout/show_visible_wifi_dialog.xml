@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_margin="32dp"
+        android:background="@drawable/custom_border"
+        android:gravity="center_horizontal"
+        android:padding="16dp"
+        android:text="Choose Network"
+        android:textColor="@color/button"
+        android:textSize="32sp"
+        android:textStyle="bold" />
+
+    <ListView
+        android:id="@+id/lst_network"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_margin="32dp"
+        android:background="@drawable/custom_border"
+        android:divider="@color/text_hint"
+        android:dividerHeight="1dp" />
+
+</RelativeLayout>

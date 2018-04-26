@@ -10,7 +10,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.AsyncTask;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -24,9 +24,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -77,10 +80,11 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
 
     ArrayList<Uri> uris = new ArrayList<Uri>();
 
-    LinearLayout ftpDialogLayout;
+    RelativeLayout ftpDialogLayout;
     EditText edt_HostName;
     EditText edt_Port;
     Button btn_Connect;
+    ListView lst_networks;
 
 
     @Override
@@ -130,6 +134,10 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
 
     }
 
+    // Receiver for checking connection
+    private void checkConnection() {
+        isConnected = ConnectivityReceiver.isConnected();
+    }
 
     /*
 
@@ -247,8 +255,76 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
     @SuppressLint("StaticFieldLeak")
     public void transferData(View v) {
 
-        // Generate Json file
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        boolean wifiEnabled = wifiManager.isWifiEnabled();
+        if (!wifiEnabled) {
+            wifiManager.setWifiEnabled(true);
+        }
 
+        // Display ftp dialog
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.show_visible_wifi_dialog);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+        ftpDialogLayout = dialog.findViewById(R.id.ftpDialog);
+        lst_networks = dialog.findViewById(R.id.lst_network);
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(true);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.show();
+
+        // Onlistener
+        ArrayList<String> networkList = ftpConnect.scanNearbyWifi();
+
+        lst_networks.setAdapter(new ArrayAdapter<String>(getApplicationContext(), R.layout.lst_wifi_item, R.id.label, networkList));
+
+        // listening to single list item on click
+        lst_networks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // selected item
+                String ssid = ((TextView) view).getText().toString();
+//                connectToWifi(ssid);
+                // check if pratham hotspot selected or not
+                if (ssid.contains("PrathamHotSpot_")) {
+                    Toast.makeText(CrlPullPushTransferUsageScreen.this, "Wifi SSID : " + ssid, Toast.LENGTH_SHORT).show();
+                    // Display ftp dialog
+                    Dialog dialog = new Dialog(CrlPullPushTransferUsageScreen.this);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.connect_to_ftpserver_dialog);
+                    dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+                    ftpDialogLayout = dialog.findViewById(R.id.ftpDialog);
+                    edt_HostName = dialog.findViewById(R.id.edt_HostName);
+                    edt_Port = dialog.findViewById(R.id.edt_Port);
+                    btn_Connect = dialog.findViewById(R.id.btn_Connect);
+
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.setCancelable(true);
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    dialog.show();
+
+                    btn_Connect.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ftpConnect.connectFTPHotspot("TransferUsage", edt_HostName.getText().toString(), edt_Port.getText().toString());
+                        }
+                    });
+                } else {
+                    Toast.makeText(CrlPullPushTransferUsageScreen.this, "Invalid Network !!!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+//        for (int i = 0; i < f.size(); i++) {
+//            if ((f.get(i)).equalsIgnoreCase("PrathamHotspot"))
+//        }
+//        ftpConnect.connectToPrathamHotSpot(f.get(i));
+
+    /*
+
+        // Generate Json file
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected void onPreExecute() {
@@ -270,31 +346,14 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
                 super.onPostExecute(aVoid);
                 if (progress.isShowing())
                     progress.dismiss();
-//************************** integrate push data code here********************/
-
-                String fileName = "";
-
-                ArrayList<String> arrayList = new ArrayList<String>();
-                TextView msg = (TextView) findViewById(R.id.message);
-                _array = new JSONArray();
-                TextView tv = (TextView) findViewById(R.id.message);
-                tv.setText("");
-                //  test();
-                //test function is used only for reading database file from assets
-                //Used when we want to push data from our side.
-
-                //enableBlu();
                 progress = new ProgressDialog(CrlPullPushTransferUsageScreen.this);
                 progress.setMessage("Please Wait...");
                 progress.setCanceledOnTouchOutside(false);
                 progress.show();
-
                 TreansferFile("pushNewDataToServer-");
             }
         }.execute();
-
-        //Wont Work (Gets Executed Immediately)
-        //Toast.makeText(c, "After Transfer File !!!", Toast.LENGTH_SHORT).show();
+    */
 
     }
 

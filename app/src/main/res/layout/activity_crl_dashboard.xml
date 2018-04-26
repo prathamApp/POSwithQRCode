@@ -51,7 +51,7 @@
             android:orientation="horizontal">
 
             <Button
-                android:layout_width="220dp"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="16dp"
@@ -63,7 +63,7 @@
                 android:textSize="16sp" />
 
             <Button
-                android:layout_width="220dp"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="16dp"
@@ -84,7 +84,7 @@
             android:orientation="horizontal">
 
             <Button
-                android:layout_width="220dp"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="16dp"
@@ -96,7 +96,7 @@
                 android:textSize="16sp" />
 
             <Button
-                android:layout_width="220dp"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="16dp"
@@ -116,10 +116,9 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-
             <Button
                 android:id="@+id/btn_AssessmentReport"
-                android:layout_width="220dp"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="16dp"
@@ -130,6 +129,19 @@
                 android:textColor="#FFFFFF"
                 android:textSize="16sp" />
 
+
+            <Button
+                android:id="@+id/btn_receiveData"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="16dp"
+                android:background="@color/button"
+                android:onClick="receiveData"
+                android:text="  Receive Usage/ Profiles/ Jsons  "
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
         </LinearLayout>
 
 

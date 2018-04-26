@@ -5,6 +5,8 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -35,8 +37,10 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.content.Context.ACTIVITY_SERVICE;
+import static android.content.Context.WIFI_SERVICE;
 
 public class FTPConnect implements FTPInterface.FTPConnectInterface {
     private Context context;
@@ -220,10 +224,10 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
 //                Gson gson = new Gson();
 //                Modal_DownloadContent download_content = gson.fromJson(jsonObject.toString(), Modal_DownloadContent.class);
 //                addContentToDatabase(download_content);
-            } else if(typeOfFile.equalsIgnoreCase("TransferUsage")) {
+            } else if (typeOfFile.equalsIgnoreCase("TransferUsage")) {
                 //todo parse and show count of files, score and deviceId
                 pushPullInterface.onFilesRecievedComplete(typeOfFile);
-            }else if(typeOfFile.equalsIgnoreCase("ReceiveProfiles") && !typeOfFile.equalsIgnoreCase("ReceiveJson")) {
+            } else if (typeOfFile.equalsIgnoreCase("ReceiveProfiles") && !typeOfFile.equalsIgnoreCase("ReceiveJson")) {
                 //todo parse and show count of files
                 pushPullInterface.onFilesRecievedComplete(typeOfFile);
             }
@@ -450,4 +454,62 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
                     isTurnToOn);
         }
     }
+
+    public ArrayList<String> scanNearbyWifi() {
+        WifiManager mainWifiObj = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        List<ScanResult> wifiScanList = mainWifiObj.getScanResults();
+        String wifis[] = new String[wifiScanList.size()];
+        for (int i = 0; i < wifiScanList.size(); i++) {
+            wifis[i] = ((wifiScanList.get(i)).toString());
+        }
+//        String filtered[] = new String[wifiScanList.size()];
+        ArrayList<String> filtered=new ArrayList<>();
+        int counter=0;
+        for (String eachWifi : wifis) {
+            String[] temp = eachWifi.split(",");
+            filtered.add(temp[0].substring(5).trim());//+"\n" + temp[2].substring(12).trim()+"\n" +temp[3].substring(6).trim();//0->SSID, 2->Key Management 3-> Strength
+            Log.d("scanNearbyWifi: ", "" + filtered.get(counter));
+            counter++;
+        }
+        return filtered;
+    }
+
+    public void connectToPrathamHotSpot(String SSID) {
+        try {
+            WifiConfiguration wifiConfiguration = new WifiConfiguration();
+            wifiConfiguration.SSID = /*String.format("\"%s\"",*/ SSID;
+            wifiConfiguration.priority = 99999;
+            wifiConfiguration.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+
+            WifiManager wifiManager = (WifiManager) context.getSystemService(WIFI_SERVICE);
+            int netId = wifiManager.addNetwork(wifiConfiguration);
+
+            if (wifiManager.isWifiEnabled()) { //---wifi is turned on---
+                //---disconnect it first---
+                wifiManager.disconnect();
+            } else { //---wifi is turned off---
+                //---turn on wifi---
+                wifiManager.setWifiEnabled(true);
+                wifiManager.disconnect();
+            }
+
+            wifiManager.enableNetwork(netId, true);
+            try {
+                Thread.sleep(2000);
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            wifiManager.reconnect();
+            try {
+                Thread.sleep(6000);
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

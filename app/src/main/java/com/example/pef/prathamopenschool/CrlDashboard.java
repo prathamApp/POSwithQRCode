@@ -21,8 +21,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
-public class CrlDashboard extends AppCompatActivity {
+public class CrlDashboard extends AppCompatActivity implements FTPInterface.PushPullInterface {
 
     Context sessionContex;
     ScoreDBHelper scoreDBHelper;
@@ -33,6 +35,7 @@ public class CrlDashboard extends AppCompatActivity {
     static String CreatedBy, currentAdmin;
     public static Boolean transferFlag = false;
     static String deviceID = "";
+    FTPConnect ftpConnect;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +46,9 @@ public class CrlDashboard extends AppCompatActivity {
 
         // Hide Actionbar
         getSupportActionBar().hide();
+
+        // FTP initialization
+        ftpConnect = new FTPConnect(this, this, this);
 
         // Displaying Version Code of App
         tv_version_code = (TextView) findViewById(R.id.tv_Version);
@@ -107,6 +113,40 @@ public class CrlDashboard extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+    /********************************************** RECEIVE DATA ******************************************************/
+
+
+    // Start FTP Server for receiving Usage/ Profiles/ Jsons
+    public void receiveData(View view) {
+        // get CRL Name by ID
+//        ArrayList<String> f = ftpConnect.scanNearbyWifi();
+        CrlDBHelper crlObj = new CrlDBHelper(this);
+        List<Crl> crlData = crlObj.GetCRLByID(CreatedBy);
+
+        // Set HotSpot Name after crl name
+        MyApplication.networkSSID = "PrathamHotSpot_" + crlData.get(0).FirstName + "_" + crlData.get(0).getLastName();
+        MyApplication.setPath(Environment.getExternalStorageDirectory() + "/.POSDBBackups");
+        // Create FTP Server
+        ftpConnect.createFTPHotspot();
+//        for (int i = 0; i < f.size(); i++) {
+//            if ((f.get(i)).equalsIgnoreCase("PrathamHotspot"))
+//        }
+//        ftpConnect.connectToPrathamHotSpot(f.get(i));
+    }
+
+    @Override
+    public void showDialog() {
+
+    }
+
+    @Override
+    public void onFilesRecievedComplete(String typeOfFile) {
+
+    }
+
+
+    /********************************************** RECEIVE DATA ******************************************************/
 
     public class checkforNulls extends AsyncTask<Void, Void, Void> {
 
@@ -536,8 +576,18 @@ public class CrlDashboard extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        // turn off FTP Server & Hotspot
+        if (ftpConnect.checkServiceRunning()) {
+            ftpConnect.stopServer();
+        }
+        ftpConnect.turnOnOffHotspot(false);
+        super.onDestroy();
+    }
+
+    @Override
     public void onBackPressed() {
-        FTPConnect ftpConnect = new FTPConnect(CrlDashboard.this);
+        // turn off FTP Server & Hotspot
         if (ftpConnect.checkServiceRunning()) {
             ftpConnect.stopServer();
         }

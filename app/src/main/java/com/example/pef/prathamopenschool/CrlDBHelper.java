@@ -24,6 +24,19 @@ public class CrlDBHelper extends DBHelper {
 
     }
 
+
+    public List<Crl> GetCRLByID(String id) {
+        try {
+            database = getWritableDatabase();
+            Cursor cursor = database.rawQuery("select * from CRL WHERE CRLID = ?", new String[]{id});
+            return _PopulateListFromCursor(cursor);
+        } catch (Exception ex) {
+            _PopulateLogValues(ex, "GetCRLByID");
+            return null;
+        }
+    }
+
+
     public boolean DeleteAll() {
         try {
             database = getWritableDatabase();
@@ -285,7 +298,6 @@ public class CrlDBHelper extends DBHelper {
         try {
             database = getWritableDatabase();
             Cursor cursor = database.rawQuery("select * from CRL ", null);
-            database.close();
             return _PopulateListFromCursor(cursor);
         } catch (Exception ex) {
             _PopulateLogValues(ex, "GetAll");

@@ -56,7 +56,8 @@
             android:text="@string/ReceiveProfiles"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:visibility="gone" />
 
 
     </LinearLayout>
@@ -96,7 +97,8 @@
             android:text="  Receive Off Json"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:visibility="gone" />
 
 
     </LinearLayout>
@@ -107,10 +109,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/Line2"
         android:layout_centerHorizontal="true"
-        android:visibility="visible"
         android:layout_centerVertical="true"
         android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="visible">
 
 
         <Button

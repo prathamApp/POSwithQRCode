@@ -35,7 +35,7 @@ public class ConnectToHotspot extends AsyncTask<Void, Void, Void> {
             , String ipaddress, String port) {
         this.context = context;
         this.ftpConnectInterface = ftpConnectInterface;
-        this.ipaddress = ipaddress.replace("ftp://","");
+        this.ipaddress = ipaddress.replace("ftp://", "");
         this.port = port;
     }
 
@@ -51,40 +51,39 @@ public class ConnectToHotspot extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        // Check if already connected to PrathamHotspot
-        String SSID = getWifiName(context).replace("\"", "");
-        client1 = new FTPClient();
-        if (SSID.equalsIgnoreCase(networkSSID)) {
-            // Connected to PrathamHotspot
-            connected = true;
-        } else {
-            // todo automatically connect to PrathamHotSpot
-            connectToPrathamHotSpot();
-            String recheckSSID = getWifiName(context).replace("\"", "");
-            if (recheckSSID.equalsIgnoreCase(networkSSID)) {
-                connected = true;
-            } else {
-//                final Intent intent = new Intent(Intent.ACTION_MAIN, null);
-//                intent.addCategory(Intent.CATEGORY_LAUNCHER);
-//                final ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.wifi.WifiSettings");
-//                intent.setComponent(cn);
-//                intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK);
-//                startActivity(intent);
+//        String SSID = getWifiName(context).replace("\"", "");
+//        client1 = new FTPClient();
+//        if (SSID.equalsIgnoreCase(networkSSID)) {
+//            // Connected to PrathamHotspot
+//            connected = true;
+//        } else {
+//            // todo automatically connect to PrathamHotSpot
+////            connectToPrathamHotSpot();
+//            String recheckSSID = getWifiName(context).replace("\"", "");
+//            if (recheckSSID.equalsIgnoreCase(networkSSID)) {
+//                connected = true;
+//            } else {
+////                final Intent intent = new Intent(Intent.ACTION_MAIN, null);
+////                intent.addCategory(Intent.CATEGORY_LAUNCHER);
+////                final ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.wifi.WifiSettings");
+////                intent.setComponent(cn);
+////                intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK);
+////                startActivity(intent);
+//
+//                // Changing message text color
+//            }
+//        }
 
-                // Changing message text color
-            }
-        }
-
-        if (connected) {
-            // todo if connected to FTP Server
+//        if (true) {
+        // todo if connected to FTP Server
 //            final FTPClient[] client = new FTPClient[1];
-            try {
-                client1.connect(ipaddress, Integer.parseInt(port));
-                client1.login("ftp", "ftp");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        try {
+            client1.connect(ipaddress, 8080);
+            client1.login("ftp", "ftp");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+//        }
         return null;
     }
 
@@ -109,43 +108,4 @@ public class ConnectToHotspot extends AsyncTask<Void, Void, Void> {
         Log.d("ssaid::", ssid);
         return ssid;
     }
-
-    private void connectToPrathamHotSpot() {
-        try {
-            WifiConfiguration wifiConfiguration = new WifiConfiguration();
-            wifiConfiguration.SSID = String.format("\"%s\"", networkSSID);
-            wifiConfiguration.priority = 99999;
-            wifiConfiguration.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-
-            WifiManager wifiManager = (WifiManager) context.getSystemService(WIFI_SERVICE);
-            int netId = wifiManager.addNetwork(wifiConfiguration);
-
-            if (wifiManager.isWifiEnabled()) { //---wifi is turned on---
-                //---disconnect it first---
-                wifiManager.disconnect();
-            } else { //---wifi is turned off---
-                //---turn on wifi---
-                wifiManager.setWifiEnabled(true);
-                wifiManager.disconnect();
-            }
-
-            wifiManager.enableNetwork(netId, true);
-            try {
-                Thread.sleep(2000);
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            wifiManager.reconnect();
-            try {
-                Thread.sleep(6000);
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 }
