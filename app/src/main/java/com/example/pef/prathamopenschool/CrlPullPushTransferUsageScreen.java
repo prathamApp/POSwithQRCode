@@ -28,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -85,6 +86,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
     EditText edt_Port;
     Button btn_Connect;
     ListView lst_networks;
+    TextView tv_Details;
 
 
     @Override
@@ -280,6 +282,16 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
 
         lst_networks.setAdapter(new ArrayAdapter<String>(getApplicationContext(), R.layout.lst_wifi_item, R.id.label, networkList));
 
+        ImageButton refresh = dialog.findViewById(R.id.refresh);
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Onlistener
+                ArrayList<String> networkList = ftpConnect.scanNearbyWifi();
+                lst_networks.setAdapter(new ArrayAdapter<String>(getApplicationContext(), R.layout.lst_wifi_item, R.id.label, networkList));
+            }
+        });
+
         // listening to single list item on click
         lst_networks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -288,6 +300,9 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
 //                connectToWifi(ssid);
                 // check if pratham hotspot selected or not
                 if (ssid.contains("PrathamHotSpot_")) {
+                    // connect to wifi
+                    ftpConnect.connectToPrathamHotSpot(ssid);
+
                     Toast.makeText(CrlPullPushTransferUsageScreen.this, "Wifi SSID : " + ssid, Toast.LENGTH_SHORT).show();
                     // Display ftp dialog
                     Dialog dialog = new Dialog(CrlPullPushTransferUsageScreen.this);
@@ -299,6 +314,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
                     edt_HostName = dialog.findViewById(R.id.edt_HostName);
                     edt_Port = dialog.findViewById(R.id.edt_Port);
                     btn_Connect = dialog.findViewById(R.id.btn_Connect);
+                    tv_Details = dialog.findViewById(R.id.tv_details);
 
                     dialog.setCanceledOnTouchOutside(false);
                     dialog.setCancelable(true);
@@ -308,7 +324,23 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
                     btn_Connect.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            ftpConnect.connectFTPHotspot("TransferUsage", edt_HostName.getText().toString(), edt_Port.getText().toString());
+                            if (edt_HostName.getText().toString().trim().length() > 0) {
+                                ftpConnect.connectFTPHotspot("TransferUsage", edt_HostName.getText().toString(), "8080");
+                                String path = Environment.getExternalStorageDirectory().toString() + "/.POSDBBackups";
+                                File directory = new File(path);
+                                File[] files = directory.listFiles();
+                                int cnt = 0;
+                                String fileName = "";
+                                for (int i = 0; i < files.length; i++) {
+                                    if (files[i].getName().startsWith("pushNewDataToServer")) {
+                                        fileName = "\n" + files[i].getName() + "   " + Integer.parseInt(String.valueOf(files[i].length() / 1024)) + " kb";
+                                        cnt++;
+                                    }
+                                }
+
+                                tv_Details.setText("\nFiles Transferred : " + cnt + fileName);
+                            } else
+                                Toast.makeText(CrlPullPushTransferUsageScreen.this, "Please enter the IP Address of FTP Server !!!", Toast.LENGTH_SHORT).show();
                         }
                     });
                 } else {

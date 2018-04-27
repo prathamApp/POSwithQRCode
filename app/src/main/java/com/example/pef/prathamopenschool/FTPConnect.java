@@ -86,7 +86,8 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
     @Override
     public void onConnectionEshtablished(boolean connected) {
         if (MyApplication.ftpClient != null && connected) {
-            new ListFilesOnFTP(false, null, false).execute();
+//            new ListFilesOnFTP(false, null, false).execute();
+            new UploadTHroughFTP(typeOfFile).execute();
         } else {
             pushPullInterface.showDialog();
         }
@@ -414,6 +415,107 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
         }
     }
 
+    public class UploadTHroughFTP extends AsyncTask<Void, Void, Void> {
+        //        DocumentFile finalDocumentFile1;
+//        File final_file1;
+//        boolean isSdCard;
+        FTPClient temp = null;
+        String sendingClient;
+
+        public UploadTHroughFTP(String sendingClient) {
+//            this.finalDocumentFile1 = finalDocumentFile1;
+//            this.final_file1 = final_file1;
+//            this.isSdCard = isSdCard;
+//            this.name = name;
+            this.sendingClient = sendingClient;
+            if (temp == null) {
+                temp = MyApplication.ftpClient;
+            }
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                // for Transfer Usage
+                temp.enterLocalPassiveMode();
+                temp.setFileType(FTP.BINARY_FILE_TYPE);
+                if (sendingClient.equalsIgnoreCase("TransferUsage")) {
+                    boolean ifDirExists = checkDirectoryExists(temp, "RecievedUsage");
+                    if (!ifDirExists)
+                        temp.makeDirectory("RecievedUsage");
+//                    temp.changeWorkingDirectory("RecievedUsage");
+                    String path = Environment.getExternalStorageDirectory().toString() + "/.POSDBBackups";
+                    File directory = new File(path);
+                    File[] files = directory.listFiles();
+                    for (int i = 0; i < files.length; i++) {
+                        if (files[i].getName().startsWith("pushNewDataToServer")) {
+                            Log.d("Files", "FileName:" + files[i].getName());
+                            String data = path + "/" + files[i].getName();
+                            FileInputStream in = new FileInputStream(new File(data));
+                            boolean result = temp.storeFile("/RecievedUsage/" + files[i].getName(), in);
+                            Log.v("upload_result:::", files[i].getName() + "...." + result);
+                        }
+                    }
+                    temp.logout();
+                    temp.disconnect();
+                } else if (sendingClient.equalsIgnoreCase("TransferProfiles")) {
+                    boolean ifDirExists = checkDirectoryExists(temp, "RecievedProfiles");
+                    if (!ifDirExists)
+                        temp.makeDirectory("RecievedProfiles");
+//                    temp.changeWorkingDirectory("RecievedProfiles");
+                    String path = Environment.getExternalStorageDirectory().toString() + "/.POSinternal/sharableContent";
+                    File directory = new File(path);
+                    File[] files = directory.listFiles();
+                    for (int i = 0; i < files.length; i++) {
+                        if (files[i].getName().equalsIgnoreCase("NewProfiles.zip")) {
+                            Log.d("Files", "FileName:" + files[i].getName());
+                            String data = path + "/" + files[i].getName();
+                            FileInputStream in = new FileInputStream(new File(data));
+                            boolean result = temp.storeFile("/RecievedProfiles/" + files[i].getName(), in);
+                            Log.v("upload_result:::", files[i].getName() + "...." + result);
+                        }
+                    }
+                    temp.logout();
+                    temp.disconnect();
+                } else if (sendingClient.equalsIgnoreCase("TransferJson")) {
+                    boolean ifDirExists = checkDirectoryExists(temp, "RecievedJson");
+                    if (!ifDirExists)
+                        temp.makeDirectory("RecievedJson");
+//                    temp.changeWorkingDirectory("RecievedJson");
+                    String path = Environment.getExternalStorageDirectory().toString() + "/.POSinternal/Json";
+                    File directory = new File(path);
+                    File[] files = directory.listFiles();
+                    for (int i = 0; i < files.length; i++) {
+                        Log.d("Files", "FileName:" + files[i].getName());
+                        String data = path + "/" + files[i].getName();
+                        FileInputStream in = new FileInputStream(new File(data));
+                        boolean result = temp.storeFile("/RecievedJson/" + files[i].getName(), in);
+                        Log.v("upload_result:::", files[i].getName() + "...." + result);
+                    }
+                    temp.logout();
+                    temp.disconnect();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        boolean checkDirectoryExists(FTPClient ftpClient, String dirPath) throws IOException {
+            ftpClient.changeWorkingDirectory(dirPath);
+            int returnCode = ftpClient.getReplyCode();
+            if (returnCode == 550) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+    }
+
     public void startServer() {
         context.sendBroadcast(new Intent(FsService.ACTION_START_FTPSERVER));
     }
@@ -463,8 +565,8 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
             wifis[i] = ((wifiScanList.get(i)).toString());
         }
 //        String filtered[] = new String[wifiScanList.size()];
-        ArrayList<String> filtered=new ArrayList<>();
-        int counter=0;
+        ArrayList<String> filtered = new ArrayList<>();
+        int counter = 0;
         for (String eachWifi : wifis) {
             String[] temp = eachWifi.split(",");
             filtered.add(temp[0].substring(5).trim());//+"\n" + temp[2].substring(12).trim()+"\n" +temp[3].substring(6).trim();//0->SSID, 2->Key Management 3-> Strength
@@ -494,19 +596,19 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
             }
 
             wifiManager.enableNetwork(netId, true);
-            try {
+            /*try {
                 Thread.sleep(2000);
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
+            }*/
             wifiManager.reconnect();
-            try {
+/*            try {
                 Thread.sleep(6000);
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
+            }*/
         } catch (Exception e) {
             e.printStackTrace();
         }

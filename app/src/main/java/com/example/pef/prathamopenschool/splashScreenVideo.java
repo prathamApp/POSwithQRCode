@@ -180,7 +180,7 @@ public class splashScreenVideo extends AppCompatActivity {
                     String ver = statusDBHelper.getValue("apkVersion");
                     if (ver == null) {
                         createDBJsonforBackup();
-                    } else if (!ver.equalsIgnoreCase("2.1.7")) {
+                    } else if (!ver.equalsIgnoreCase("2.1.7") && !ver.equalsIgnoreCase("2.1.8")) {
                         createDBJsonforBackup();
                     }
                     return "true";
@@ -197,7 +197,7 @@ public class splashScreenVideo extends AppCompatActivity {
                     String ver = statusDBHelper.getValue("apkVersion");
                     if (ver == null) {
                         createDBJsonforBackup();
-                    } else if (!ver.equalsIgnoreCase("2.1.7")) {
+                    } else if (!ver.equalsIgnoreCase("2.1.7") && !ver.equalsIgnoreCase("2.1.8")) {
                         createDBJsonforBackup();
                     }
 

@@ -52,7 +52,7 @@ public class ConnectToHotspot extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
 //        String SSID = getWifiName(context).replace("\"", "");
-//        client1 = new FTPClient();
+        client1 = new FTPClient();
 //        if (SSID.equalsIgnoreCase(networkSSID)) {
 //            // Connected to PrathamHotspot
 //            connected = true;

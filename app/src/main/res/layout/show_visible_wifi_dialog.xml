@@ -22,10 +22,26 @@
         android:id="@+id/lst_network"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/refresh"
         android:layout_below="@+id/title"
         android:layout_margin="32dp"
         android:background="@drawable/custom_border"
         android:divider="@color/text_hint"
-        android:dividerHeight="1dp" />
+        android:dividerHeight="1dp"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbarSize="16dp"
+        android:scrollbars="vertical"
+        android:verticalScrollbarPosition="right" />
+
+
+    <ImageButton
+        android:id="@+id/refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="16dp"
+        android:background="@drawable/ic_refresh"
+        android:scaleType="center" />
 
 </RelativeLayout>

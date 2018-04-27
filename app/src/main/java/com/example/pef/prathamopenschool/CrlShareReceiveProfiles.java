@@ -10,12 +10,14 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -24,9 +26,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +52,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
@@ -91,10 +100,22 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
     JSONArray crlJsonArray, studentsJsonArray, grpJsonArray;
     public ProgressDialog progressDialog;
 
-    LinearLayout ftpDialogLayout;
+    RelativeLayout ftpDialogLayout;
     EditText edt_HostName;
     EditText edt_Port;
     Button btn_Connect;
+
+    // Share Profiles
+    List<Student> Students;
+    List<Crl> Crls;
+    List<Group> Groups;
+    List<Aser> Asers;
+    JSONArray newStudentArray, newCrlArray, newGrpArray, newAserArray;
+    JSONObject stdObj, crlObj, grpObj, asrObj;
+    String deviceId = "";
+    StatusDBHelper stat;
+    Utility util;
+    TextView tv_Details;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -221,10 +242,470 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
         }
     }
 
+    // Fetch student profiles (SHARE PROFILESS)
+    // Function to fetch Photos filtered by Student ID
+    public ArrayList<String> fetchStudentProfiles() {
+        ArrayList<String> imageUrls = new ArrayList<String>();
+
+        try {
+            Students = sdb.GetAllNewStudents();
+            String stdID = "";
+
+
+            Uri EXTERNAL = MediaStore.Files.getContentUri("external");
+
+            File folder = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/StudentProfiles");
+            File[] listFile;
+            if (folder.isDirectory()) {
+                listFile = folder.listFiles();
+                for (int i = 0; i < listFile.length; i++) {
+                    Uri uri = Uri.fromFile(listFile[i]);
+                    String fileNameWithExtension = uri.getLastPathSegment();
+                    String[] fileName = fileNameWithExtension.split("\\.");
+                    Log.d("img_file_name::", listFile[i].getAbsolutePath());
+
+                    for (int j = 0; j < Students.size(); j++) {
+                        stdID = String.valueOf(Students.get(j).StudentID);
+                        if (fileName[0].equals(stdID)) {
+                            imageUrls.add(String.valueOf(uri));
+                            break;
+                        }
+                    }
+                }
+            }
+            Log.d("img_file_size::", "" + imageUrls.size());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return imageUrls;
+    }
+
+    // Write Settings for Share Profiles
+    public void WriteSettings(Context context, String data, String fName) {
+
+        FileOutputStream fOut = null;
+        OutputStreamWriter osw = null;
+
+        try {
+            String MainPath = Environment.getExternalStorageDirectory() + "/.POSinternal/sharableContent/" + fName + ".json";
+            File file = new File(MainPath);
+            try {
+                path.add(MainPath);
+                fOut = new FileOutputStream(file);
+                osw = new OutputStreamWriter(fOut);
+                osw.write(data);
+                osw.flush();
+                osw.close();
+                fOut.close();
+
+            } catch (Exception e) {
+            } finally {
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(context, "Settings not saved", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    // Share Profiles Send Functions
+    public void sendNewStudent() {
+
+        newStudentArray = new JSONArray();
+        Students = sdb.GetAllNewStudents();
+
+        if (Students == null || Students.isEmpty()) {
+            //   Toast.makeText(ShareProfiles.this, "There are No new Students !!!", Toast.LENGTH_SHORT).show();
+        } else {
+            try {
+                if (Students == null) {
+                } else {
+                    for (int x = 0; x < Students.size(); x++) {
+                        stdObj = new JSONObject();
+                        Student std = Students.get(x);
+                        stdObj.put("StudentID", std.StudentID);
+                        stdObj.put("FirstName", std.FirstName);
+                        stdObj.put("MiddleName", std.MiddleName);
+                        stdObj.put("LastName", std.LastName);
+                        Integer age = std.Age;
+                        stdObj.put("Age", age == null ? 0 : std.Age);
+                        Integer cls = std.Class;
+                        stdObj.put("Class", cls == null ? 0 : std.Class);
+                        stdObj.put("UpdatedDate", std.UpdatedDate);
+                        stdObj.put("Gender", std.Gender.equals(null) ? "Male" : std.Gender);
+                        stdObj.put("GroupID", std.GroupID.equals(null) ? "GroupID" : std.GroupID);
+                        stdObj.put("CreatedBy", std.CreatedBy.equals(null) ? "CreatedBy" : std.CreatedBy);
+                        stdObj.put("NewFlag", "true");
+                        stdObj.put("StudentUID", std.StudentUID.equals(null) ? "" : std.StudentUID);
+                        stdObj.put("IsSelected", std.IsSelected == null ? false : std.IsSelected);
+
+                        // new entries
+                        stat = new StatusDBHelper(CrlShareReceiveProfiles.this);
+                        stdObj.put("sharedBy", stat.getValue("AndroidID"));
+                        stdObj.put("SharedAtDateTime", util.GetCurrentDateTime(false).toString());
+                        stdObj.put("appVersion", stat.getValue("apkVersion"));
+                        stdObj.put("appName", stat.getValue("appName"));
+                        stdObj.put("CreatedOn", std.CreatedOn == null ? "" : std.CreatedOn);
+
+                        newStudentArray.put(stdObj);
+                    }
+
+                    String requestString = String.valueOf(newStudentArray);
+
+                    WriteSettings(getApplicationContext(), requestString, "Student");
+                }
+            } catch (Exception ex) {
+                ex.getMessage();
+            }
+        }
+    }
+
+    public void sendNewCrl() {
+
+        newCrlArray = new JSONArray();
+        Crls = cdb.GetAllNewCrl();
+
+        if (Crls == null || Crls.isEmpty()) {
+        } else {
+            if (Crls == null) {
+            } else {
+                try {
+                    for (int x = 0; x < Crls.size(); x++) {
+                        crlObj = new JSONObject();
+                        Crl crl = Crls.get(x);
+                        crlObj.put("CRLID", crl.CRLId);
+                        crlObj.put("FirstName", crl.FirstName);
+                        crlObj.put("LastName", crl.LastName);
+                        crlObj.put("UserName", crl.UserName);
+                        crlObj.put("PassWord", crl.Password);
+                        Integer pid = crl.ProgramId;
+                        crlObj.put("ProgramId", pid == null ? 0 : crl.ProgramId);
+                        crlObj.put("Mobile", crl.Mobile);
+                        crlObj.put("State", crl.State);
+                        crlObj.put("Email", crl.Email);
+                        crlObj.put("CreatedBy", crl.CreatedBy.equals(null) ? "Created By" : crl.CreatedBy);
+                        crlObj.put("NewFlag", crl.newCrl == null ? false : !crl.newCrl);
+
+                        // new entries
+                        stat = new StatusDBHelper(CrlShareReceiveProfiles.this);
+                        crlObj.put("sharedBy", stat.getValue("AndroidID"));
+                        crlObj.put("SharedAtDateTime", util.GetCurrentDateTime(false).toString());
+                        crlObj.put("appVersion", stat.getValue("apkVersion"));
+                        crlObj.put("appName", stat.getValue("appName"));
+                        crlObj.put("CreatedOn", crl.CreatedOn == null ? "" : crl.CreatedOn);
+
+                        newCrlArray.put(crlObj);
+                    }
+
+                    String requestString = String.valueOf(newCrlArray);
+
+                    WriteSettings(getApplicationContext(), requestString, "Crl");
+                } catch (Exception ex) {
+                    ex.getMessage();
+                }
+            }
+        }
+    }
+
+    public void sendNewGroup() {
+        newGrpArray = new JSONArray();
+        Groups = gdb.GetAllNewGroups();
+
+        if (Groups == null || Groups.isEmpty()) {
+        } else {
+            try {
+                if (Groups == null) {
+                } else {
+                    for (int x = 0; x < Groups.size(); x++) {
+                        grpObj = new JSONObject();
+                        Group grp = Groups.get(x);
+                        grpObj.put("GroupID", grp.GroupID);
+                        grpObj.put("GroupCode", grp.GroupCode);
+                        grpObj.put("GroupName", grp.GroupName);
+                        grpObj.put("UnitNumber", grp.UnitNumber);
+                        grpObj.put("DeviceID", grp.DeviceID.equals(null) ? "DeviceID" : grp.DeviceID);
+                        grpObj.put("Responsible", grp.Responsible);
+                        grpObj.put("ResponsibleMobile", grp.ResponsibleMobile);
+                        Integer vid = grp.VillageID;
+                        grpObj.put("VillageID", vid == null ? 0 : grp.VillageID);
+                        Integer pid = grp.ProgramID;
+                        grpObj.put("ProgramId", pid == null ? 0 : grp.ProgramID);
+                        grpObj.put("CreatedBy", grp.CreatedBy);
+                        grpObj.put("NewFlag", !grp.newGroup);
+                        grpObj.put("VillageName", grp.VillageName.equals(null) ? "" : grp.VillageName);
+                        grpObj.put("SchoolName", grp.SchoolName.equals(null) ? "" : grp.SchoolName);
+
+                        // new entries
+                        stat = new StatusDBHelper(CrlShareReceiveProfiles.this);
+                        grpObj.put("sharedBy", stat.getValue("AndroidID"));
+                        grpObj.put("SharedAtDateTime", util.GetCurrentDateTime(false).toString());
+                        grpObj.put("appVersion", stat.getValue("apkVersion"));
+                        grpObj.put("appName", stat.getValue("appName"));
+                        grpObj.put("CreatedOn", grp.CreatedOn == null ? "" : grp.CreatedOn);
+
+                        newGrpArray.put(grpObj);
+                    }
+
+                    String requestString = String.valueOf(newGrpArray);
+
+                    WriteSettings(getApplicationContext(), requestString, "Group");
+                }
+            } catch (Exception ex) {
+                ex.getMessage();
+            }
+        }
+    }
+
+    public void sendNewAser() {
+        newAserArray = new JSONArray();
+        Asers = adb.GetAllNewAserGroups();
+
+        if (Asers == null || Asers.isEmpty()) {
+        } else {
+            try {
+                if (Asers == null) {
+                } else {
+
+                    for (int x = 0; x < Asers.size(); x++) {
+
+                        asrObj = new JSONObject();
+
+                        Aser asr = Asers.get(x);
+
+                        asrObj.put("StudentId", asr.StudentId);
+                        asrObj.put("ChildID", asr.ChildID);
+                        asrObj.put("GroupID", asr.GroupID);
+                        asrObj.put("TestType", asr.TestType);
+                        asrObj.put("TestDate", asr.TestDate);
+                        asrObj.put("Lang", asr.Lang);
+                        asrObj.put("Num", asr.Num);
+                        asrObj.put("OAdd", asr.OAdd);
+                        asrObj.put("OSub", asr.OSub);
+                        asrObj.put("OMul", asr.OMul);
+                        asrObj.put("ODiv", asr.ODiv);
+                        asrObj.put("WAdd", asr.WAdd);
+                        asrObj.put("WSub", asr.WSub);
+                        asrObj.put("CreatedBy", asr.CreatedBy.equals(null) ? "" : asr.CreatedBy);
+                        asrObj.put("CreatedDate", asr.CreatedDate);
+                        asrObj.put("DeviceId", asr.DeviceId.equals(null) ? "" : asr.DeviceId);
+                        asrObj.put("FLAG", asr.FLAG);
+
+                        // new entries
+                        stat = new StatusDBHelper(CrlShareReceiveProfiles.this);
+                        asrObj.put("sharedBy", stat.getValue("AndroidID"));
+                        asrObj.put("SharedAtDateTime", util.GetCurrentDateTime(false).toString());
+                        asrObj.put("appVersion", stat.getValue("apkVersion"));
+                        asrObj.put("appName", stat.getValue("appName"));
+                        asrObj.put("CreatedOn", asr.CreatedOn == null ? "" : asr.CreatedOn);
+
+                        newAserArray.put(asrObj);
+
+                    }
+
+                    String requestString = String.valueOf(newAserArray);
+
+                    WriteSettings(getApplicationContext(), requestString, "Aser");
+                }
+            } catch (Exception ex) {
+                ex.getMessage();
+            }
+        }
+    }
+
+    // Share profiles function copyStdProfiles
+    public void copyStdProfilesTosharableContent(ArrayList<String> fetchedStudents) throws IOException {
+        String fileName = "";
+        //String targetPath = Environment.getExternalStorageDirectory() + "/.POSinternal/sharableContent/";
+        for (int k = 0; k < fetchedStudents.size(); k++) {
+            fileName = fetchedStudents.get(k);
+            fileCopyFunction(fileName);
+        }
+    }
+
+    public void fileCopyFunction(String fileName) throws IOException {
+        try {
+            File sourceFile = new File(new URI(fileName));
+            File destinationFile = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/sharableContent/" + sourceFile.getName());
+            path.add(destinationFile.getPath());
+
+            FileInputStream fileInputStream = new FileInputStream(sourceFile);
+            FileOutputStream fileOutputStream = new FileOutputStream(destinationFile);
+
+            int bufferSize;
+            byte[] bufffer = new byte[512];
+            while ((bufferSize = fileInputStream.read(bufffer)) > 0) {
+                fileOutputStream.write(bufffer, 0, bufferSize);
+            }
+            fileInputStream.close();
+            fileOutputStream.close();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    // Share Profiles
+    public void transferData() {
+//        Thread mThread = new Thread() {
+//            @Override
+//            public void run() {
+
+        File zipFolder = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/sharableContent");
+        if (zipFolder.exists()) {
+            wipeSentFiles();
+        }
+
+        ArrayList<String> fetchedStudents = fetchStudentProfiles();
+        try {
+            copyStdProfilesTosharableContent(fetchedStudents);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Files are created
+        // todo check null for all values
+        path.clear();
+        sendNewStudent();
+        sendNewGroup();
+        sendNewCrl();
+        sendNewAser();
+
+
+        // todo dont allow next process if everything is empty
+        if (Students.isEmpty() && Asers.isEmpty() && Groups.isEmpty() && Crls.isEmpty()) {
+        } else {
+            // Creating Json Zip
+            try {
+                String paths[] = new String[path.size()];
+                int size = path.size();
+                for (int i = 0; i < size; i++) {
+                    paths[i] = path.get(i);
+                }
+                // Compressing Files
+                Compress mergeFiles = new Compress(paths, Environment.getExternalStorageDirectory() + "/.POSinternal/sharableContent/NewProfiles.zip");
+                mergeFiles.zip();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+//                    TreansferFile("NewProfiles");
+
+        }
+    }
+//};
+//        mThread.start();
+//    }
+
+
     // Share Profiles Function
     public void goToShareProfiles(View view) {
-        Intent goToShareD = new Intent(CrlShareReceiveProfiles.this, ShareProfiles.class);
-        startActivity(goToShareD);
+//        Intent goToShareD = new Intent(CrlShareReceiveProfiles.this, ShareProfiles.class);
+//        startActivity(goToShareD);
+
+        // SHARE PROFILES
+        // Transfer Newly created entries
+
+        // Generate Device ID
+        deviceId = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        util = new Utility();
+
+        // Memory Allocation
+        sdb = new StudentDBHelper(CrlShareReceiveProfiles.this);
+        cdb = new CrlDBHelper(CrlShareReceiveProfiles.this);
+        gdb = new GroupDBHelper(CrlShareReceiveProfiles.this);
+        adb = new AserDBHelper(CrlShareReceiveProfiles.this);
+
+        tv_Students = (TextView) findViewById(R.id.tv_studentsShared);
+        tv_Crls = (TextView) findViewById(R.id.tv_crlsShared);
+        tv_Groups = (TextView) findViewById(R.id.tv_groupssShared);
+
+        transferData();
+
+
+        // FTP
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        boolean wifiEnabled = wifiManager.isWifiEnabled();
+        if (!wifiEnabled) {
+            wifiManager.setWifiEnabled(true);
+        }
+        // Display ftp dialog
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.show_visible_wifi_dialog);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+        ftpDialogLayout = dialog.findViewById(R.id.ftpDialog);
+        ListView lst_networks = dialog.findViewById(R.id.lst_network);
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(true);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.show();
+
+        // Onlistener
+        ArrayList<String> networkList = ftpConnect.scanNearbyWifi();
+        lst_networks.setAdapter(new ArrayAdapter<String>(getApplicationContext(), R.layout.lst_wifi_item, R.id.label, networkList));
+
+        ImageButton refresh = dialog.findViewById(R.id.refresh);
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Onlistener
+                ArrayList<String> networkList = ftpConnect.scanNearbyWifi();
+                lst_networks.setAdapter(new ArrayAdapter<String>(getApplicationContext(), R.layout.lst_wifi_item, R.id.label, networkList));
+            }
+        });
+
+        // listening to single list item on click
+        lst_networks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // selected item
+                String ssid = ((TextView) view).getText().toString();
+//                connectToWifi(ssid);
+                // check if pratham hotspot selected or not
+                if (ssid.contains("PrathamHotSpot_")) {
+                    // connect to wifi
+                    ftpConnect.connectToPrathamHotSpot(ssid);
+
+                    Toast.makeText(CrlShareReceiveProfiles.this, "Wifi SSID : " + ssid, Toast.LENGTH_SHORT).show();
+                    // Display ftp dialog
+                    Dialog dialog = new Dialog(CrlShareReceiveProfiles.this);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.connect_to_ftpserver_dialog);
+                    dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+                    ftpDialogLayout = dialog.findViewById(R.id.ftpDialog);
+                    edt_HostName = dialog.findViewById(R.id.edt_HostName);
+                    edt_Port = dialog.findViewById(R.id.edt_Port);
+                    btn_Connect = dialog.findViewById(R.id.btn_Connect);
+                    tv_Details = dialog.findViewById(R.id.tv_details);
+
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.setCancelable(true);
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    dialog.show();
+
+                    btn_Connect.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (edt_HostName.getText().toString().trim().length() > 0) {
+                                ftpConnect.connectFTPHotspot("TransferProfiles", edt_HostName.getText().toString(), "8080");
+                                // Display Count
+                                int std = Students.size();
+                                int crl = Crls.size();
+                                int grp = Groups.size();
+                                tv_Details.setText("\nStudents Shared : " + std + "\nCRLs Shared : " + crl + "\nGroups Shared : " + grp);
+                            } else
+                                Toast.makeText(CrlShareReceiveProfiles.this, "Please enter the IP Address of FTP Server !!!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    Toast.makeText(CrlShareReceiveProfiles.this, "Invalid Network !!!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
 
@@ -274,7 +755,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
         btn_Connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ftpConnect.connectFTPHotspot("ReceiveProfiles", edt_HostName.getText().toString(), edt_Port.getText().toString());
+//                ftpConnect.connectFTPHotspot("TransferProfiles", edt_HostName.getText().toString(), edt_Port.getText().toString());
             }
         });
     }
@@ -287,8 +768,8 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 //            e.getMessage();
 //        }
         TargetPath = Environment.getExternalStorageDirectory() + "/.POSinternal/ReceivedContent/";
-        // Checking that file is appropriate or not
-        //content://com.estrongs.files/storage/emulated/0/SHAREit/files/NewProfiles.zip
+// Checking that file is appropriate or not
+//content://com.estrongs.files/storage/emulated/0/SHAREit/files/NewProfiles.zip
         final String ReceivedFileName = recieveProfilePath.replace("content://com.estrongs.files/storage/emulated/0/SHAREit/files/", "");
 
         if (recieveProfilePath.endsWith("NewProfiles.zip")) {
@@ -876,6 +1357,79 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 
     public void goToShareOff(View view) {
 
+        // Creating Share off json
+
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        boolean wifiEnabled = wifiManager.isWifiEnabled();
+        if (!wifiEnabled) {
+            wifiManager.setWifiEnabled(true);
+        }
+        // Display ftp dialog
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.show_visible_wifi_dialog);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+        ftpDialogLayout = dialog.findViewById(R.id.ftpDialog);
+        ListView lst_networks = dialog.findViewById(R.id.lst_network);
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(true);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.show();
+
+        // Onlistener
+        ArrayList<String> networkList = ftpConnect.scanNearbyWifi();
+
+        lst_networks.setAdapter(new ArrayAdapter<String>(getApplicationContext(), R.layout.lst_wifi_item, R.id.label, networkList));
+
+        // listening to single list item on click
+        lst_networks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // selected item
+                String ssid = ((TextView) view).getText().toString();
+//                connectToWifi(ssid);
+                // check if pratham hotspot selected or not
+                if (ssid.contains("PrathamHotSpot_")) {
+                    // connect to wifi
+                    ftpConnect.connectToPrathamHotSpot(ssid);
+
+                    Toast.makeText(CrlShareReceiveProfiles.this, "Wifi SSID : " + ssid, Toast.LENGTH_SHORT).show();
+                    // Display ftp dialog
+                    Dialog dialog = new Dialog(CrlShareReceiveProfiles.this);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.connect_to_ftpserver_dialog);
+                    dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+                    ftpDialogLayout = dialog.findViewById(R.id.ftpDialog);
+                    edt_HostName = dialog.findViewById(R.id.edt_HostName);
+                    edt_Port = dialog.findViewById(R.id.edt_Port);
+                    btn_Connect = dialog.findViewById(R.id.btn_Connect);
+                    tv_Details = dialog.findViewById(R.id.tv_details);
+
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.setCancelable(true);
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    dialog.show();
+
+                    btn_Connect.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (edt_HostName.getText().toString().trim().length() > 0) {
+                                String path = Environment.getExternalStorageDirectory().toString() + "/.POSinternal/Json";
+                                File directory = new File(path);
+                                File[] files = directory.listFiles();
+                                ftpConnect.connectFTPHotspot("TransferJson", edt_HostName.getText().toString(), "8080");
+                                tv_Details.setText("\nNo of Files Shared : " + files.length);
+                            } else
+                                Toast.makeText(CrlShareReceiveProfiles.this, "Please enter the IP Address of FTP Server !!!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    Toast.makeText(CrlShareReceiveProfiles.this, "Invalid Network !!!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 //        FlagShareOff = true;
 //        File newJason = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/NewJson.zip");
 //        if (newJason.exists()) {
@@ -911,7 +1465,8 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 //                    public void run() {
 //                        Toast.makeText(CrlShareReceiveProfiles.this, " Data collected Successfully !!!", Toast.LENGTH_SHORT).show();
 //                        // Transferring Created Zip
-        TreansferFile("NewJson");
+//        TreansferFile("NewJson");
+
 //                    }
 //                });
 //            }
@@ -983,7 +1538,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
     /*-------------------------------------------------------------------------------------------*/
 
 
-    // Receive Json Offline Function
+// Receive Json Offline Function
 
     public void goToReceiveOff(View view) {
 
@@ -1006,7 +1561,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
         btn_Connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ftpConnect.connectFTPHotspot("ReceiveJson", edt_HostName.getText().toString(), edt_Port.getText().toString());
+//                ftpConnect.connectFTPHotspot("TransferJson", edt_HostName.getText().toString(), edt_Port.getText().toString());
             }
         });
 
@@ -1191,9 +1746,10 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
             String directoryToDelete = Environment.getExternalStorageDirectory() + "/.POSinternal/sharableContent";
             File dir = new File(directoryToDelete);
             for (File file : dir.listFiles())
-                if (!file.isDirectory())
-                    file.delete();
-
+//                if (!file.isDirectory())
+//                    file.delete();
+//                else
+                file.delete();
         } catch (Exception e) {
             e.printStackTrace();
         }

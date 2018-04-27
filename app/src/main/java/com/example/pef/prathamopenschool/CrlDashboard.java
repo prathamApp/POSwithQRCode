@@ -126,7 +126,10 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
 
         // Set HotSpot Name after crl name
         MyApplication.networkSSID = "PrathamHotSpot_" + crlData.get(0).FirstName + "_" + crlData.get(0).getLastName();
-        MyApplication.setPath(Environment.getExternalStorageDirectory() + "/.POSDBBackups");
+        File f=new File(Environment.getExternalStorageDirectory() + "/FTPRecieved");
+        if (!f.exists())
+            f.mkdir();
+        MyApplication.setPath(Environment.getExternalStorageDirectory() + "/FTPRecieved");
         // Create FTP Server
         ftpConnect.createFTPHotspot();
 //        for (int i = 0; i < f.size(); i++) {
