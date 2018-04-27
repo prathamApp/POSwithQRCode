@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.example.pef.prathamopenschool.CrlPullPushTransferUsageScreen;
+import com.example.pef.prathamopenschool.FTPInterface;
 import com.example.pef.prathamopenschool.MyApplication;
 
 import java.lang.reflect.InvocationTargetException;
@@ -25,10 +26,12 @@ public class CreateWifiAccessPoint extends AsyncTask<Void, Void, Boolean> {
     private ProgressDialog pd;
     public Context context;
     public Activity activity;
+    FTPInterface.FTPConnectInterface ftpConnectInterface;
 
-    public CreateWifiAccessPoint(Context context, Activity activity) {
+    public CreateWifiAccessPoint(Context context, Activity activity, FTPInterface.FTPConnectInterface ftpConnectInterface) {
         this.context = context;
         this.activity = activity;
+        this.ftpConnectInterface=ftpConnectInterface;
     }
 
     @Override
@@ -92,6 +95,7 @@ public class CreateWifiAccessPoint extends AsyncTask<Void, Void, Boolean> {
             e.printStackTrace();
         }
 
+        ftpConnectInterface.showDialog();
         //start Server
         context.sendBroadcast(new Intent(FsService.ACTION_START_FTPSERVER));
 

@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/PrathamOpenSchool.iml" filepath="$PROJECT_DIR$/PrathamOpenSchool.iml" />
+      <module fileurl="file://$PROJECT_DIR$/POSwithQRCode.iml" filepath="$PROJECT_DIR$/POSwithQRCode.iml" />
+      <module fileurl="file://G:\projects\POSwithQRCode\PrathamOpenSchool.iml" filepath="G:\projects\POSwithQRCode\PrathamOpenSchool.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

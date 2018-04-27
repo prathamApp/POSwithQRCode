@@ -668,7 +668,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
                 if (ssid.contains("PrathamHotSpot_")) {
                     // connect to wifi
                     ftpConnect.connectToPrathamHotSpot(ssid);
-
+                    dialog.dismiss();
                     Toast.makeText(CrlShareReceiveProfiles.this, "Wifi SSID : " + ssid, Toast.LENGTH_SHORT).show();
                     // Display ftp dialog
                     Dialog dialog = new Dialog(CrlShareReceiveProfiles.this);
@@ -692,11 +692,6 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
                         public void onClick(View view) {
                             if (edt_HostName.getText().toString().trim().length() > 0) {
                                 ftpConnect.connectFTPHotspot("TransferProfiles", edt_HostName.getText().toString(), "8080");
-                                // Display Count
-                                int std = Students.size();
-                                int crl = Crls.size();
-                                int grp = Groups.size();
-                                tv_Details.setText("\nStudents Shared : " + std + "\nCRLs Shared : " + crl + "\nGroups Shared : " + grp);
                             } else
                                 Toast.makeText(CrlShareReceiveProfiles.this, "Please enter the IP Address of FTP Server !!!", Toast.LENGTH_SHORT).show();
                         }
@@ -893,6 +888,8 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        wifiManager.setWifiEnabled(false);
         if (ftpConnect.checkServiceRunning()) {
             ftpConnect.stopServer();
         }
@@ -1393,6 +1390,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
                 if (ssid.contains("PrathamHotSpot_")) {
                     // connect to wifi
                     ftpConnect.connectToPrathamHotSpot(ssid);
+                    dialog.dismiss();
 
                     Toast.makeText(CrlShareReceiveProfiles.this, "Wifi SSID : " + ssid, Toast.LENGTH_SHORT).show();
                     // Display ftp dialog
@@ -1416,11 +1414,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
                         @Override
                         public void onClick(View view) {
                             if (edt_HostName.getText().toString().trim().length() > 0) {
-                                String path = Environment.getExternalStorageDirectory().toString() + "/.POSinternal/Json";
-                                File directory = new File(path);
-                                File[] files = directory.listFiles();
                                 ftpConnect.connectFTPHotspot("TransferJson", edt_HostName.getText().toString(), "8080");
-                                tv_Details.setText("\nNo of Files Shared : " + files.length);
                             } else
                                 Toast.makeText(CrlShareReceiveProfiles.this, "Please enter the IP Address of FTP Server !!!", Toast.LENGTH_SHORT).show();
                         }
@@ -1519,7 +1513,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 //                        Toast.makeText(this, "Bluetooth not in list", Toast.LENGTH_SHORT).show();
 //                    } else {
             MyApplication.setPath(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/");
-            ftpConnect.createFTPHotspot();
+//            ftpConnect.createFTPHotspot();
 
             //todo ftp connect dialog same for every recieve
             //todo show count on that dialog
@@ -1930,22 +1924,39 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
     }
 
     @Override
-    public void onFilesRecievedComplete(String typeOfFile) {
-        if (typeOfFile.equalsIgnoreCase("ReceiveProfiles")) {
-            TargetPath = Environment.getExternalStorageDirectory() + "/.POSinternal/ReceivedContent/";
-            File NewProfilesExists = new File(TargetPath + "NewProfiles.zip");
-            if (NewProfilesExists.exists())
-                new RecieveFiles(TargetPath, NewProfilesExists.getAbsolutePath()).execute();
-
-        } else if (typeOfFile.equalsIgnoreCase("ReceiveJson")) {
-            // Update DB
-            try {
-                // Add Initial Entries of CRL & Village Json to Database
-                SetInitialValuesReceiveOff();
-            } catch (JSONException e) {
-                e.printStackTrace();
+    public void onFilesRecievedComplete(String typeOfFile, String filename) {
+//        if (typeOfFile.equalsIgnoreCase("ReceiveProfiles")) {
+//            TargetPath = Environment.getExternalStorageDirectory() + "/.POSinternal/ReceivedContent/";
+//            File NewProfilesExists = new File(TargetPath + "NewProfiles.zip");
+//            if (NewProfilesExists.exists())
+//                new RecieveFiles(TargetPath, NewProfilesExists.getAbsolutePath()).execute();
+//
+//        } else if (typeOfFile.equalsIgnoreCase("ReceiveJson")) {
+//            // Update DB
+//            try {
+//                // Add Initial Entries of CRL & Village Json to Database
+//                SetInitialValuesReceiveOff();
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//        }
+        if (typeOfFile.equalsIgnoreCase("TransferProfiles")) {
+            // Display Count
+            int std = Students.size();
+            int crl = Crls.size();
+            int grp = Groups.size();
+            tv_Details.setText("\nStudents Shared : " + std + "\nCRLs Shared : " + crl + "\nGroups Shared : " + grp);
+        } else {
+            String path = Environment.getExternalStorageDirectory().toString() + "/.POSinternal/Json";
+            File directory = new File(path);
+            File[] files = directory.listFiles();
+            int cnt = 0;
+            String fileName = "";
+            for (int i = 0; i < files.length; i++) {
+                fileName += "\n" + files[i].getName() + "   " + Integer.parseInt(String.valueOf(files[i].length() / 1024)) + " kb";
+                cnt++;
             }
-
+            tv_Details.setText("\nFiles Transferred : " + cnt + fileName);
         }
     }
 

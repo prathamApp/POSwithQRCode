@@ -21,6 +21,10 @@ package com.example.pef.prathamopenschool.ftpSettings;
 
 import android.util.Log;
 
+import com.example.pef.prathamopenschool.MessageEvent;
+
+import org.greenrobot.eventbus.EventBus;
+
 public class CmdQUIT extends FtpCmd implements Runnable {
     private static final String TAG = CmdQUIT.class.getSimpleName();
 
@@ -33,6 +37,7 @@ public class CmdQUIT extends FtpCmd implements Runnable {
         Log.d(TAG, "QUIT executing");
         sessionThread.writeString("221 Goodbye\r\n");
         sessionThread.closeSocket();
+        EventBus.getDefault().post(new MessageEvent("Recieved"));
     }
 
 }

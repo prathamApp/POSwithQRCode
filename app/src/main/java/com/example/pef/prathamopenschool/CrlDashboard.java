@@ -1,5 +1,6 @@
 package com.example.pef.prathamopenschool;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -14,6 +15,11 @@ import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -114,6 +120,26 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
     }
 
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MessageEvent event) {
+        if (recievingDialog.isShowing()) {
+            recievingDialog.dismiss();
+        }
+    }
+
     /********************************************** RECEIVE DATA ******************************************************/
 
 
@@ -126,7 +152,7 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
 
         // Set HotSpot Name after crl name
         MyApplication.networkSSID = "PrathamHotSpot_" + crlData.get(0).FirstName + "_" + crlData.get(0).getLastName();
-        File f=new File(Environment.getExternalStorageDirectory() + "/FTPRecieved");
+        File f = new File(Environment.getExternalStorageDirectory() + "/FTPRecieved");
         if (!f.exists())
             f.mkdir();
         MyApplication.setPath(Environment.getExternalStorageDirectory() + "/FTPRecieved");
@@ -138,13 +164,19 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
 //        ftpConnect.connectToPrathamHotSpot(f.get(i));
     }
 
+    ProgressDialog recievingDialog;
+
     @Override
     public void showDialog() {
-
+        recievingDialog = new ProgressDialog(CrlDashboard.this);
+        recievingDialog.setMessage("Recieving files...please wait");
+        recievingDialog.setCancelable(false);
+        recievingDialog.setCanceledOnTouchOutside(false);
+        recievingDialog.show();
     }
 
     @Override
-    public void onFilesRecievedComplete(String typeOfFile) {
+    public void onFilesRecievedComplete(String typeOfFile, String filename) {
 
     }
 

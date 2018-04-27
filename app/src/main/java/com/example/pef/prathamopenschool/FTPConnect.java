@@ -73,7 +73,7 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
             wifiAPController.wifiToggle(MyApplication.networkSSID, ""/*, wifiManager*/, context);
         } else {
             // Start HotSpot (Tablet)
-            CreateWifiAccessPoint createOne = new CreateWifiAccessPoint(context, activity);
+            CreateWifiAccessPoint createOne = new CreateWifiAccessPoint(context, activity,FTPConnect.this);
             createOne.execute((Void) null);
         }
     }
@@ -91,6 +91,11 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
         } else {
             pushPullInterface.showDialog();
         }
+    }
+
+    @Override
+    public void showDialog() {
+        pushPullInterface.showDialog();
     }
 
     @Override
@@ -227,10 +232,10 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
 //                addContentToDatabase(download_content);
             } else if (typeOfFile.equalsIgnoreCase("TransferUsage")) {
                 //todo parse and show count of files, score and deviceId
-                pushPullInterface.onFilesRecievedComplete(typeOfFile);
+//                pushPullInterface.onFilesRecievedComplete(typeOfFile,"");
             } else if (typeOfFile.equalsIgnoreCase("ReceiveProfiles") && !typeOfFile.equalsIgnoreCase("ReceiveJson")) {
                 //todo parse and show count of files
-                pushPullInterface.onFilesRecievedComplete(typeOfFile);
+//                pushPullInterface.onFilesRecievedComplete(typeOfFile,"");
             }
         }
     }
@@ -415,7 +420,7 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
         }
     }
 
-    public class UploadTHroughFTP extends AsyncTask<Void, Void, Void> {
+    public class UploadTHroughFTP extends AsyncTask<Void, Void, Boolean> {
         //        DocumentFile finalDocumentFile1;
 //        File final_file1;
 //        boolean isSdCard;
@@ -434,7 +439,8 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected Boolean doInBackground(Void... voids) {
+            boolean result = false;
             try {
                 // for Transfer Usage
                 temp.enterLocalPassiveMode();
@@ -452,7 +458,7 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
                             Log.d("Files", "FileName:" + files[i].getName());
                             String data = path + "/" + files[i].getName();
                             FileInputStream in = new FileInputStream(new File(data));
-                            boolean result = temp.storeFile("/RecievedUsage/" + files[i].getName(), in);
+                            result = temp.storeFile("/RecievedUsage/" + files[i].getName(), in);
                             Log.v("upload_result:::", files[i].getName() + "...." + result);
                         }
                     }
@@ -471,7 +477,7 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
                             Log.d("Files", "FileName:" + files[i].getName());
                             String data = path + "/" + files[i].getName();
                             FileInputStream in = new FileInputStream(new File(data));
-                            boolean result = temp.storeFile("/RecievedProfiles/" + files[i].getName(), in);
+                            result = temp.storeFile("/RecievedProfiles/" + files[i].getName(), in);
                             Log.v("upload_result:::", files[i].getName() + "...." + result);
                         }
                     }
@@ -489,7 +495,7 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
                         Log.d("Files", "FileName:" + files[i].getName());
                         String data = path + "/" + files[i].getName();
                         FileInputStream in = new FileInputStream(new File(data));
-                        boolean result = temp.storeFile("/RecievedJson/" + files[i].getName(), in);
+                        result = temp.storeFile("/RecievedJson/" + files[i].getName(), in);
                         Log.v("upload_result:::", files[i].getName() + "...." + result);
                     }
                     temp.logout();
@@ -497,8 +503,9 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                result=false;
             }
-            return null;
+            return result;
         }
 
         boolean checkDirectoryExists(FTPClient ftpClient, String dirPath) throws IOException {
@@ -511,8 +518,15 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            if (typeOfFile.equalsIgnoreCase("TransferUsage")) {
+                pushPullInterface.onFilesRecievedComplete("","");
+            }else if (typeOfFile.equalsIgnoreCase("TransferProfiles")) {
+                pushPullInterface.onFilesRecievedComplete("TransferProfiles","");
+            }else {
+                pushPullInterface.onFilesRecievedComplete("TransferJson","");
+            }
         }
     }
 

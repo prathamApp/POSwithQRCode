@@ -653,7 +653,7 @@ public class ShareProfiles extends AppCompatActivity implements FTPInterface.Pus
             tv_Groups.setText("Groups Shared : " + grp);
 
             MyApplication.setPath(Environment.getExternalStorageDirectory() + "/.POSinternal/sharableContent/");
-            new FTPConnect(ShareProfiles.this, ShareProfiles.this, ShareProfiles.this).createFTPHotspot();
+//            new FTPConnect(ShareProfiles.this, ShareProfiles.this, ShareProfiles.this).createFTPHotspot();
 
             //todo check for crl json and stop ftp server sfter transfer
 //                    }
@@ -774,7 +774,7 @@ public class ShareProfiles extends AppCompatActivity implements FTPInterface.Pus
     }
 
     @Override
-    public void onFilesRecievedComplete(String typeOfFile) {
+    public void onFilesRecievedComplete(String typeOfFile,String filename) {
 
     }
 }

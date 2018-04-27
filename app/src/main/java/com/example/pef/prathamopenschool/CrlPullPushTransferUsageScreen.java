@@ -302,7 +302,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
                 if (ssid.contains("PrathamHotSpot_")) {
                     // connect to wifi
                     ftpConnect.connectToPrathamHotSpot(ssid);
-
+                    dialog.dismiss();
                     Toast.makeText(CrlPullPushTransferUsageScreen.this, "Wifi SSID : " + ssid, Toast.LENGTH_SHORT).show();
                     // Display ftp dialog
                     Dialog dialog = new Dialog(CrlPullPushTransferUsageScreen.this);
@@ -326,19 +326,6 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
                         public void onClick(View view) {
                             if (edt_HostName.getText().toString().trim().length() > 0) {
                                 ftpConnect.connectFTPHotspot("TransferUsage", edt_HostName.getText().toString(), "8080");
-                                String path = Environment.getExternalStorageDirectory().toString() + "/.POSDBBackups";
-                                File directory = new File(path);
-                                File[] files = directory.listFiles();
-                                int cnt = 0;
-                                String fileName = "";
-                                for (int i = 0; i < files.length; i++) {
-                                    if (files[i].getName().startsWith("pushNewDataToServer")) {
-                                        fileName = "\n" + files[i].getName() + "   " + Integer.parseInt(String.valueOf(files[i].length() / 1024)) + " kb";
-                                        cnt++;
-                                    }
-                                }
-
-                                tv_Details.setText("\nFiles Transferred : " + cnt + fileName);
                             } else
                                 Toast.makeText(CrlPullPushTransferUsageScreen.this, "Please enter the IP Address of FTP Server !!!", Toast.LENGTH_SHORT).show();
                         }
@@ -728,7 +715,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
 
             // Creating FTP HotSpot
             MyApplication.setPath(dbFiles.getAbsolutePath());
-            ftpConnect.createFTPHotspot();
+//            ftpConnect.createFTPHotspot();
 
 //                        Toast.makeText(CrlPullPushTransferUsageScreen.this, "Transferred Files : " + cnt, Toast.LENGTH_SHORT).show();
 //                        intent.setAction(android.content.Intent.ACTION_SEND_MULTIPLE);
@@ -989,7 +976,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
         btn_Connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ftpConnect.connectFTPHotspot("TransferUsage", edt_HostName.getText().toString(), edt_Port.getText().toString());
+//                ftpConnect.connectFTPHotspot("TransferUsage", edt_HostName.getText().toString(), edt_Port.getText().toString());
             }
         });
     }
@@ -1019,14 +1006,25 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
 
 
     @Override
-    public void onFilesRecievedComplete(String typeOfFile) {
-        if (typeOfFile.equalsIgnoreCase("TransferUsage")) {
-
+    public void onFilesRecievedComplete(String typeOfFile,String filename) {
+        String path = Environment.getExternalStorageDirectory().toString() + "/.POSDBBackups";
+        File directory = new File(path);
+        File[] files = directory.listFiles();
+        int cnt = 0;
+        String fileName = "";
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].getName().startsWith("pushNewDataToServer")) {
+                fileName += "\n" + files[i].getName() + "   " + Integer.parseInt(String.valueOf(files[i].length() / 1024)) + " kb";
+                cnt++;
+            }
         }
+        tv_Details.setText("\nFiles Transferred : " + cnt + fileName);
     }
 
     @Override
     public void onBackPressed() {
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        wifiManager.setWifiEnabled(false);
         if (ftpConnect.checkServiceRunning()) {
             ftpConnect.stopServer();
         }
