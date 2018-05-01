@@ -8,10 +8,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
+import com.example.pef.prathamopenschool.MessageEvent;
 import com.example.pef.prathamopenschool.MyApplication;
 import com.example.pef.prathamopenschool.R;
 
 import net.vrallev.android.cat.Cat;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.net.InetAddress;
 
@@ -104,5 +107,6 @@ public class FsNotification extends BroadcastReceiver {
         NotificationManager nm = (NotificationManager) context.getSystemService(ns);
         nm.cancelAll();
         Cat.d("Cleared notification");
+        EventBus.getDefault().post(new MessageEvent("Recieved"));
     }
 }

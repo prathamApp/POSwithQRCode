@@ -21,6 +21,10 @@ package com.example.pef.prathamopenschool.ftpSettings;
 
 import android.util.Log;
 
+import com.example.pef.prathamopenschool.MessageEvent;
+
+import org.greenrobot.eventbus.EventBus;
+
 import java.net.InetAddress;
 
 public class CmdPASV extends FtpCmd implements Runnable {
@@ -65,5 +69,6 @@ public class CmdPASV extends FtpCmd implements Runnable {
         String responseString = response.toString();
         sessionThread.writeString(responseString);
         Log.d(TAG, "PASV completed, sent: " + responseString);
+        EventBus.getDefault().post(new MessageEvent("showCount"));
     }
 }

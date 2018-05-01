@@ -21,15 +21,20 @@ package com.example.pef.prathamopenschool.ftpSettings;
 
 import android.util.Log;
 
+import com.example.pef.prathamopenschool.MessageEvent;
+
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.File;
 import java.lang.reflect.Constructor;
+
 
 public abstract class FtpCmd implements Runnable {
     private static final String TAG = FtpCmd.class.getSimpleName();
 
     protected SessionThread sessionThread;
 
-    protected static CmdMap[] cmdClasses = { new CmdMap("SYST", CmdSYST.class),
+    protected static CmdMap[] cmdClasses = {new CmdMap("SYST", CmdSYST.class),
             new CmdMap("USER", CmdUSER.class), new CmdMap("PASS", CmdPASS.class),
             new CmdMap("TYPE", CmdTYPE.class), new CmdMap("CWD", CmdCWD.class),
             new CmdMap("PWD", CmdPWD.class), new CmdMap("LIST", CmdLIST.class),
@@ -55,7 +60,7 @@ public abstract class FtpCmd implements Runnable {
             new CmdMap("RANG", CmdRANG.class)
     };
 
-    private static Class<?>[] allowedCmdsWhileAnonymous = { CmdUSER.class, CmdPASS.class, //
+    private static Class<?>[] allowedCmdsWhileAnonymous = {CmdUSER.class, CmdPASS.class, //
             CmdCWD.class, CmdLIST.class, CmdMDTM.class, CmdNLST.class, CmdPASV.class, //
             CmdPWD.class, CmdQUIT.class, CmdRETR.class, CmdSIZE.class, CmdTYPE.class, //
             CmdCDUP.class, CmdNOOP.class, CmdSYST.class, CmdPORT.class, //
@@ -103,14 +108,14 @@ public abstract class FtpCmd implements Runnable {
                 Constructor<? extends FtpCmd> constructor;
                 try {
                     constructor = cmdClasses[i].getCommand().getConstructor(
-                            new Class[] { SessionThread.class, String.class });
+                            new Class[]{SessionThread.class, String.class});
                 } catch (NoSuchMethodException e) {
                     Log.e(TAG, "FtpCmd subclass lacks expected " + "constructor ");
                     return;
                 }
                 try {
-                    cmdInstance = constructor.newInstance(new Object[] { session,
-                            inputString });
+                    cmdInstance = constructor.newInstance(new Object[]{session,
+                            inputString});
                 } catch (Exception e) {
                     Log.e(TAG, "Instance creation error on FtpCmd");
                     return;
@@ -152,7 +157,7 @@ public abstract class FtpCmd implements Runnable {
      * An FTP parameter is that part of the input string that occurs after the first
      * space, including any subsequent spaces. Also, we want to chop off the trailing
      * '\r\n', if present.
-     *
+     * <p>
      * Some parameters shouldn't be logged or output (e.g. passwords), so the caller can
      * use silent==true in that case.
      */

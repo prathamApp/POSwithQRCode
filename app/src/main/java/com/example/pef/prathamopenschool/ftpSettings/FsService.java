@@ -305,7 +305,7 @@ public class FsService extends Service implements Runnable {
                         returnAddress = address;
                     }
                 }
-//                returnAddress = InetAddress.getByName("192.168.10.1");
+//                returnAddress = InetAddress.getByName("192.168.42.1");
             }
         } catch (Exception e) {
             e.printStackTrace();

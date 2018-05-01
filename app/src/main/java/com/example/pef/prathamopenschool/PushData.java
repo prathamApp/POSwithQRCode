@@ -107,7 +107,7 @@ public class PushData extends AppCompatActivity {
             // Disabling Button if clicked to avoid repushing on server
             btn_pushReceivedData.setClickable(false);
 
-            Toast.makeText(PushData.this, "Connected to the Internet !!!", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(PushData.this, "Connected to the Internet !!!", Toast.LENGTH_SHORT).show();
 
 
             //Moving to Receive usage
@@ -119,11 +119,11 @@ public class PushData extends AppCompatActivity {
 //                Toast.makeText(this, "Bluetooth folder does not exist", Toast.LENGTH_SHORT).show();
 //            } else
 
-            File srcFolder = new File(Environment.getExternalStorageDirectory() + "/.POSDBBackups");
+            File srcFolder = new File(Environment.getExternalStorageDirectory() + "/FTPRecieved/RecievedUsage");
             String destFolder = Environment.getExternalStorageDirectory() + "/.POSinternal/pushedUsage";
             if (!srcFolder.exists()) {
                 btn_pushReceivedData.setClickable(true);
-                Toast.makeText(this, ".POSDBBackups folder does not exist", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "No files found to push", Toast.LENGTH_SHORT).show();
             } else {
                 progress = new ProgressDialog(PushData.this);
                 progress.setMessage("Please Wait...");

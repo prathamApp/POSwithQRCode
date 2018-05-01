@@ -12,6 +12,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
@@ -42,6 +43,9 @@ import com.github.angads25.filepicker.model.DialogConfigs;
 import com.github.angads25.filepicker.model.DialogProperties;
 import com.github.angads25.filepicker.view.FilePickerDialog;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -82,7 +86,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
     boolean found = false;
     String className = null;
     Boolean FlagShareOff = false, FlagReceiveOff = false;
-    File newProfile, newJson;
+    File newJson;
     String ReceivePath, TargetPath, shareItPath;
 
     int SDCardLocationChooser = 7, ZipFilePicker = 9;
@@ -97,7 +101,6 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 
     TextView tv_Students, tv_Crls, tv_Groups;
 
-    JSONArray crlJsonArray, studentsJsonArray, grpJsonArray;
     public ProgressDialog progressDialog;
 
     RelativeLayout ftpDialogLayout;
@@ -557,6 +560,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
             wipeSentFiles();
         }
 
+        path.clear();
         ArrayList<String> fetchedStudents = fetchStudentProfiles();
         try {
             copyStdProfilesTosharableContent(fetchedStudents);
@@ -566,7 +570,6 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 
         // Files are created
         // todo check null for all values
-        path.clear();
         sendNewStudent();
         sendNewGroup();
         sendNewCrl();
@@ -584,7 +587,8 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
                     paths[i] = path.get(i);
                 }
                 // Compressing Files
-                Compress mergeFiles = new Compress(paths, Environment.getExternalStorageDirectory() + "/.POSinternal/sharableContent/NewProfiles.zip");
+                Compress mergeFiles = new Compress(paths, Environment.getExternalStorageDirectory()
+                        + "/.POSinternal/sharableContent/NewProfiles_" + Build.SERIAL + ".zip");
                 mergeFiles.zip();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -942,412 +946,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 
     }
 
-    // Reading CRL Json From internal memory
-    public String loadCrlJSONFromAsset() {
-        String crlJsonStr = "";
-
-        try {
-            File crlJsonSDCard = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/ReceivedContent/", "Crl.json");
-            if (crlJsonSDCard.exists()) {
-                FileInputStream stream = new FileInputStream(crlJsonSDCard);
-                try {
-                    FileChannel fc = stream.getChannel();
-                    MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
-
-                    crlJsonStr = Charset.defaultCharset().decode(bb).toString();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    stream.close();
-                }
-            }
-        } catch (Exception e) {
-            e.getMessage();
-        }
-
-        return crlJsonStr;
-    }
-
-
-    // Reading Aser Json From internal memory
-    public String loadAserJSONFromAsset() {
-        String aserJson = "";
-        try {
-            File AserJsonSDCard = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/ReceivedContent/", "Aser.json");
-            if (AserJsonSDCard.exists()) {
-                FileInputStream stream = new FileInputStream(AserJsonSDCard);
-                try {
-                    FileChannel fc = stream.getChannel();
-                    MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
-
-                    aserJson = Charset.defaultCharset().decode(bb).toString();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    stream.close();
-                }
-            }
-
-        } catch (Exception e) {
-        }
-
-        return aserJson;
-
-    }
-
-    // Reading Student Json From internal memory
-    public String loadStudentJSONFromAsset() {
-        String studentJson = "";
-        try {
-            File studentJsonSDCard = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/ReceivedContent/", "Student.json");
-            if (studentJsonSDCard.exists()) {
-                FileInputStream stream = new FileInputStream(studentJsonSDCard);
-                try {
-                    FileChannel fc = stream.getChannel();
-                    MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
-
-                    studentJson = Charset.defaultCharset().decode(bb).toString();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    stream.close();
-                }
-            }
-
-        } catch (Exception e) {
-        }
-
-        return studentJson;
-
-    }
-
-    // Reading Student Json From internal memory
-    public String loadGroupJSONFromAsset() {
-        String groupJson = "";
-        try {
-            File groupJsonSDCard = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/ReceivedContent/", "Group.json");
-            if (groupJsonSDCard.exists()) {
-                FileInputStream stream = new FileInputStream(groupJsonSDCard);
-                try {
-                    FileChannel fc = stream.getChannel();
-                    MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
-
-                    groupJson = Charset.defaultCharset().decode(bb).toString();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    stream.close();
-                }
-            }
-        } catch (Exception e) {
-        }
-
-        return groupJson;
-
-    }
-
     // Update Json in Device's Database when Received new files from another Device
-    public void UpdateDB() throws JSONException {
-
-        // For Loading CRL Json From External Storage (Assets)
-        String crljsonData = loadCrlJSONFromAsset();
-        Log.d("crljsonData::", crljsonData);
-        if (!crljsonData.equals("")) {
-            crlJsonArray = new JSONArray(crljsonData);
-            for (int i = 0; i < crlJsonArray.length(); i++) {
-                JSONObject clrJsonObject = crlJsonArray.getJSONObject(i);
-                Crl crlobj = new Crl();
-                crlobj.CRLId = clrJsonObject.getString("CRLID");
-                crlobj.FirstName = clrJsonObject.getString("FirstName");
-                crlobj.LastName = clrJsonObject.getString("LastName");
-                crlobj.UserName = clrJsonObject.getString("UserName");
-                crlobj.Password = clrJsonObject.getString("PassWord");
-                crlobj.ProgramId = clrJsonObject.getInt("ProgramId");
-                crlobj.Mobile = clrJsonObject.getString("Mobile");
-                crlobj.State = clrJsonObject.getString("State");
-                crlobj.Email = clrJsonObject.getString("Email");
-                crlobj.CreatedBy = clrJsonObject.getString("CreatedBy");
-                crlobj.newCrl = true;
-
-                // new entries
-
-                try {
-                    crlobj.sharedBy = clrJsonObject.getString("sharedBy");
-                    crlobj.SharedAtDateTime = clrJsonObject.getString("SharedAtDateTime");
-                    crlobj.appVersion = clrJsonObject.getString("appVersion");
-                    crlobj.appName = clrJsonObject.getString("appName");
-                    crlobj.CreatedOn = clrJsonObject.getString("CreatedOn");
-                } catch (JSONException e) {
-                    crlobj.sharedBy = "";
-                    crlobj.SharedAtDateTime = "";
-                    crlobj.appVersion = "";
-                    crlobj.appName = "";
-                    crlobj.CreatedOn = "";
-                    e.printStackTrace();
-                }
-
-                cdb.replaceData(crlobj);
-                BackupDatabase.backup(c);
-            }
-        }
-
-
-        // For Loading Aser Json From External Storage (Assets)
-        String aserjsonData = loadAserJSONFromAsset();
-        if (!aserjsonData.equals("")) {
-            JSONArray aserJsonArray = new JSONArray(aserjsonData);
-            for (int i = 0; i < aserJsonArray.length(); i++) {
-
-                JSONObject aserJsonObject = aserJsonArray.getJSONObject(i);
-                Aser asrobj = new Aser();
-
-                asrobj.StudentId = aserJsonObject.getString("StudentId");
-                asrobj.ChildID = aserJsonObject.getString("ChildID");
-                asrobj.GroupID = aserJsonObject.getString("GroupID");
-                asrobj.TestType = aserJsonObject.getInt("TestType");
-                asrobj.TestDate = aserJsonObject.getString("TestDate");
-                asrobj.Lang = aserJsonObject.getInt("Lang");
-                asrobj.Num = aserJsonObject.getInt("Num");
-                asrobj.OAdd = aserJsonObject.getInt("OAdd");
-                asrobj.OSub = aserJsonObject.getInt("OSub");
-                asrobj.OMul = aserJsonObject.getInt("OMul");
-                asrobj.ODiv = aserJsonObject.getInt("ODiv");
-                asrobj.WAdd = aserJsonObject.getInt("WAdd");
-                asrobj.WSub = aserJsonObject.getInt("WSub");
-                asrobj.CreatedBy = aserJsonObject.getString("CreatedBy");
-                asrobj.CreatedDate = aserJsonObject.getString("CreatedDate");
-                asrobj.DeviceId = aserJsonObject.getString("DeviceId");
-                asrobj.FLAG = aserJsonObject.getInt("FLAG");
-
-                // new entries
-                try {
-                    asrobj.sharedBy = aserJsonObject.getString("sharedBy");
-                    asrobj.SharedAtDateTime = aserJsonObject.getString("SharedAtDateTime");
-                    asrobj.appVersion = aserJsonObject.getString("appVersion");
-                    asrobj.appName = aserJsonObject.getString("appName");
-                    asrobj.CreatedOn = aserJsonObject.getString("CreatedOn");
-                } catch (JSONException e) {
-                    asrobj.sharedBy = "";
-                    asrobj.SharedAtDateTime = "";
-                    asrobj.appVersion = "";
-                    asrobj.appName = "";
-                    asrobj.CreatedOn = "";
-                    e.printStackTrace();
-                }
-
-                if (asrobj.TestType == 0) {
-                    boolean result;
-                    result = adb.CheckDataExists(asrobj.StudentId, 0);
-                    if (result == false) {
-                        adb.insertData(asrobj);
-                        BackupDatabase.backup(c);
-                    } else {
-                        adb.UpdateReceivedAserData(asrobj.ChildID, asrobj.TestDate, asrobj.Lang, asrobj.Num, asrobj.OAdd,
-                                asrobj.OSub, asrobj.OMul, asrobj.ODiv, asrobj.WAdd, asrobj.WSub, asrobj.CreatedBy,
-                                asrobj.CreatedDate, asrobj.FLAG, asrobj.sharedBy, asrobj.SharedAtDateTime, asrobj.appVersion,
-                                asrobj.appName, asrobj.CreatedOn, asrobj.StudentId, 0);
-                        BackupDatabase.backup(c);
-                    }
-                } else if (asrobj.TestType == 1) {
-                    boolean result;
-                    result = adb.CheckDataExists(asrobj.StudentId, 1);
-                    if (result == false) {
-                        adb.insertData(asrobj);
-                        BackupDatabase.backup(c);
-                    } else {
-                        adb.UpdateReceivedAserData(asrobj.ChildID, asrobj.TestDate, asrobj.Lang, asrobj.Num, asrobj.OAdd,
-                                asrobj.OSub, asrobj.OMul, asrobj.ODiv, asrobj.WAdd, asrobj.WSub, asrobj.CreatedBy,
-                                asrobj.CreatedDate, asrobj.FLAG, asrobj.sharedBy, asrobj.SharedAtDateTime, asrobj.appVersion,
-                                asrobj.appName, asrobj.CreatedOn, asrobj.StudentId, 0);
-                        BackupDatabase.backup(c);
-                    }
-                } else if (asrobj.TestType == 2) {
-                    boolean result;
-                    result = adb.CheckDataExists(asrobj.StudentId, 2);
-                    if (result == false) {
-                        adb.insertData(asrobj);
-                        BackupDatabase.backup(c);
-                    } else {
-                        adb.UpdateReceivedAserData(asrobj.ChildID, asrobj.TestDate, asrobj.Lang, asrobj.Num, asrobj.OAdd,
-                                asrobj.OSub, asrobj.OMul, asrobj.ODiv, asrobj.WAdd, asrobj.WSub, asrobj.CreatedBy,
-                                asrobj.CreatedDate, asrobj.FLAG, asrobj.sharedBy, asrobj.SharedAtDateTime, asrobj.appVersion,
-                                asrobj.appName, asrobj.CreatedOn, asrobj.StudentId, 0);
-                        BackupDatabase.backup(c);
-                    }
-                } else if (asrobj.TestType == 3) {
-                    boolean result;
-                    result = adb.CheckDataExists(asrobj.StudentId, 3);
-                    if (result == false) {
-                        adb.insertData(asrobj);
-                        BackupDatabase.backup(c);
-                    } else {
-                        adb.UpdateReceivedAserData(asrobj.ChildID, asrobj.TestDate, asrobj.Lang, asrobj.Num, asrobj.OAdd,
-                                asrobj.OSub, asrobj.OMul, asrobj.ODiv, asrobj.WAdd, asrobj.WSub, asrobj.CreatedBy,
-                                asrobj.CreatedDate, asrobj.FLAG, asrobj.sharedBy, asrobj.SharedAtDateTime, asrobj.appVersion,
-                                asrobj.appName, asrobj.CreatedOn, asrobj.StudentId, 0);
-                        BackupDatabase.backup(c);
-                    }
-                } else if (asrobj.TestType == 4) {
-                    boolean result;
-                    result = adb.CheckDataExists(asrobj.StudentId, 4);
-                    if (result == false) {
-                        adb.insertData(asrobj);
-                        BackupDatabase.backup(c);
-                    } else {
-                        adb.UpdateReceivedAserData(asrobj.ChildID, asrobj.TestDate, asrobj.Lang, asrobj.Num, asrobj.OAdd,
-                                asrobj.OSub, asrobj.OMul, asrobj.ODiv, asrobj.WAdd, asrobj.WSub, asrobj.CreatedBy,
-                                asrobj.CreatedDate, asrobj.FLAG, asrobj.sharedBy, asrobj.SharedAtDateTime, asrobj.appVersion,
-                                asrobj.appName, asrobj.CreatedOn, asrobj.StudentId, 0);
-                        BackupDatabase.backup(c);
-                    }
-
-                    //adb.insertData(asrobj);
-                    //BackupDatabase.backup(c);
-
-                }
-
-
-            }// For Loop
-
-        }
-
-
-        // For Loading Student Json From External Storage (Assets)
-        String studentjsonData = loadStudentJSONFromAsset();
-        if (!studentjsonData.equals("")) {
-            studentsJsonArray = new JSONArray(studentjsonData);
-
-            for (int j = 0; j < studentsJsonArray.length(); j++) {
-
-                JSONObject stdJsonObject = studentsJsonArray.getJSONObject(j);
-
-                Student stdObj = new Student();
-
-                stdObj.StudentID = stdJsonObject.getString("StudentID");
-                stdObj.FirstName = stdJsonObject.getString("FirstName");
-                stdObj.MiddleName = stdJsonObject.getString("MiddleName");
-                stdObj.LastName = stdJsonObject.getString("LastName");
-                stdObj.Age = stdJsonObject.getInt("Age");
-                stdObj.Class = stdJsonObject.getInt("Class");
-                stdObj.UpdatedDate = stdJsonObject.getString("UpdatedDate");
-                stdObj.Gender = stdJsonObject.getString("Gender");
-                stdObj.GroupID = stdJsonObject.getString("GroupID");
-                stdObj.CreatedBy = stdJsonObject.getString("CreatedBy");
-                stdObj.StudentUID = stdJsonObject.getString("StudentUID");
-                stdObj.newStudent = true;
-                //todo new
-                stdObj.IsSelected = stdJsonObject.getBoolean("IsSelected");
-
-                // new entries
-                try {
-                    stdObj.sharedBy = stdJsonObject.getString("sharedBy");
-                    stdObj.SharedAtDateTime = stdJsonObject.getString("SharedAtDateTime");
-                    stdObj.appVersion = stdJsonObject.getString("appVersion");
-                    stdObj.appName = stdJsonObject.getString("appName");
-                    stdObj.CreatedOn = stdJsonObject.getString("CreatedOn");
-                } catch (JSONException e) {
-                    stdObj.sharedBy = "";
-                    stdObj.SharedAtDateTime = "";
-                    stdObj.appVersion = "";
-                    stdObj.appName = "";
-                    stdObj.CreatedOn = "";
-                    e.printStackTrace();
-                }
-
-                sdb.replaceData(stdObj);
-                BackupDatabase.backup(c);
-            }
-        }
-
-        // For Loading Group Json From External Storage (Assets)
-        String groupjsonData = loadGroupJSONFromAsset();
-        if (!groupjsonData.equals("")) {
-            grpJsonArray = new JSONArray(groupjsonData);
-
-            for (int j = 0; j < grpJsonArray.length(); j++) {
-
-                JSONObject grpJsonObject = grpJsonArray.getJSONObject(j);
-
-                Group grpObj = new Group();
-
-                grpObj.GroupID = grpJsonObject.getString("GroupID");
-                grpObj.GroupCode = grpJsonObject.getString("GroupCode");
-                grpObj.GroupName = grpJsonObject.getString("GroupName");
-                grpObj.UnitNumber = grpJsonObject.getString("UnitNumber");
-                grpObj.DeviceID = grpJsonObject.getString("DeviceID");
-                grpObj.Responsible = grpJsonObject.getString("Responsible");
-                grpObj.ResponsibleMobile = grpJsonObject.getString("ResponsibleMobile");
-                grpObj.VillageID = grpJsonObject.getInt("VillageID");
-                grpObj.ProgramID = grpJsonObject.getInt("ProgramId");
-                grpObj.CreatedBy = grpJsonObject.getString("CreatedBy");
-                grpObj.SchoolName = grpJsonObject.getString("SchoolName");
-                grpObj.VillageName = grpJsonObject.getString("VillageName");
-                grpObj.newGroup = true;
-
-                // new entries
-                try {
-                    grpObj.sharedBy = grpJsonObject.getString("sharedBy");
-                    grpObj.SharedAtDateTime = grpJsonObject.getString("SharedAtDateTime");
-                    grpObj.appVersion = grpJsonObject.getString("appVersion");
-                    grpObj.appName = grpJsonObject.getString("appName");
-                    grpObj.CreatedOn = grpJsonObject.getString("CreatedOn");
-                } catch (JSONException e) {
-                    grpObj.sharedBy = "";
-                    grpObj.SharedAtDateTime = "";
-                    grpObj.appVersion = "";
-                    grpObj.appName = "";
-                    grpObj.CreatedOn = "";
-                    e.printStackTrace();
-                }
-
-                gdb.replaceData(grpObj);
-
-            }
-        }
-        BackupDatabase.backup(c);
-    }
-
-    // Transfer image files from Received to StudentProfiles
-    public void copy(File sourceLocation, File targetLocation) throws IOException {
-        try {
-            if (sourceLocation.isDirectory()) {
-                copyDirectory(sourceLocation, targetLocation);
-            } else {
-                copyFile(sourceLocation, targetLocation);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void copyDirectory(File source, File target) throws IOException {
-        try {
-            if (!target.exists()) {
-                target.mkdir();
-            }
-
-            for (String f : source.list()) {
-                copy(new File(source, f), new File(target, f));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void copyFile(File source, File target) throws IOException {
-        if (source.getName().contains(".jpg")) {
-            try (
-                    InputStream in = new FileInputStream(source);
-                    OutputStream out = new FileOutputStream(target)
-            ) {
-                byte[] buf = new byte[1024];
-                int length;
-                while ((length = in.read(buf)) > 0) {
-                    out.write(buf, 0, length);
-                }
-            }
-        }
-    }
 
     /************************************************* SHARE OFFLINE ********************************************************************/
 
@@ -1617,121 +1216,6 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
     }
 
 
-    void SetInitialValuesReceiveOff() throws JSONException {
-        // insert your code to run only when application is started first time here
-        context = this;
-        //CRL Initial DB Process
-        CrlDBHelper db = new CrlDBHelper(context);
-        // For Loading CRL Json From External Storage (Assets)
-        JSONArray crlJsonArray = new JSONArray(loadCrlJSONFromAssetReceiveOff());
-        for (int i = 0; i < crlJsonArray.length(); i++) {
-            JSONObject clrJsonObject = crlJsonArray.getJSONObject(i);
-            Crl crlobj = new Crl();
-            crlobj.CRLId = clrJsonObject.getString("CRLId");
-            crlobj.FirstName = clrJsonObject.getString("FirstName");
-            crlobj.LastName = clrJsonObject.getString("LastName");
-            crlobj.UserName = clrJsonObject.getString("UserName");
-            crlobj.Password = clrJsonObject.getString("Password");
-            crlobj.ProgramId = clrJsonObject.getInt("ProgramId");
-            crlobj.Mobile = clrJsonObject.getString("Mobile");
-            crlobj.State = clrJsonObject.getString("State");
-            crlobj.Email = clrJsonObject.getString("Email");
-            crlobj.newCrl = true;
-            // new entries default values
-            try {
-                crlobj.sharedBy = clrJsonObject.getString("sharedBy");
-                crlobj.SharedAtDateTime = clrJsonObject.getString("SharedAtDateTime");
-                crlobj.appVersion = clrJsonObject.getString("appVersion");
-                crlobj.appName = clrJsonObject.getString("appName");
-                crlobj.CreatedOn = clrJsonObject.getString("CreatedOn");
-            } catch (Exception e) {
-                crlobj.sharedBy = "";
-                crlobj.SharedAtDateTime = "";
-                crlobj.appVersion = "";
-                crlobj.appName = "";
-                crlobj.CreatedOn = "";
-                e.printStackTrace();
-            }
-            db.updateJsonData(crlobj);
-            BackupDatabase.backup(context);
-        }
-        //Villages Initial DB Process
-        VillageDBHelper database = new VillageDBHelper(context);
-        // For Loading Villages Json From External Storage (Assets)
-        JSONArray villagesJsonArray = new JSONArray(loadVillageJSONFromAssetReceiveOff());
-        for (int j = 0; j < villagesJsonArray.length(); j++) {
-            JSONObject villagesJsonObject = villagesJsonArray.getJSONObject(j);
-            Village villageobj = new Village();
-            villageobj.VillageID = villagesJsonObject.getInt("VillageId");
-            villageobj.VillageCode = villagesJsonObject.getString("VillageCode");
-            villageobj.VillageName = villagesJsonObject.getString("VillageName");
-            villageobj.Block = villagesJsonObject.getString("Block");
-            villageobj.District = villagesJsonObject.getString("District");
-            villageobj.State = villagesJsonObject.getString("State");
-            villageobj.CRLID = villagesJsonObject.getString("CRLId");
-            database.updateJsonData(villageobj);
-            BackupDatabase.backup(context);
-        }
-    }
-
-    // Reading CRL Json From Internal Memory
-    public String loadCrlJSONFromAssetReceiveOff() {
-        String crlJsonStr = null;
-
-        try {
-            File crlJsonSDCard = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/", "Crl.json");
-            FileInputStream stream = new FileInputStream(crlJsonSDCard);
-            try {
-                FileChannel fc = stream.getChannel();
-                MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
-
-                crlJsonStr = Charset.defaultCharset().decode(bb).toString();
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                stream.close();
-            }
-
-        } catch (Exception e) {
-        }
-
-        return crlJsonStr;
-    }
-
-    // Reading Village Json From SDCard
-    public String loadVillageJSONFromAssetReceiveOff() {
-        String villageJson = null;
-        try {
-            File villageJsonSDCard = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/", "Village.json");
-            FileInputStream stream = new FileInputStream(villageJsonSDCard);
-            try {
-                FileChannel fc = stream.getChannel();
-                MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
-
-                villageJson = Charset.defaultCharset().decode(bb).toString();
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                stream.close();
-            }
-
-        } catch (Exception e) {
-        }
-
-        return villageJson;
-
-    }
-
-
-    private void wipeJsonFolder() {
-
-        // Delete Receive Folder Contents after Transferring
-        String directoryToDelete = Environment.getExternalStorageDirectory() + "/.POSinternal/Json";
-        File dir = new File(directoryToDelete);
-        for (File file : dir.listFiles())
-            if (!file.isDirectory())
-                file.delete();
-    }
 
     // Delete Sent Files
     private void wipeSentFiles() {
@@ -1960,89 +1444,39 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
         }
     }
 
-    public class RecieveFiles extends AsyncTask<Void, Integer, String> {
 
-        String targetPath;
-        String recieveProfilePath;
-        ProgressDialog dialog;
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
 
-        public RecieveFiles(String targetPath, String recieveProfilePath) {
-            this.targetPath = targetPath;
-            this.recieveProfilePath = recieveProfilePath;
-        }
+    @Override
+    protected void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            dialog = new ProgressDialog(CrlShareReceiveProfiles.this);
-            dialog.setMessage("Receiving Profiles");
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.setCancelable(false);
-            dialog.show();
-        }
-
-        @Override
-        protected String doInBackground(Void... voids) {
-            // Extraction of contents
-            newProfile = new File(recieveProfilePath);
-            Compress extract = new Compress();
-//            ReceivePath = recieveProfilePath.replace("content://com.estrongs.files", "");
-
-            Log.d("ReceivePath :::", recieveProfilePath);
-            Log.d("TargetPath :::", targetPath);
-
-            // Exctracting Data
-            List<String> unzippedFileNames = extract.unzip(recieveProfilePath, targetPath);
-
-            // Inserting All Jsons in Database
-            try {
-                // todo
-                UpdateDB();
-                // Error causing here
-                newProfile.delete();
-                // Transfer Student's Profiles from Receive folder to Student Profiles
-                File src = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/receivedUsage");
-                File dest = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/StudentProfiles");
-                try {
-                    if (!src.exists()) {
-                        //Toast.makeText(c, "No folder exist in Internal Storage to copy", Toast.LENGTH_LONG).show();
-                    } else if (dest.exists()) {
-                        copyDirectory(src, dest);
-//                        CrlShareReceiveProfiles.this.runOnUiThread(new Runnable() {
-//                            public void run() {
-//                                Toast.makeText(c, "Files copied successfully!", Toast.LENGTH_LONG).show();
-//                            }
-//                        });
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return "true";
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            if (dialog != null) {
-                dialog.dismiss();
-            }
-
-            Toast.makeText(c, "Files Received & Updated in Database Successfully !!!", Toast.LENGTH_SHORT).show();
-            tv_Students.setVisibility(View.VISIBLE);
-            tv_Crls.setVisibility(View.VISIBLE);
-            tv_Groups.setVisibility(View.VISIBLE);
-            int crl = crlJsonArray == null ? 0 : crlJsonArray.length();
-            int std = studentsJsonArray == null ? 0 : studentsJsonArray.length();
-            int grp = grpJsonArray == null ? 0 : grpJsonArray.length();
-            tv_Students.setText("Students Received : " + std);
-            tv_Crls.setText("CRLs Received : " + crl);
-            tv_Groups.setText("Groups Received : " + grp);
-
-            Toast.makeText(c, "Profiles received", Toast.LENGTH_LONG).show();
-
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MessageEvent event) {
+        if (event.message.equalsIgnoreCase("RecieveFiles")) {
+//            int crl = crlJsonArray == null ? 0 : crlJsonArray.length();
+//            int std = studentsJsonArray == null ? 0 : studentsJsonArray.length();
+//            int grp = grpJsonArray == null ? 0 : grpJsonArray.length();
+//            if (tv_Students != null) {
+//                tv_Students.setVisibility(View.VISIBLE);
+//                tv_Students.setText("Students Received : " + std);
+//            }
+//            if (tv_Crls != null) {
+//                tv_Crls.setVisibility(View.VISIBLE);
+//                tv_Crls.setText("CRLs Received : " + crl);
+//            }
+//            if (tv_Groups != null) {
+//                tv_Groups.setVisibility(View.VISIBLE);
+//                tv_Groups.setText("Groups Received : " + grp);
+//            }
         }
     }
+
+
 }

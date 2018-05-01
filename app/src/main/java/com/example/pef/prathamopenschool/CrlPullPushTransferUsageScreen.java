@@ -257,11 +257,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
     @SuppressLint("StaticFieldLeak")
     public void transferData(View v) {
 
-        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        boolean wifiEnabled = wifiManager.isWifiEnabled();
-        if (!wifiEnabled) {
-            wifiManager.setWifiEnabled(true);
-        }
+        createJsonforTransfer();
 
         // Display ftp dialog
         Dialog dialog = new Dialog(this);
@@ -1006,7 +1002,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
 
 
     @Override
-    public void onFilesRecievedComplete(String typeOfFile,String filename) {
+    public void onFilesRecievedComplete(String typeOfFile, String filename) {
         String path = Environment.getExternalStorageDirectory().toString() + "/.POSDBBackups";
         File directory = new File(path);
         File[] files = directory.listFiles();
@@ -1019,15 +1015,5 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
             }
         }
         tv_Details.setText("\nFiles Transferred : " + cnt + fileName);
-    }
-
-    @Override
-    public void onBackPressed() {
-        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        wifiManager.setWifiEnabled(false);
-        if (ftpConnect.checkServiceRunning()) {
-            ftpConnect.stopServer();
-        }
-        super.onBackPressed();
     }
 }

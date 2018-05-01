@@ -29,7 +29,8 @@ public class Utility {
     private final DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.ENGLISH);
     private final DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH);
     private final DateFormat dateFormat1 = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-
+    public static String targetPath="";
+    public static String recievedFilePath="";
 
     public String GetCurrentDateTime(boolean getSysTime) {
         if (getSysTime) {

@@ -469,11 +469,11 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
                     if (!ifDirExists)
                         temp.makeDirectory("RecievedProfiles");
 //                    temp.changeWorkingDirectory("RecievedProfiles");
-                    String path = Environment.getExternalStorageDirectory().toString() + "/.POSinternal/sharableContent";
+                    String path = Environment.getExternalStorageDirectory() + "/.POSinternal/sharableContent";
                     File directory = new File(path);
                     File[] files = directory.listFiles();
                     for (int i = 0; i < files.length; i++) {
-                        if (files[i].getName().equalsIgnoreCase("NewProfiles.zip")) {
+                        if (files[i].getName().startsWith("NewProfiles")) {
                             Log.d("Files", "FileName:" + files[i].getName());
                             String data = path + "/" + files[i].getName();
                             FileInputStream in = new FileInputStream(new File(data));

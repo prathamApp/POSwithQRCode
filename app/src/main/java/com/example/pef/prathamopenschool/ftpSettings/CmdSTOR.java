@@ -19,6 +19,14 @@ along with SwiFTP.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.example.pef.prathamopenschool.ftpSettings;
 
+import android.util.Log;
+
+import com.example.pef.prathamopenschool.MessageEvent;
+
+import org.greenrobot.eventbus.EventBus;
+
+import static com.example.pef.prathamopenschool.CrlDashboard.filename;
+
 public class CmdSTOR extends CmdAbstractStore implements Runnable {
     protected String input;
 
@@ -29,6 +37,9 @@ public class CmdSTOR extends CmdAbstractStore implements Runnable {
 
     @Override
     public void run() {
+        Log.d("input::", input);
+        filename += "\n" + input.trim().substring(input.lastIndexOf("/") + 1);
+        Log.d("input__::", filename);
         doStorOrAppe(getParameter(input), false);
     }
 }
