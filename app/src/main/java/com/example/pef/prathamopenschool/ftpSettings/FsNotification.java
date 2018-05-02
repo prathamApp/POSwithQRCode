@@ -107,6 +107,6 @@ public class FsNotification extends BroadcastReceiver {
         NotificationManager nm = (NotificationManager) context.getSystemService(ns);
         nm.cancelAll();
         Cat.d("Cleared notification");
-        EventBus.getDefault().post(new MessageEvent("Recieved"));
+        EventBus.getDefault().post(new MessageEvent("stopDialog"));
     }
 }

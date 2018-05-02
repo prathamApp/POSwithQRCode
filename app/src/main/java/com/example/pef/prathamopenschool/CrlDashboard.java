@@ -206,6 +206,12 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
             }
             count += 1;
             recievingDialog.setMessage("Files Recieved...." + count + filename);
+        }else if (event.message.equalsIgnoreCase("stopDialog")) {
+            count = 0;
+            filename = "";
+            if (recievingDialog.isShowing()) {
+                recievingDialog.dismiss();
+            }
         }
     }
 

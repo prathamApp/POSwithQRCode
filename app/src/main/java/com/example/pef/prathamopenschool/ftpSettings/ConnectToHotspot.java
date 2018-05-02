@@ -78,6 +78,8 @@ public class ConnectToHotspot extends AsyncTask<Void, Void, Void> {
         // todo if connected to FTP Server
 //            final FTPClient[] client = new FTPClient[1];
         try {
+            ipaddress=ipaddress.replace("ftp://","");
+            ipaddress=ipaddress.replace(":8080","");
             client1.connect(ipaddress, 8080);
             client1.login("ftp", "ftp");
         } catch (Exception e) {
