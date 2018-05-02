@@ -520,12 +520,14 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
         @Override
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
-            if (typeOfFile.equalsIgnoreCase("TransferUsage")) {
-                pushPullInterface.onFilesRecievedComplete("","");
-            }else if (typeOfFile.equalsIgnoreCase("TransferProfiles")) {
-                pushPullInterface.onFilesRecievedComplete("TransferProfiles","");
-            }else {
-                pushPullInterface.onFilesRecievedComplete("TransferJson","");
+            if (result) {
+                if (typeOfFile.equalsIgnoreCase("TransferUsage")) {
+                    pushPullInterface.onFilesRecievedComplete("","");
+                }else if (typeOfFile.equalsIgnoreCase("TransferProfiles")) {
+                    pushPullInterface.onFilesRecievedComplete("TransferProfiles","");
+                }else {
+                    pushPullInterface.onFilesRecievedComplete("TransferJson","");
+                }
             }
         }
     }

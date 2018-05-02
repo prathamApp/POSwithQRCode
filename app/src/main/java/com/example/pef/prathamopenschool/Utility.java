@@ -1,5 +1,6 @@
 package com.example.pef.prathamopenschool;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Environment;
@@ -29,8 +30,24 @@ public class Utility {
     private final DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.ENGLISH);
     private final DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH);
     private final DateFormat dateFormat1 = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-    public static String targetPath="";
-    public static String recievedFilePath="";
+    public static String targetPath = "";
+    public static String recievedFilePath = "";
+    static ProgressDialog dialog;
+
+    public static void showDialog(Context context) {
+        dialog = new ProgressDialog(context);
+        dialog.setMessage("Please wait...");
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
+
+    public static void dismissDialog() {
+        if (dialog!=null) {
+            dialog.dismiss();
+        }
+    }
+
 
     public String GetCurrentDateTime(boolean getSysTime) {
         if (getSysTime) {

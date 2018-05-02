@@ -1,5 +1,6 @@
 package com.example.pef.prathamopenschool;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -7,29 +8,29 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pef.prathamopenschool.ftpSettings.Util;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,10 +38,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CrlDashboard extends AppCompatActivity implements FTPInterface.PushPullInterface {
@@ -55,6 +52,11 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
     public static Boolean transferFlag = false;
     static String deviceID = "";
     FTPConnect ftpConnect;
+    RelativeLayout receiveFtpDialogLayout;
+    TextView tv_ssid, tv_ip, tv_port, tv_Details;
+    Button btn_Disconnect;
+    Dialog receiverDialog;
+    private ProgressBar recievingProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,27 +155,18 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
         super.onStop();
     }
 
-    int count = 0;
     public static String filename = "";
 
     // This method will be called when a MessageEvent is posted (in the UI thread)
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageEvent event) {
         if (event.message.equalsIgnoreCase("Recieved")) {
-            count = 0;
             filename = "";
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (recievingDialog.isShowing()) {
-                        recievingDialog.dismiss();
-                    }
-                }
-            }, 2000);
-
+            tv_Details.setText("");
+            recievingProgress.setVisibility(View.VISIBLE);
             //add profiles to db
             File src = new File(Environment.getExternalStorageDirectory() + "/FTPRecieved/RecievedProfiles");
-            if (src.exists()) {
+            if (src.exists() && src.listFiles().length > 0) {
                 File[] files = src.listFiles();
                 for (int i = 0; i < files.length; i++) {
                     if (files[i].getName().startsWith("NewProfiles")) {
@@ -185,33 +178,57 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
             }
             //add json to db
             File jsonSrc = new File(Environment.getExternalStorageDirectory() + "/FTPRecieved/RecievedJson");
-            if (jsonSrc.exists()) {
+            if (jsonSrc.exists() && jsonSrc.listFiles().length > 0) {
                 wipeJsonFolder();
                 File[] files = jsonSrc.listFiles();
                 for (int i = 0; i < files.length; i++) {
                     Utility.targetPath = Environment.getExternalStorageDirectory() + "/.POSinternal/Json";
                     Utility.recievedFilePath = files[i].getAbsolutePath();
                     try {
-                        FileUtils.moveFile(new File(Utility.recievedFilePath),
+                        filename += "\n" + files[i].getName() + "   " + Integer.parseInt(String.valueOf(files[i].length() / 1024)) + " kb";
+                        FileUtils.copyFile(new File(Utility.recievedFilePath),
                                 new File(Utility.targetPath + "/" + files[i].getName()));
                     } catch (IOException e) {
                         e.printStackTrace();
+                    } finally {
+                        new File(Utility.recievedFilePath).delete();
+                        tv_Details.setText("Files Recieved...." + filename);
                     }
                 }
+                filename="";
                 new RecieveFiles(CrlDashboard.this, Utility.targetPath, Utility.recievedFilePath, "json").execute();
             }
+            File transferSrc = new File(Environment.getExternalStorageDirectory() + "/FTPRecieved/RecievedUsage");
+            if (transferSrc.exists() && transferSrc.listFiles().length > 0) {
+                File[] files = transferSrc.listFiles();
+                for (int i = 0; i < files.length; i++) {
+                    Utility.targetPath = Environment.getExternalStorageDirectory() + "/.POSDBBackups";
+                    Utility.recievedFilePath = files[i].getAbsolutePath();
+                    try {
+                        filename += "\n" + files[i].getName() + "   " + Integer.parseInt(String.valueOf(files[i].length() / 1024)) + " kb";
+                        FileUtils.moveFileToDirectory(new File(Utility.recievedFilePath),
+                                new File(Utility.targetPath /*+ "/" + files[i].getName()*/), true);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        tv_Details.setText("Files Recieved...." + filename);
+                    }
+                }
+                filename="";
+            }
+            recievingProgress.setVisibility(View.GONE);
         } else if (event.message.equalsIgnoreCase("showCount")) {
-            if (!recievingDialog.isShowing()) {
-                showDialog();
-            }
-            count += 1;
-            recievingDialog.setMessage("Files Recieved...." + count + filename);
-        }else if (event.message.equalsIgnoreCase("stopDialog")) {
-            count = 0;
             filename = "";
-            if (recievingDialog.isShowing()) {
-                recievingDialog.dismiss();
-            }
+            recievingProgress.setVisibility(View.VISIBLE);
+            tv_Details.setText("");
+        } else if (event.message.equalsIgnoreCase("showDetails")) {
+            tv_Details.setText("Files Recieved...." + filename);
+            recievingProgress.setVisibility(View.GONE);
+        } else if (event.message.equalsIgnoreCase("stopDialog")) {
+            filename = "";
+//            if (recievingDialog.isShowing()) {
+//                recievingDialog.dismiss();
+//            }
         }
     }
 
@@ -224,11 +241,14 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
             if (!file.isDirectory())
                 file.delete();
     }
+
     /********************************************** RECEIVE DATA ******************************************************/
     // Start FTP Server for receiving Usage/ Profiles/ Jsons
     public void receiveData(View view) {
         // get CRL Name by ID
 //        ArrayList<String> f = ftpConnect.scanNearbyWifi();
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        wifiManager.setWifiEnabled(false);
         if (!ftpConnect.checkServiceRunning()) {
             CrlDBHelper crlObj = new CrlDBHelper(this);
             List<Crl> crlData = crlObj.GetCRLByID(CreatedBy);
@@ -254,11 +274,49 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
 
     @Override
     public void showDialog() {
-        recievingDialog = new ProgressDialog(CrlDashboard.this);
-        recievingDialog.setMessage("Recieving files...please wait");
-        recievingDialog.setCancelable(false);
-        recievingDialog.setCanceledOnTouchOutside(false);
-        recievingDialog.show();
+
+        receiverDialog = new Dialog(CrlDashboard.this);
+        receiverDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        receiverDialog.setContentView(R.layout.receive_ftpserver_dialog);
+        receiverDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+        receiveFtpDialogLayout = receiverDialog.findViewById(R.id.receiveFtpDialog);
+        tv_ssid = receiverDialog.findViewById(R.id.tv_SSID);
+        recievingProgress = receiverDialog.findViewById(R.id.recievingProgress);
+        tv_ip = receiverDialog.findViewById(R.id.tv_ipaddr);
+        tv_port = receiverDialog.findViewById(R.id.tv_port);
+        btn_Disconnect = receiverDialog.findViewById(R.id.btn_Disconnect);
+        tv_Details = receiverDialog.findViewById(R.id.tv_details);
+
+        tv_ssid.setText("SSID : " + MyApplication.networkSSID);
+        tv_ip.setText("IP : 192.168.43.1");
+        tv_port.setText("Port : 8080");
+
+        receiverDialog.setCanceledOnTouchOutside(false);
+        receiverDialog.setCancelable(false);
+        receiverDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        receiverDialog.show();
+
+        btn_Disconnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Stop Server
+                if (ftpConnect.checkServiceRunning()) {
+                    ftpConnect.stopServer();
+                }
+                ftpConnect.turnOnOffHotspot(false);
+                WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                wifiManager.setWifiEnabled(false);
+                try {
+                    FileUtils.deleteDirectory(new File(Environment.getExternalStorageDirectory() + "/FTPRecieved"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                receiverDialog.dismiss();
+            }
+        });
+
+
     }
 
     @Override
@@ -644,7 +702,8 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
 
 
     public void goToCrlPullPushTransferUsageScreen(View view) {
-
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        wifiManager.setWifiEnabled(true);
         Intent intent = new Intent(CrlDashboard.this, CrlPullPushTransferUsageScreen.class);
         startActivity(intent);
 
@@ -712,12 +771,14 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
         if (ftpConnect.checkServiceRunning()) {
             ftpConnect.stopServer();
         }
+        try {
+            FileUtils.deleteDirectory(new File(Environment.getExternalStorageDirectory() + "/FTPRecieved"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         ftpConnect.turnOnOffHotspot(false);
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         wifiManager.setWifiEnabled(false);
-        if (ftpConnect.checkServiceRunning()) {
-            ftpConnect.stopServer();
-        }
         super.onBackPressed();
     }
 }

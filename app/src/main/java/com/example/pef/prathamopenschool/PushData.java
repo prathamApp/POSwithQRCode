@@ -119,7 +119,7 @@ public class PushData extends AppCompatActivity {
 //                Toast.makeText(this, "Bluetooth folder does not exist", Toast.LENGTH_SHORT).show();
 //            } else
 
-            File srcFolder = new File(Environment.getExternalStorageDirectory() + "/FTPRecieved/RecievedUsage");
+            File srcFolder = new File(Environment.getExternalStorageDirectory() + "/.POSDBBackups");
             String destFolder = Environment.getExternalStorageDirectory() + "/.POSinternal/pushedUsage";
             if (!srcFolder.exists()) {
                 btn_pushReceivedData.setClickable(true);

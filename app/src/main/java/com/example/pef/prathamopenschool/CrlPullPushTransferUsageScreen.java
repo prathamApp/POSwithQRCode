@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -34,6 +33,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -320,10 +320,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
                     btn_Connect.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if (edt_HostName.getText().toString().trim().length() > 0) {
-                                ftpConnect.connectFTPHotspot("TransferUsage", edt_HostName.getText().toString(), "8080");
-                            } else
-                                Toast.makeText(CrlPullPushTransferUsageScreen.this, "Please enter the IP Address of FTP Server !!!", Toast.LENGTH_SHORT).show();
+                            ftpConnect.connectFTPHotspot("TransferUsage", "192.168.43.1", "8080");
                         }
                     });
                 } else {
@@ -874,16 +871,16 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
         // Resetting Score Table
         ScoreDBHelper scoreToDelete = new ScoreDBHelper(c);
         if (scoreToDelete.DeleteAll()) {
-            Toast.makeText(c, "Score database cleared", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(c, "Score database cleared", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(c, "Problem in clearing score database", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(c, "Problem in clearing score database", Toast.LENGTH_SHORT).show();
         }
 
         LogsDBHelper LogsToDelete = new LogsDBHelper(c);
         if (LogsToDelete.DeleteAll()) {
-            Toast.makeText(c, "Logs database cleared", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(c, "Logs database cleared", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(c, "Problem in clearing Logs database", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(c, "Problem in clearing Logs database", Toast.LENGTH_SHORT).show();
         }
         BackupDatabase.backup(c);
     }
@@ -1010,10 +1007,17 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
         String fileName = "";
         for (int i = 0; i < files.length; i++) {
             if (files[i].getName().startsWith("pushNewDataToServer")) {
+                try {
+                    FileUtils.moveFileToDirectory(new File(files[i].getAbsolutePath()),
+                            new File(Environment.getExternalStorageDirectory().toString() + "/.POSinternal/pushedUsage"), false);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 fileName += "\n" + files[i].getName() + "   " + Integer.parseInt(String.valueOf(files[i].length() / 1024)) + " kb";
                 cnt++;
             }
         }
+        clearDBRecords();
         tv_Details.setText("\nFiles Transferred : " + cnt + fileName);
     }
 }

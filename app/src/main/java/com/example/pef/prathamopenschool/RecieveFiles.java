@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,6 +26,7 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 import static com.example.pef.prathamopenschool.CrlDashboard.copy;
+import static com.example.pef.prathamopenschool.CrlDashboard.filename;
 
 /**
  * Created by HP on 01-05-2018.
@@ -110,6 +112,9 @@ public class RecieveFiles extends AsyncTask<Void, Integer, String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
+        if (type.equalsIgnoreCase("profiles")) {
+            EventBus.getDefault().post(new MessageEvent("showDetails"));
+        }
     }
 
 
@@ -159,6 +164,7 @@ public class RecieveFiles extends AsyncTask<Void, Integer, String> {
         Log.d("crljsonData::", "" + crljsonData);
         if (crljsonData != null && !crljsonData.equals("")) {
             crlJsonArray = new JSONArray(crljsonData);
+            filename += "\n CRLs Recieved : " + crlJsonArray.length();
             for (int i = 0; i < crlJsonArray.length(); i++) {
                 JSONObject clrJsonObject = crlJsonArray.getJSONObject(i);
                 Crl crlobj = new Crl();
@@ -322,6 +328,7 @@ public class RecieveFiles extends AsyncTask<Void, Integer, String> {
         if (studentjsonData != null && !studentjsonData.equals("")) {
             studentsJsonArray = new JSONArray(studentjsonData);
 
+            filename += "\n Students Recieved : " + studentsJsonArray.length();
             for (int j = 0; j < studentsJsonArray.length(); j++) {
 
                 JSONObject stdJsonObject = studentsJsonArray.getJSONObject(j);
@@ -368,7 +375,7 @@ public class RecieveFiles extends AsyncTask<Void, Integer, String> {
         String groupjsonData = loadGroupJSONFromAsset();
         if (groupjsonData != null && !groupjsonData.equals("")) {
             grpJsonArray = new JSONArray(groupjsonData);
-
+            filename += "\n Groups Recieved : " + grpJsonArray.length();
             for (int j = 0; j < grpJsonArray.length(); j++) {
 
                 JSONObject grpJsonObject = grpJsonArray.getJSONObject(j);
@@ -516,8 +523,6 @@ public class RecieveFiles extends AsyncTask<Void, Integer, String> {
         return groupJson;
 
     }
-
-
 
 
     void SetInitialValuesReceiveOff() throws JSONException {

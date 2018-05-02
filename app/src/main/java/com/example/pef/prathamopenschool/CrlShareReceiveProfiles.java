@@ -11,7 +11,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -47,21 +46,15 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -554,7 +547,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 //        Thread mThread = new Thread() {
 //            @Override
 //            public void run() {
-
+        Utility.showDialog(CrlShareReceiveProfiles.this);
         File zipFolder = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/sharableContent");
         if (zipFolder.exists()) {
             wipeSentFiles();
@@ -592,6 +585,8 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
                 mergeFiles.zip();
             } catch (Exception e) {
                 e.printStackTrace();
+            }finally {
+                Utility.dismissDialog();
             }
 //                    TreansferFile("NewProfiles");
 
@@ -694,10 +689,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
                     btn_Connect.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if (edt_HostName.getText().toString().trim().length() > 0) {
-                                ftpConnect.connectFTPHotspot("TransferProfiles", edt_HostName.getText().toString(), "8080");
-                            } else
-                                Toast.makeText(CrlShareReceiveProfiles.this, "Please enter the IP Address of FTP Server !!!", Toast.LENGTH_SHORT).show();
+                            ftpConnect.connectFTPHotspot("TransferProfiles", "192.168.43.1", "8080");
                         }
                     });
                 } else {
@@ -1012,10 +1004,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
                     btn_Connect.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if (edt_HostName.getText().toString().trim().length() > 0) {
-                                ftpConnect.connectFTPHotspot("TransferJson", edt_HostName.getText().toString(), "8080");
-                            } else
-                                Toast.makeText(CrlShareReceiveProfiles.this, "Please enter the IP Address of FTP Server !!!", Toast.LENGTH_SHORT).show();
+                                ftpConnect.connectFTPHotspot("TransferJson", "192.168.43.1", "8080");
                         }
                     });
                 } else {
@@ -1214,7 +1203,6 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 //        }
 
     }
-
 
 
     // Delete Sent Files
