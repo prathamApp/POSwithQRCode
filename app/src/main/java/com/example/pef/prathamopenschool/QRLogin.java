@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.google.zxing.Result;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -31,8 +32,6 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
@@ -513,35 +512,41 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
             boolean dulicateQR = false;
             startCameraScan.stopCamera();
             Log.d("RawResult:::", "****" + result.getText());
+            // Json Parsing
+            JSONObject jsonobject = new JSONObject(result.getText());
+            String id = jsonobject.getString("stuId");
+            String name = jsonobject.getString("name");
 
+            /*// got result in json format
             Pattern pattern = Pattern.compile("[A-Za-z0-9]+-[A-Za-z._]{2,50}");
             Matcher mat = pattern.matcher(result.getText());
 
             if (mat.matches()) {
-
-                if (stdList.size() <= 0)
-                    qrEntryProcess(result);
-                else {
-                    for (int i = 0; i < stdList.size(); i++) {
-                        String[] currentIdArr = decodeStudentId(result.getText(), "-");
-                        String currId = currentIdArr[0];
-                        if (stdList.get(i).getStudentID().equalsIgnoreCase("" + currId)) {
+*/
+            if (stdList.size() <= 0)
+                qrEntryProcess(result);
+            else {
+                for (int i = 0; i < stdList.size(); i++) {
+                    // change
+                    String[] currentIdArr = {id};
+                    String currId = currentIdArr[0];
+                    if (stdList.get(i).getStudentID().equalsIgnoreCase("" + currId)) {
 //                            Toast.makeText(this, "Already Scaned", Toast.LENGTH_SHORT).show();
-                            showQrDialog(", This QR Was Already Scaned");
-                            setStud = false;
-                            dulicateQR = true;
-                            break;
-                        }
-                    }
-                    if (!dulicateQR) {
-                        qrEntryProcess(result);
+                        showQrDialog(", This QR Was Already Scaned");
+                        setStud = false;
+                        dulicateQR = true;
+                        break;
                     }
                 }
-            } else {
+                if (!dulicateQR) {
+                    qrEntryProcess(result);
+                }
+            }
+            /*} else {
                 startCameraScan.startCamera();
                 startCameraScan.resumeCameraPreview(this);
                 BackupDatabase.backup(this);
-            }
+            }*/
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -554,12 +559,22 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
 //        Toast.makeText(this, "" + totalStudents, Toast.LENGTH_SHORT).show();
         if (totalStudents < 6) {
 
+            // todo Parse json & separate id & name
+            String resultID = "", resultName = "";
+            try {
+                JSONObject jsonobject = new JSONObject(result.getText());
+                resultID = jsonobject.getString("stuId");
+                resultName = jsonobject.getString("name");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
             //Valid pattern
-            String[] id = decodeStudentId(result.getText(), "-");
+            String[] id = {resultID};
 
             String stdId = id[0];
             //String stdFirstName = id[1];
-            String[] name = decodeStudentId(id[1], "_");
+            String[] name = {resultName};
             String stdFirstName = name[0];
             String stdLastName = "";
             if (name.length > 1)
