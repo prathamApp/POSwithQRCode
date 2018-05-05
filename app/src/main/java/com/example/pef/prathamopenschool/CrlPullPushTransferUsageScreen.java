@@ -10,10 +10,12 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -257,6 +259,13 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
     @SuppressLint("StaticFieldLeak")
     public void transferData(View v) {
 
+        // FTP
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        boolean wifiEnabled = wifiManager.isWifiEnabled();
+        if (!wifiEnabled) {
+            wifiManager.setWifiEnabled(true);
+        }
+
         createJsonforTransfer();
 
         // Display ftp dialog
@@ -300,6 +309,15 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
                     ftpConnect.connectToPrathamHotSpot(ssid);
                     dialog.dismiss();
                     Toast.makeText(CrlPullPushTransferUsageScreen.this, "Wifi SSID : " + ssid, Toast.LENGTH_SHORT).show();
+                    // Delay of 2 secs for connecting
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            //Do something after 100ms
+                        }
+                    }, 2000);
+
                     // Display ftp dialog
                     Dialog dialog = new Dialog(CrlPullPushTransferUsageScreen.this);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

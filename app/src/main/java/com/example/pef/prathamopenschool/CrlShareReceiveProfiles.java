@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -669,6 +670,15 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
                     ftpConnect.connectToPrathamHotSpot(ssid);
                     dialog.dismiss();
                     Toast.makeText(CrlShareReceiveProfiles.this, "Wifi SSID : " + ssid, Toast.LENGTH_SHORT).show();
+                    // Delay of 2 secs for connecting
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            //Do something after 100ms
+                        }
+                    }, 2000);
+
                     // Display ftp dialog
                     Dialog dialog = new Dialog(CrlShareReceiveProfiles.this);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -982,8 +992,16 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
                     // connect to wifi
                     ftpConnect.connectToPrathamHotSpot(ssid);
                     dialog.dismiss();
-
                     Toast.makeText(CrlShareReceiveProfiles.this, "Wifi SSID : " + ssid, Toast.LENGTH_SHORT).show();
+                    // Delay of 2 secs for connecting
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            //Do something after 100ms
+                        }
+                    }, 2000);
+
                     // Display ftp dialog
                     Dialog dialog = new Dialog(CrlShareReceiveProfiles.this);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
