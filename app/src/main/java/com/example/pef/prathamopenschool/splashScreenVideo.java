@@ -73,6 +73,7 @@ public class splashScreenVideo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen_video);
 
+
         // Hide Actionbar
         getSupportActionBar().hide();
         context = this;
@@ -588,19 +589,28 @@ public class splashScreenVideo extends AppCompatActivity {
         } catch (Exception e) {//Name Not FOund Exception
         }
 
+//        if (appname.equals("Pratham Digital")) {
+//            if ((new File("/storage/extSdCard/.POSexternal/HLearning/").exists()) && (new File("/storage/extSdCard/.POSexternal/KhelBadi/").exists()) && (new File("/storage/extSdCard/.POSexternal/KhelPuri/").exists()) && (new File("/storage/extSdCard/.POSexternal/Media/").exists())) {
+//                fpath = "/storage/extSdCard/";
+//            } else if ((new File("/storage/sdcard1/.POSexternal/HLearning/").exists()) && (new File("/storage/sdcard1/.POSexternal/KhelBadi/").exists()) && (new File("/storage/sdcard1/.POSexternal/KhelPuri/").exists()) && (new File("/storage/sdcard1/.POSexternal/Media/").exists())) {
+//                fpath = "/storage/sdcard1/";
+//            } else if ((new File("/storage/usbcard1/.POSexternal/HLearning/").exists()) && (new File("/storage/usbcard1/.POSexternal/KhelBadi/").exists()) && (new File("/storage/usbcard1/.POSexternal/KhelPuri/").exists()) && (new File("/storage/usbcard1/.POSexternal/Media/").exists())) {
+//                fpath = "/storage/usbcard1/";
+//
+//            } else if ((new File("/storage/sdcard0/.POSexternal/HLearning/").exists()) && (new File("/storage/sdcard0/.POSexternal/KhelBadi/").exists()) && (new File("/storage/sdcard0/.POSexternal/KhelPuri/").exists()) && (new File("/storage/sdcard0/.POSexternal/Media/").exists())) {
+//                fpath = "/storage/sdcard0/";
+//
+//            } else if ((new File("/storage/emulated/0/.POSexternal/HLearning/").exists()) && (new File("/storage/emulated/0/.POSexternal/KhelBadi/").exists()) && (new File("/storage/emulated/0/.POSexternal/KhelPuri/").exists()) && (new File("/storage/emulated/0/.POSexternal/Media/").exists())) {
+//                fpath = "/storage/emulated/0/";
+//            }
+//        }
+
         if (appname.equals("Pratham Digital")) {
-            if ((new File("/storage/extSdCard/.POSexternal/HLearning/").exists()) && (new File("/storage/extSdCard/.POSexternal/KhelBadi/").exists()) && (new File("/storage/extSdCard/.POSexternal/KhelPuri/").exists()) && (new File("/storage/extSdCard/.POSexternal/Media/").exists())) {
-                fpath = "/storage/extSdCard/";
-            } else if ((new File("/storage/sdcard1/.POSexternal/HLearning/").exists()) && (new File("/storage/sdcard1/.POSexternal/KhelBadi/").exists()) && (new File("/storage/sdcard1/.POSexternal/KhelPuri/").exists()) && (new File("/storage/sdcard1/.POSexternal/Media/").exists())) {
-                fpath = "/storage/sdcard1/";
-            } else if ((new File("/storage/usbcard1/.POSexternal/HLearning/").exists()) && (new File("/storage/usbcard1/.POSexternal/KhelBadi/").exists()) && (new File("/storage/usbcard1/.POSexternal/KhelPuri/").exists()) && (new File("/storage/usbcard1/.POSexternal/Media/").exists())) {
-                fpath = "/storage/usbcard1/";
-
-            } else if ((new File("/storage/sdcard0/.POSexternal/HLearning/").exists()) && (new File("/storage/sdcard0/.POSexternal/KhelBadi/").exists()) && (new File("/storage/sdcard0/.POSexternal/KhelPuri/").exists()) && (new File("/storage/sdcard0/.POSexternal/Media/").exists())) {
-                fpath = "/storage/sdcard0/";
-
-            } else if ((new File("/storage/emulated/0/.POSexternal/HLearning/").exists()) && (new File("/storage/emulated/0/.POSexternal/KhelBadi/").exists()) && (new File("/storage/emulated/0/.POSexternal/KhelPuri/").exists()) && (new File("/storage/emulated/0/.POSexternal/Media/").exists())) {
-                fpath = "/storage/emulated/0/";
+            ArrayList<String> base_path = SDCardUtil.getExtSdCardPaths(this);
+            if (base_path.size() > 0) {
+                String path = base_path.get(0).replace("[", "");
+                path = path.replace("]", "");
+                fpath = path + "/";
             }
             fpath = fpath + ".POSexternal/";
         }
