@@ -37,13 +37,7 @@ public class BackupDatabase {
 
             //}
         } catch (Exception e) {
-            //  ShowAlert showAlert=new ShowAlert();
-            //  showAlert.showDialogue(mContext,"Problem occurred to database. Please contact your administrator.");
-          /*  SyncActivityLogs syncActivityLogs=new SyncActivityLogs(mContext);
-            syncActivityLogs.addToDB("backupDatabase-backupDatabase",e,"Error");*/
             e.printStackTrace();
-            Toast.makeText(mContext,e.getMessage(),Toast.LENGTH_LONG).show();
-            throw new Error("Copying Failed");
         }
     }
 
