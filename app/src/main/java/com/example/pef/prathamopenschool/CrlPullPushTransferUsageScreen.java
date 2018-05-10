@@ -10,12 +10,12 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -89,6 +89,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
     Button btn_Connect;
     ListView lst_networks;
     TextView tv_Details;
+    private boolean NoDataToTransfer = false;
 
 
     @Override
@@ -268,84 +269,82 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
 
         createJsonforTransfer();
 
-        // Display ftp dialog
-        Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.show_visible_wifi_dialog);
-        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        if (!NoDataToTransfer) {
+            // Display ftp dialog
+            Dialog dialog = new Dialog(this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.show_visible_wifi_dialog);
+            dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
-        ftpDialogLayout = dialog.findViewById(R.id.ftpDialog);
-        lst_networks = dialog.findViewById(R.id.lst_network);
+            ftpDialogLayout = dialog.findViewById(R.id.ftpDialog);
+            lst_networks = dialog.findViewById(R.id.lst_network);
 
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setCancelable(true);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.show();
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.setCancelable(true);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            dialog.show();
 
-        // Onlistener
-        ArrayList<String> networkList = ftpConnect.scanNearbyWifi();
+            // Onlistener
+            ArrayList<String> networkList = ftpConnect.scanNearbyWifi();
 
-        lst_networks.setAdapter(new ArrayAdapter<String>(getApplicationContext(), R.layout.lst_wifi_item, R.id.label, networkList));
+            lst_networks.setAdapter(new ArrayAdapter<String>(getApplicationContext(), R.layout.lst_wifi_item, R.id.label, networkList));
 
-        ImageButton refresh = dialog.findViewById(R.id.refresh);
-        refresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Onlistener
-                ArrayList<String> networkList = ftpConnect.scanNearbyWifi();
-                lst_networks.setAdapter(new ArrayAdapter<String>(getApplicationContext(), R.layout.lst_wifi_item, R.id.label, networkList));
-            }
-        });
-
-        // listening to single list item on click
-        lst_networks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // selected item
-                String ssid = ((TextView) view).getText().toString();
-//                connectToWifi(ssid);
-                // check if pratham hotspot selected or not
-                if (ssid.contains("PrathamHotSpot_")) {
-                    // connect to wifi
-                    ftpConnect.connectToPrathamHotSpot(ssid);
-                    dialog.dismiss();
-                    Toast.makeText(CrlPullPushTransferUsageScreen.this, "Wifi SSID : " + ssid, Toast.LENGTH_SHORT).show();
-                    // Delay of 2 secs for connecting
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            //Do something after 100ms
-                        }
-                    }, 2000);
-
-                    // Display ftp dialog
-                    Dialog dialog = new Dialog(CrlPullPushTransferUsageScreen.this);
-                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    dialog.setContentView(R.layout.connect_to_ftpserver_dialog);
-                    dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-
-                    ftpDialogLayout = dialog.findViewById(R.id.ftpDialog);
-                    edt_HostName = dialog.findViewById(R.id.edt_HostName);
-                    edt_Port = dialog.findViewById(R.id.edt_Port);
-                    btn_Connect = dialog.findViewById(R.id.btn_Connect);
-                    tv_Details = dialog.findViewById(R.id.tv_details);
-
-                    dialog.setCanceledOnTouchOutside(false);
-                    dialog.setCancelable(true);
-                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                    dialog.show();
-
-                    btn_Connect.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            ftpConnect.connectFTPHotspot("TransferUsage", "192.168.43.1", "8080");
-                        }
-                    });
-                } else {
-                    Toast.makeText(CrlPullPushTransferUsageScreen.this, "Invalid Network !!!", Toast.LENGTH_SHORT).show();
+            ImageButton refresh = dialog.findViewById(R.id.refresh);
+            refresh.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Onlistener
+                    ArrayList<String> networkList = ftpConnect.scanNearbyWifi();
+                    lst_networks.setAdapter(new ArrayAdapter<String>(getApplicationContext(), R.layout.lst_wifi_item, R.id.label, networkList));
                 }
-            }
-        });
+            });
+
+            // listening to single list item on click
+            lst_networks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    // selected item
+                    String ssid = ((TextView) view).getText().toString();
+//                connectToWifi(ssid);
+                    // check if pratham hotspot selected or not
+                    if (ssid.contains("PrathamHotSpot_")) {
+                        // connect to wifi
+                        ftpConnect.connectToPrathamHotSpot(ssid);
+                        dialog.dismiss();
+                        Toast.makeText(CrlPullPushTransferUsageScreen.this, "Wifi SSID : " + ssid, Toast.LENGTH_SHORT).show();
+                        // Display ftp dialog
+                        Dialog dialog = new Dialog(CrlPullPushTransferUsageScreen.this);
+                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        dialog.setContentView(R.layout.connect_to_ftpserver_dialog);
+                        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+                        ftpDialogLayout = dialog.findViewById(R.id.ftpDialog);
+                        edt_HostName = dialog.findViewById(R.id.edt_HostName);
+                        edt_Port = dialog.findViewById(R.id.edt_Port);
+                        btn_Connect = dialog.findViewById(R.id.btn_Connect);
+                        tv_Details = dialog.findViewById(R.id.tv_details);
+
+                        dialog.setCanceledOnTouchOutside(false);
+                        dialog.setCancelable(true);
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                        dialog.show();
+
+                        btn_Connect.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                                WifiInfo info = wifiManager.getConnectionInfo();
+                                String ssid = info.getSSID();
+                                if (ssid.contains("PrathamHotSpot_"))
+                                    ftpConnect.connectFTPHotspot("TransferUsage", "192.168.43.1", "8080");
+                                else
+                                    Toast.makeText(CrlPullPushTransferUsageScreen.this, "Connected to Wrong Network !!!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else {
+                        Toast.makeText(CrlPullPushTransferUsageScreen.this, "Invalid Network !!!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
 
 //        for (int i = 0; i < f.size(); i++) {
 //            if ((f.get(i)).equalsIgnoreCase("PrathamHotspot"))
@@ -384,7 +383,9 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
             }
         }.execute();
     */
-
+        } else {
+            Toast.makeText(CrlPullPushTransferUsageScreen.this, "There is no data to Transfer !!!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void createJsonforTransfer() {
@@ -399,9 +400,10 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
         if (scores == null) {
         } else if (scores.size() == 0) {
             // No Score No Transfer
+            NoDataToTransfer = true;
         } else {
             try {
-
+                NoDataToTransfer = false;
                 JSONArray scoreData = new JSONArray(), logsData = new JSONArray(), attendanceData = new JSONArray(), studentData = new JSONArray(), crlData = new JSONArray(), grpData = new JSONArray(), aserData = new JSONArray();
 
                 for (int i = 0; i < scores.size(); i++) {

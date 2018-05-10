@@ -192,7 +192,6 @@ public class splashScreenVideo extends AppCompatActivity {
                     RetrieveExistingDatabase.backup(splashScreenVideo.this);
                     //check initial entries
                     checkInitialEntries();
-
                     // if current db version is not latest
                     StatusDBHelper statusDBHelper = new StatusDBHelper(splashScreenVideo.this);
                     String ver = statusDBHelper.getValue("apkVersion");

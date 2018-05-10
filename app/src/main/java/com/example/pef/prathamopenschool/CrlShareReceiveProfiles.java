@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -113,6 +114,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
     StatusDBHelper stat;
     Utility util;
     TextView tv_Details;
+    private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -548,7 +550,13 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 //        Thread mThread = new Thread() {
 //            @Override
 //            public void run() {
-        Utility.showDialog(CrlShareReceiveProfiles.this);
+//        Utility.showDialog(CrlShareReceiveProfiles.this);
+        dialog = new ProgressDialog(CrlShareReceiveProfiles.this);
+        dialog.setMessage("Please wait ... or Press back button again to Cancel !!! ");
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
         File zipFolder = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/sharableContent");
         if (zipFolder.exists()) {
             wipeSentFiles();
@@ -586,8 +594,12 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
                 mergeFiles.zip();
             } catch (Exception e) {
                 e.printStackTrace();
-            }finally {
-                Utility.dismissDialog();
+            } finally {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+
+//                Utility.dismissDialog();
             }
 //                    TreansferFile("NewProfiles");
 
@@ -670,14 +682,6 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
                     ftpConnect.connectToPrathamHotSpot(ssid);
                     dialog.dismiss();
                     Toast.makeText(CrlShareReceiveProfiles.this, "Wifi SSID : " + ssid, Toast.LENGTH_SHORT).show();
-                    // Delay of 2 secs for connecting
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            //Do something after 100ms
-                        }
-                    }, 2000);
 
                     // Display ftp dialog
                     Dialog dialog = new Dialog(CrlShareReceiveProfiles.this);
@@ -699,7 +703,13 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
                     btn_Connect.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            ftpConnect.connectFTPHotspot("TransferProfiles", "192.168.43.1", "8080");
+                            WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                            WifiInfo info = wifiManager.getConnectionInfo();
+                            String ssid = info.getSSID();
+                            if (ssid.contains("PrathamHotSpot_"))
+                                ftpConnect.connectFTPHotspot("TransferProfiles", "192.168.43.1", "8080");
+                            else
+                                Toast.makeText(CrlShareReceiveProfiles.this, "Connected to Wrong Network !!!", Toast.LENGTH_SHORT).show();
                         }
                     });
                 } else {
@@ -1022,7 +1032,13 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
                     btn_Connect.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                            WifiInfo info = wifiManager.getConnectionInfo();
+                            String ssid = info.getSSID();
+                            if (ssid.contains("PrathamHotSpot_"))
                                 ftpConnect.connectFTPHotspot("TransferJson", "192.168.43.1", "8080");
+                            else
+                                Toast.makeText(CrlShareReceiveProfiles.this, "Connected to Wrong Network !!!", Toast.LENGTH_SHORT).show();
                         }
                     });
                 } else {

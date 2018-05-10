@@ -14,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -62,6 +63,12 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crl_dashboard);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                "MyWakelockTag");
+        wakeLock.acquire();
 
         deviceID = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -222,7 +229,7 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
             recievingProgress.setVisibility(View.VISIBLE);
             tv_Details.setText("");
         } else if (event.message.equalsIgnoreCase("showDetails")) {
-            tv_Details.setText("Files Recieved...." + filename);
+            tv_Details.setText("Files Received...." + filename);
             recievingProgress.setVisibility(View.GONE);
         } else if (event.message.equalsIgnoreCase("stopDialog")) {
             filename = "";

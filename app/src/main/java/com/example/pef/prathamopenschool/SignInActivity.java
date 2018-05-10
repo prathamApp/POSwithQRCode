@@ -304,6 +304,8 @@ public class SignInActivity extends AppCompatActivity implements LocationListene
             addNmeaListener();
             if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 promptEnableGps();
+            } else {
+                gpsStart();
             }
             checkTimeAndDistance(null);
             if (GpsTestUtil.isGnssStatusListenerSupported()) {
