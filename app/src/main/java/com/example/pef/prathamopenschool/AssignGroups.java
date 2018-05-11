@@ -82,7 +82,7 @@ public class AssignGroups extends AppCompatActivity {
         villages_spinner = (Spinner) findViewById(R.id.spinner_selectVillage);
 
         // Hide Village Spinner based on HLearning / RI
-        if (MultiPhotoSelectActivity.programID.equals("1") || MultiPhotoSelectActivity.programID.equals("3")|| MultiPhotoSelectActivity.programID.equals("4")) // H Learning
+        if (MultiPhotoSelectActivity.programID.equals("1") || MultiPhotoSelectActivity.programID.equals("3") || MultiPhotoSelectActivity.programID.equals("4")) // H Learning
         {
             villages_spinner.setVisibility(View.VISIBLE);
         } else if (MultiPhotoSelectActivity.programID.equals("2")) // RI
@@ -220,7 +220,6 @@ public class AssignGroups extends AppCompatActivity {
                                     StatusDBHelper statusDBHelper = new StatusDBHelper(context);
 
 
-
                                     statusDBHelper.Update("group1", (group1));
                                     statusDBHelper.Update("group2", (group2));
                                     statusDBHelper.Update("group3", (group3));
@@ -235,7 +234,7 @@ public class AssignGroups extends AppCompatActivity {
                                     statusDBHelper.Update("deviceId", deviceIMEI.equals(null) ? "0000" : deviceIMEI);
                                     statusDBHelper.Update("ActivatedDate", new Utility().GetCurrentDateTime(false));
                                     statusDBHelper.Update("ActivatedForGroups", group1 + "," + group2 + "," + group3 + "," + group4 + "," + group5);
-                                    BackupDatabase.backup(getApplicationContext());
+                                    BackupDatabase.backup(AssignGroups.this);
                                     /*StatusDBHelper statusDBHelper2 = new StatusDBHelper(context);
                                     boolean res = statusDBHelper2.updateTrailerCount(0, group1);
                                     res = statusDBHelper2.updateTrailerCount(0, group2);*/

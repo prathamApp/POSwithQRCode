@@ -207,8 +207,8 @@ public class StatusDBHelper extends DBHelper {
 
             return cursor.getString(0);
         } catch (Exception ex) {
-            _PopulateLogValues(ex, "getValue");
-            return "ExceptionOccured";
+//            _PopulateLogValues(ex, "getValue");
+            return "null";
         }
     }
 

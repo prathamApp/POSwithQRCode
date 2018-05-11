@@ -90,7 +90,7 @@ public class CreateWifiAccessPoint extends AsyncTask<Void, Void, Boolean> {
         // delay for creating hotspot
         try {
             // Snackbar instead of Toast
-            Thread.sleep(5000);
+            Thread.sleep(6000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

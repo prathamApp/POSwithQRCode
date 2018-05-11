@@ -115,6 +115,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
     Utility util;
     TextView tv_Details;
     private ProgressDialog dialog;
+    ListView lst_networks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -649,7 +650,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
         dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
         ftpDialogLayout = dialog.findViewById(R.id.ftpDialog);
-        ListView lst_networks = dialog.findViewById(R.id.lst_network);
+        lst_networks = dialog.findViewById(R.id.lst_network);
 
         dialog.setCanceledOnTouchOutside(false);
         dialog.setCancelable(true);
@@ -661,11 +662,13 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
         lst_networks.setAdapter(new ArrayAdapter<String>(getApplicationContext(), R.layout.lst_wifi_item, R.id.label, networkList));
 
         ImageButton refresh = dialog.findViewById(R.id.refresh);
+
         refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Onlistener
                 ArrayList<String> networkList = ftpConnect.scanNearbyWifi();
+                Log.d("Network List :::", String.valueOf(networkList));
                 lst_networks.setAdapter(new ArrayAdapter<String>(getApplicationContext(), R.layout.lst_wifi_item, R.id.label, networkList));
             }
         });
@@ -904,8 +907,6 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        wifiManager.setWifiEnabled(false);
         if (ftpConnect.checkServiceRunning()) {
             ftpConnect.stopServer();
         }
@@ -979,7 +980,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
         dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
         ftpDialogLayout = dialog.findViewById(R.id.ftpDialog);
-        ListView lst_networks = dialog.findViewById(R.id.lst_network);
+        lst_networks = dialog.findViewById(R.id.lst_network);
 
         dialog.setCanceledOnTouchOutside(false);
         dialog.setCancelable(true);
@@ -991,6 +992,17 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 
         lst_networks.setAdapter(new ArrayAdapter<String>(getApplicationContext(), R.layout.lst_wifi_item, R.id.label, networkList));
 
+        ImageButton refresh = dialog.findViewById(R.id.refresh);
+
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Onlistener
+                ArrayList<String> networkList = ftpConnect.scanNearbyWifi();
+                Log.d("Network List :::", String.valueOf(networkList));
+                lst_networks.setAdapter(new ArrayAdapter<String>(getApplicationContext(), R.layout.lst_wifi_item, R.id.label, networkList));
+            }
+        });
         // listening to single list item on click
         lst_networks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -1348,6 +1360,13 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
     @Override
     protected void onResume() {
         super.onResume();
+        // FTP
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        boolean wifiEnabled = wifiManager.isWifiEnabled();
+        if (!wifiEnabled) {
+            wifiManager.setWifiEnabled(true);
+        }
+
         if (MultiPhotoSelectActivity.pauseFlg) {
             MultiPhotoSelectActivity.cd.cancel();
             MultiPhotoSelectActivity.pauseFlg = false;

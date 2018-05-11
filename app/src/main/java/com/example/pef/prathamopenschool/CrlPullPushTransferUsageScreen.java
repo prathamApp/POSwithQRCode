@@ -295,6 +295,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
                 public void onClick(View view) {
                     // Onlistener
                     ArrayList<String> networkList = ftpConnect.scanNearbyWifi();
+                    Log.d("Network List :::", String.valueOf(networkList));
                     lst_networks.setAdapter(new ArrayAdapter<String>(getApplicationContext(), R.layout.lst_wifi_item, R.id.label, networkList));
                 }
             });
@@ -909,6 +910,13 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        // FTP
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        boolean wifiEnabled = wifiManager.isWifiEnabled();
+        if (!wifiEnabled) {
+            wifiManager.setWifiEnabled(true);
+        }
+
         if (MultiPhotoSelectActivity.pauseFlg) {
             MultiPhotoSelectActivity.cd.cancel();
             MultiPhotoSelectActivity.pauseFlg = false;

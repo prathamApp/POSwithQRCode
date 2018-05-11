@@ -26,8 +26,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.pef.prathamopenschool.ftpSettings.Util;
-
 import org.apache.commons.io.FileUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -202,7 +200,7 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
                         tv_Details.setText("Files Recieved...." + filename);
                     }
                 }
-                filename="";
+                filename = "";
                 new RecieveFiles(CrlDashboard.this, Utility.targetPath, Utility.recievedFilePath, "json").execute();
             }
             File transferSrc = new File(Environment.getExternalStorageDirectory() + "/FTPRecieved/RecievedUsage");
@@ -221,7 +219,7 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
                         tv_Details.setText("Files Recieved...." + filename);
                     }
                 }
-                filename="";
+                filename = "";
             }
             recievingProgress.setVisibility(View.GONE);
         } else if (event.message.equalsIgnoreCase("showCount")) {
@@ -725,6 +723,12 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
 
     @Override
     protected void onResume() {
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        boolean wifiEnabled = wifiManager.isWifiEnabled();
+        if (!wifiEnabled) {
+            wifiManager.setWifiEnabled(true);
+        }
+
         super.onResume();
         if (MultiPhotoSelectActivity.pauseFlg) {
             MultiPhotoSelectActivity.cd.cancel();
@@ -764,6 +768,13 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
 
     @Override
     protected void onDestroy() {
+        // disable wifi
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        boolean wifiEnabled = wifiManager.isWifiEnabled();
+        if (wifiEnabled) {
+            wifiManager.setWifiEnabled(false);
+        }
+
         // turn off FTP Server & Hotspot
         if (ftpConnect.checkServiceRunning()) {
             ftpConnect.stopServer();
@@ -784,8 +795,13 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
             e.printStackTrace();
         }
         ftpConnect.turnOnOffHotspot(false);
+        // disable wifi
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        wifiManager.setWifiEnabled(false);
+        boolean wifiEnabled = wifiManager.isWifiEnabled();
+        if (wifiEnabled) {
+            wifiManager.setWifiEnabled(false);
+        }
+
         super.onBackPressed();
     }
 }

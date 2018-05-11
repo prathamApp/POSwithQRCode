@@ -174,33 +174,32 @@ public class splashScreenVideo extends AppCompatActivity {
 
                     // Copy DB file if already exist
                     RetrieveExistingDatabase.backup(splashScreenVideo.this);
-                    //check initial entries
-                    checkInitialEntries();
                     // if current db version is not latest
                     StatusDBHelper statusDBHelper = new StatusDBHelper(splashScreenVideo.this);
                     String ver = statusDBHelper.getValue("apkVersion");
-                    if (ver == null) {
+                    if (ver == null || ver.equalsIgnoreCase("null")) {
                         createDBJsonforBackup();
                     } else if (!ver.equalsIgnoreCase("2.1.7") && !ver.equalsIgnoreCase("2.1.8")) {
                         createDBJsonforBackup();
                     }
+                    //check initial entries
+                    checkInitialEntries();
                     return "true";
                 }
                 // DB exists & .POSinternal not exists
                 else if (existingDBExists.exists() && !existingPOSinternalExists.exists()) {
                     // Copy DB file if already exist
                     RetrieveExistingDatabase.backup(splashScreenVideo.this);
-                    //check initial entries
-                    checkInitialEntries();
                     // if current db version is not latest
                     StatusDBHelper statusDBHelper = new StatusDBHelper(splashScreenVideo.this);
                     String ver = statusDBHelper.getValue("apkVersion");
-                    if (ver == null) {
+                    if (ver == null || ver.equalsIgnoreCase("null")) {
                         createDBJsonforBackup();
                     } else if (!ver.equalsIgnoreCase("2.1.7") && !ver.equalsIgnoreCase("2.1.8")) {
                         createDBJsonforBackup();
                     }
-
+                    //check initial entries
+                    checkInitialEntries();
                     // Auto Copy Data from External to Internal Storage
                     String SourcePath = path + "toCopy/";
                     File sourceDir = new File(SourcePath);

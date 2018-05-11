@@ -586,7 +586,7 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
         for (String eachWifi : wifis) {
             String[] temp = eachWifi.split(",");
             filtered.add(temp[0].substring(5).trim());//+"\n" + temp[2].substring(12).trim()+"\n" +temp[3].substring(6).trim();//0->SSID, 2->Key Management 3-> Strength
-            Log.d("scanNearbyWifi: ", "" + filtered.get(counter));
+//            Log.d("scanNearbyWifi: ", "" + filtered.get(counter));
             counter++;
         }
         return filtered;
