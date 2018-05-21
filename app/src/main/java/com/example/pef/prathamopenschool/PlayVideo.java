@@ -46,7 +46,8 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
         myVideoView.setOnPreparedListener(this);
         myVideoView.setOnCompletionListener(this);
         util = new Utility();
-        videoStartTime = getIntent().getStringExtra("startTime");
+//        videoStartTime = getIntent().getStringExtra("startTime");
+        videoStartTime = util.GetCurrentDateTime(false);;
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         playVideo(Uri.parse(groupId));
@@ -75,7 +76,8 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
         Log.d("destroyed", "-------------- CalculateEndTime -------------- in Destroy");
         int vidDuration = 0;
         if (MainActivity.sessionFlg) {
-            videoStartTime = SignInActivity.sessionStartTime;
+//            videoStartTime = SignInActivity.sessionStartTime;
+            videoStartTime = util.GetCurrentDateTime(false);;
             vidDuration = 0;
             res_id = "SessionTracking";
         }
