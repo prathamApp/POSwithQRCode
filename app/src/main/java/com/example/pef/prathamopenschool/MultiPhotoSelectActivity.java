@@ -351,6 +351,15 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                     if (assessmentLogin.assessmentFlg) {
                         main.putExtra("nodeList", newNodeList.toString());
                     }
+                    MainActivity.sessionFlg = true;
+                    scoreDBHelper = new ScoreDBHelper(sessionContex);
+                    playVideo.calculateEndTime(scoreDBHelper);
+                    BackupDatabase.backup(sessionContex);
+                    try {
+                        finishAffinity();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     main.putExtra("aajKaSawalPlayed", "1");
                     main.putExtra("selectedGroupId", selectedGroupId);
                     startActivity(main);
@@ -368,6 +377,15 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                     if (assessmentLogin.assessmentFlg) {
                         main.putExtra("nodeList", newNodeList.toString());
                     }
+                    MainActivity.sessionFlg = true;
+                    scoreDBHelper = new ScoreDBHelper(sessionContex);
+                    playVideo.calculateEndTime(scoreDBHelper);
+                    BackupDatabase.backup(sessionContex);
+                    try {
+                        finishAffinity();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     main.putExtra("aajKaSawalPlayed", "0");
                     main.putExtra("selectedGroupId", selectedGroupId);
 
@@ -381,6 +399,15 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                     Intent main = new Intent(MultiPhotoSelectActivity.this, MainActivity.class);
                     if (assessmentLogin.assessmentFlg) {
                         main.putExtra("nodeList", newNodeList.toString());
+                    }
+                    MainActivity.sessionFlg = true;
+                    scoreDBHelper = new ScoreDBHelper(sessionContex);
+                    playVideo.calculateEndTime(scoreDBHelper);
+                    BackupDatabase.backup(sessionContex);
+                    try {
+                        finishAffinity();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                     main.putExtra("aajKaSawalPlayed", "3");
                     main.putExtra("selectedGroupId", selectedGroupId);
@@ -481,10 +508,17 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                     if (assessmentLogin.assessmentFlg) {
                         main.putExtra("nodeList", newNodeList.toString());
                     }
+                    MainActivity.sessionFlg = true;
+                    scoreDBHelper = new ScoreDBHelper(sessionContex);
+                    playVideo.calculateEndTime(scoreDBHelper);
+                    BackupDatabase.backup(sessionContex);
+                    try {
+                        finishAffinity();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     main.putExtra("aajKaSawalPlayed", "1");
                     main.putExtra("selectedGroupId", selectedGroupId);
-
-
                     startActivity(main);
                     finish();
                 } else if (aajKaSawalPlayed == 0) {
@@ -498,10 +532,17 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                     if (assessmentLogin.assessmentFlg) {
                         main.putExtra("nodeList", newNodeList.toString());
                     }
+                    MainActivity.sessionFlg = true;
+                    scoreDBHelper = new ScoreDBHelper(sessionContex);
+                    playVideo.calculateEndTime(scoreDBHelper);
+                    BackupDatabase.backup(sessionContex);
+                    try {
+                        finishAffinity();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     main.putExtra("aajKaSawalPlayed", "0");
                     main.putExtra("selectedGroupId", selectedGroupId);
-
-
                     startActivity(main);
                     finish();
                 }
@@ -512,9 +553,17 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                     if (assessmentLogin.assessmentFlg) {
                         main.putExtra("nodeList", newNodeList.toString());
                     }
+                    MainActivity.sessionFlg = true;
+                    scoreDBHelper = new ScoreDBHelper(sessionContex);
+                    playVideo.calculateEndTime(scoreDBHelper);
+                    BackupDatabase.backup(sessionContex);
+                    try {
+                        finishAffinity();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     main.putExtra("aajKaSawalPlayed", "3");
                     main.putExtra("selectedGroupId", selectedGroupId);
-
                     startActivity(main);
                     finish();
                 }

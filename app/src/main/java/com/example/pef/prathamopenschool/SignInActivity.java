@@ -265,6 +265,24 @@ public class SignInActivity extends AppCompatActivity implements LocationListene
 //            gpsStart();
         }
 
+/*        String locationProvider = LocationManager.GPS_PROVIDER;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        Location lastKnownLocation = mLocationManager.getLastKnownLocation(locationProvider);
+        Log.d("location lKL :",lastKnownLocation.toString());
+        DateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.ENGLISH);
+        Date gsdate = new Date(lastKnownLocation.getTime());
+        String T = format.format(gsdate);
+        Log.d("location Time :", T);*/
+
     }//onCreate
 
     /****************************************************************************************************************/
@@ -920,8 +938,11 @@ public class SignInActivity extends AppCompatActivity implements LocationListene
             s = new StatusDBHelper(this);
             s.insertInitialData("gpsFixDuration", "");
         } else {
+            // fetch & append gps fix
             s = new StatusDBHelper(this);
-            s.Update("gpsFixDuration", "" + MyApplication.getGPSFixTimerCount());
+            String previousFix = s.getValue("gpsFixDuration");
+
+            s.Update("gpsFixDuration", "" + previousFix + "," + MyApplication.getGPSFixTimerCount());
 //            Toast.makeText(this, "GPSFixDuration = " + MyApplication.getGPSFixTimerCount(), Toast.LENGTH_SHORT).show();
         }
 

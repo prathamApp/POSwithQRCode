@@ -240,6 +240,15 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
             if (assessmentLogin.assessmentFlg) {
                 main.putExtra("nodeList", newNodeList.toString());
             }
+            MainActivity.sessionFlg = true;
+            scoreDBHelper = new ScoreDBHelper(sessionContex);
+            playVideo.calculateEndTime(scoreDBHelper);
+            BackupDatabase.backup(sessionContex);
+            try {
+                finishAffinity();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             main.putExtra("aajKaSawalPlayed", "3");
             main.putExtra("selectedGroupId", "QR");
             startActivity(main);
@@ -260,6 +269,15 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
             if (assessmentLogin.assessmentFlg) {
                 main.putExtra("nodeList", newNodeList.toString());
             }
+            MainActivity.sessionFlg = true;
+            scoreDBHelper = new ScoreDBHelper(sessionContex);
+            playVideo.calculateEndTime(scoreDBHelper);
+            BackupDatabase.backup(sessionContex);
+            try {
+                finishAffinity();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             main.putExtra("aajKaSawalPlayed", "3");
             main.putExtra("selectedGroupId", "QR");
 
@@ -276,6 +294,15 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
             Intent main = new Intent(QRLogin.this, MainActivity.class);
             if (assessmentLogin.assessmentFlg) {
                 main.putExtra("nodeList", newNodeList.toString());
+            }
+            MainActivity.sessionFlg = true;
+            scoreDBHelper = new ScoreDBHelper(sessionContex);
+            playVideo.calculateEndTime(scoreDBHelper);
+            BackupDatabase.backup(sessionContex);
+            try {
+                finishAffinity();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             main.putExtra("aajKaSawalPlayed", "3");
             main.putExtra("selectedGroupId", "QR");
