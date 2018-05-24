@@ -15,7 +15,7 @@ public class ScoreDBHelper extends DBHelper {
     public ScoreDBHelper(Context context) {
         super(context);
         contexter = context;
-        database = this.getWritableDatabase();
+        database = getWritableDatabase();
     }
 
 

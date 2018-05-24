@@ -1,7 +1,6 @@
 package com.example.pef.prathamopenschool;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -58,7 +57,6 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
     TextView tv_title;
     static String programID, language;
 
-    Context sessionContex;
     static CountDownTimer cd;
     static Long timeout = (long) 20000 * 60;
     static Long duration = timeout;
@@ -78,6 +76,7 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qrlogin);
 
+        playVideo = new PlayVideo();
         programID = getProgramId();
         setLanguage();
         setTitle();
@@ -241,9 +240,9 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
                 main.putExtra("nodeList", newNodeList.toString());
             }
             MainActivity.sessionFlg = true;
-            scoreDBHelper = new ScoreDBHelper(sessionContex);
+            scoreDBHelper = new ScoreDBHelper(this);
             playVideo.calculateEndTime(scoreDBHelper);
-            BackupDatabase.backup(sessionContex);
+            BackupDatabase.backup(this);
             try {
                 finishAffinity();
             } catch (Exception e) {
@@ -270,9 +269,9 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
                 main.putExtra("nodeList", newNodeList.toString());
             }
             MainActivity.sessionFlg = true;
-            scoreDBHelper = new ScoreDBHelper(sessionContex);
+            scoreDBHelper = new ScoreDBHelper(this);
             playVideo.calculateEndTime(scoreDBHelper);
-            BackupDatabase.backup(sessionContex);
+            BackupDatabase.backup(this);
             try {
                 finishAffinity();
             } catch (Exception e) {
@@ -296,9 +295,9 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
                 main.putExtra("nodeList", newNodeList.toString());
             }
             MainActivity.sessionFlg = true;
-            scoreDBHelper = new ScoreDBHelper(sessionContex);
+            scoreDBHelper = new ScoreDBHelper(QRLogin.this);
             playVideo.calculateEndTime(scoreDBHelper);
-            BackupDatabase.backup(sessionContex);
+            BackupDatabase.backup(QRLogin.this);
             try {
                 finishAffinity();
             } catch (Exception e) {
@@ -458,7 +457,7 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
 
     public void showQrDialog(String studentName) {
 
-        dialog = new Dialog(this);
+        dialog = new Dialog(QRLogin.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setContentView(R.layout.custom_dialog_for_qrscan);
@@ -575,6 +574,8 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
                 BackupDatabase.backup(this);
             }*/
         } catch (Exception e) {
+            Toast.makeText(this, "Invalid QR Code !!!", Toast.LENGTH_SHORT).show();
+            btn_Reset.performClick();
             e.printStackTrace();
         }
     }
