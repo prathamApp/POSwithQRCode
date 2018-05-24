@@ -316,6 +316,8 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
 
 
     private void setAppName() {
+        s = new StatusDBHelper(this);
+        appName = s.initialDataAvailable("appName");
         if (appName == false) {
             s = new StatusDBHelper(QRLogin.this);
             // app name
