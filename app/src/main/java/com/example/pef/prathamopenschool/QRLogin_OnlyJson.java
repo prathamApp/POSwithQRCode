@@ -31,12 +31,10 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class QRLogin extends AppCompatActivity implements ZXingScannerView.ResultHandler {
+public class QRLogin_OnlyJson extends AppCompatActivity implements ZXingScannerView.ResultHandler {
 
     ViewGroup content_frame;
     TextView tv_stud_one;
@@ -137,7 +135,7 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
                 if (stdList.size() > 0)
                     setValues();
                 else
-                    Toast.makeText(QRLogin.this, "Please Add Student !!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(QRLogin_OnlyJson.this, "Please Add Student !!!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -186,7 +184,7 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
         }
 
 
-/*
+        /*
         // Get Current Date
         String currentDate = new Utility().GetCurrentDate();
 
@@ -237,7 +235,7 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
             if (startCameraScan != null) {
                 startCameraScan.stopCamera();
             }
-            Intent main = new Intent(QRLogin.this, MainActivity.class);
+            Intent main = new Intent(QRLogin_OnlyJson.this, MainActivity.class);
             if (assessmentLogin.assessmentFlg) {
                 main.putExtra("nodeList", newNodeList.toString());
             }
@@ -266,7 +264,7 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
             if (startCameraScan != null) {
                 startCameraScan.stopCamera();
             }
-            Intent main = new Intent(QRLogin.this, MainActivity.class);
+            Intent main = new Intent(QRLogin_OnlyJson.this, MainActivity.class);
             if (assessmentLogin.assessmentFlg) {
                 main.putExtra("nodeList", newNodeList.toString());
             }
@@ -292,14 +290,14 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
             if (startCameraScan != null) {
                 startCameraScan.stopCamera();
             }
-            Intent main = new Intent(QRLogin.this, MainActivity.class);
+            Intent main = new Intent(QRLogin_OnlyJson.this, MainActivity.class);
             if (assessmentLogin.assessmentFlg) {
                 main.putExtra("nodeList", newNodeList.toString());
             }
             MainActivity.sessionFlg = true;
-            scoreDBHelper = new ScoreDBHelper(QRLogin.this);
+            scoreDBHelper = new ScoreDBHelper(QRLogin_OnlyJson.this);
             playVideo.calculateEndTime(scoreDBHelper);
-            BackupDatabase.backup(QRLogin.this);
+            BackupDatabase.backup(QRLogin_OnlyJson.this);
             try {
                 finishAffinity();
             } catch (Exception e) {
@@ -317,7 +315,7 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
 
     private void setAppName() {
         if (appName == false) {
-            s = new StatusDBHelper(QRLogin.this);
+            s = new StatusDBHelper(QRLogin_OnlyJson.this);
             // app name
             if (QRLogin.programID.equals("1"))
                 s.insertInitialData("appName", "Pratham Digital - H Learning");
@@ -329,7 +327,7 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
                 s.insertInitialData("appName", "Pratham Digital - Pratham Institute");
 
         } else {
-            s = new StatusDBHelper(QRLogin.this);
+            s = new StatusDBHelper(QRLogin_OnlyJson.this);
             // app name
             if (QRLogin.programID.equals("1"))
                 s.Update("appName", "Pratham Digital - H Learning");
@@ -428,9 +426,9 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
             langString = jsonObj.getString("programLanguage");
 
             StatusDBHelper sdb;
-            sdb = new StatusDBHelper(QRLogin.this);
+            sdb = new StatusDBHelper(QRLogin_OnlyJson.this);
             sdb.Update("TabLanguage", langString);
-            BackupDatabase.backup(QRLogin.this);
+            BackupDatabase.backup(QRLogin_OnlyJson.this);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -459,7 +457,7 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
 
     public void showQrDialog(String studentName) {
 
-        dialog = new Dialog(QRLogin.this);
+        dialog = new Dialog(QRLogin_OnlyJson.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setContentView(R.layout.custom_dialog_for_qrscan);
@@ -540,13 +538,10 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
             boolean dulicateQR = false;
             startCameraScan.stopCamera();
             Log.d("RawResult:::", "****" + result.getText());
-            if (result.getText().contains("{")) {
-                // New QRCode Jsons
-
-                // Json Parsing
-                JSONObject jsonobject = new JSONObject(result.getText());
-                String id = jsonobject.getString("stuId");
-                String name = jsonobject.getString("name");
+            // Json Parsing
+            JSONObject jsonobject = new JSONObject(result.getText());
+            String id = jsonobject.getString("stuId");
+            String name = jsonobject.getString("name");
 
             /*// got result in json format
             Pattern pattern = Pattern.compile("[A-Za-z0-9]+-[A-Za-z._]{2,50}");
@@ -554,68 +549,30 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
 
             if (mat.matches()) {
 */
-                if (stdList.size() <= 0)
-                    qrEntryProcess(result);
-                else {
-                    for (int i = 0; i < stdList.size(); i++) {
-                        // change
-                        String[] currentIdArr = {id};
-                        String currId = currentIdArr[0];
-                        if (stdList.get(i).getStudentID().equalsIgnoreCase("" + currId)) {
+            if (stdList.size() <= 0)
+                qrEntryProcess(result);
+            else {
+                for (int i = 0; i < stdList.size(); i++) {
+                    // change
+                    String[] currentIdArr = {id};
+                    String currId = currentIdArr[0];
+                    if (stdList.get(i).getStudentID().equalsIgnoreCase("" + currId)) {
 //                            Toast.makeText(this, "Already Scaned", Toast.LENGTH_SHORT).show();
-                            showQrDialog(", This QR Was Already Scaned");
-                            setStud = false;
-                            dulicateQR = true;
-                            break;
-                        }
-                    }
-                    if (!dulicateQR) {
-                        qrEntryProcess(result);
+                        showQrDialog(", This QR Was Already Scaned");
+                        setStud = false;
+                        dulicateQR = true;
+                        break;
                     }
                 }
+                if (!dulicateQR) {
+                    qrEntryProcess(result);
+                }
+            }
             /*} else {
                 startCameraScan.startCamera();
                 startCameraScan.resumeCameraPreview(this);
                 BackupDatabase.backup(this);
             }*/
-            } else {
-                // Old Jsons
-                try {
-                    Log.d("RawResult:::", "****" + result.getText());
-
-                    Pattern pattern = Pattern.compile("[A-Za-z0-9]+-[A-Za-z._]{2,50}");
-                    Matcher mat = pattern.matcher(result.getText());
-
-                    if (mat.matches()) {
-
-                        if (stdList.size() <= 0)
-                            qrEntryProcess(result);
-                        else {
-                            for (int i = 0; i < stdList.size(); i++) {
-                                String[] currentIdArr = decodeStudentId(result.getText(), "-");
-                                String currId = currentIdArr[0];
-                                if (stdList.get(i).getStudentID().equalsIgnoreCase("" + currId)) {
-//                            Toast.makeText(this, "Already Scaned", Toast.LENGTH_SHORT).show();
-                                    showQrDialog(", This QR Was Already Scaned");
-                                    setStud = false;
-                                    dulicateQR = true;
-                                    break;
-                                }
-                            }
-                            if (!dulicateQR) {
-                                qrEntryProcess(result);
-                            }
-                        }
-                    } else {
-                        startCameraScan.startCamera();
-                        startCameraScan.resumeCameraPreview(this);
-                        BackupDatabase.backup(this);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
         } catch (Exception e) {
             Toast.makeText(this, "Invalid QR Code !!!", Toast.LENGTH_SHORT).show();
             btn_Reset.performClick();
@@ -624,77 +581,44 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
     }
 
     public void qrEntryProcess(Result result) {
-        if (result.getText().contains("{")) {
-            totalStudents++;
-            String sid = "", sname = "", sscore = "", salias = "";
-            std = new Student(sid, sname, "QRGroupID");
+        totalStudents++;
+        String sid = "", sname = "", sscore = "", salias = "";
+        std = new Student(sid, sname, "QRGroupID");
 //        Toast.makeText(this, "" + totalStudents, Toast.LENGTH_SHORT).show();
-            if (totalStudents < 6) {
+        if (totalStudents < 6) {
 
-                // todo Parse json & separate id & name
-                String resultID = "", resultName = "";
-                try {
-                    JSONObject jsonobject = new JSONObject(result.getText());
-                    resultID = jsonobject.getString("stuId");
-                    resultName = jsonobject.getString("name");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            // todo Parse json & separate id & name
+            String resultID = "", resultName = "";
+            try {
+                JSONObject jsonobject = new JSONObject(result.getText());
+                resultID = jsonobject.getString("stuId");
+                resultName = jsonobject.getString("name");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-                //Valid pattern
-                String[] id = {resultID};
+            //Valid pattern
+            String[] id = {resultID};
 
-                String stdId = id[0];
-                //String stdFirstName = id[1];
-                String[] name = {resultName};
-                String stdFirstName = name[0];
-                String stdLastName = "";
-                if (name.length > 1)
-                    stdLastName = name[1];
+            String stdId = id[0];
+            //String stdFirstName = id[1];
+            String[] name = {resultName};
+            String stdFirstName = name[0];
+            String stdLastName = "";
+            if (name.length > 1)
+                stdLastName = name[1];
 
-                std.setStudentID(stdId);
-                std.setFirstName(stdFirstName);
+            std.setStudentID(stdId);
+            std.setFirstName(stdFirstName);
 
 //            Toast.makeText(QRLogin.this, "ID" + stdId, Toast.LENGTH_LONG).show();
 //            Toast.makeText(QRLogin.this, "First" + stdFirstName, Toast.LENGTH_LONG).show();
-                stdList.add(std);
+            stdList.add(std);
 
-                //scanNextQRCode();
-                setStud = true;
-                showQrDialog(stdFirstName);
-            }
-        } else {
-            totalStudents++;
-            String sid = "", sname = "", sscore = "", salias = "";
-            std = new Student(sid, sname, "QRGroupID");
-//        Toast.makeText(this, "" + totalStudents, Toast.LENGTH_SHORT).show();
-            if (totalStudents < 6) {
-
-                //Valid pattern
-                String[] id = decodeStudentId(result.getText(), "-");
-
-                String stdId = id[0];
-                //String stdFirstName = id[1];
-                String[] name = decodeStudentId(id[1], "_");
-                String stdFirstName = name[0];
-                String stdLastName = "";
-                if (name.length > 1)
-                    stdLastName = name[1];
-
-                std.setStudentID(stdId);
-                std.setFirstName(stdFirstName);
-
-//            Toast.makeText(QRLogin.this, "ID" + stdId, Toast.LENGTH_LONG).show();
-//            Toast.makeText(QRLogin.this, "First" + stdFirstName, Toast.LENGTH_LONG).show();
-                stdList.add(std);
-
-                //scanNextQRCode();
-                setStud = true;
-                showQrDialog(stdFirstName);
-            }
-
+            //scanNextQRCode();
+            setStud = true;
+            showQrDialog(stdFirstName);
         }
-
 
     }
 
