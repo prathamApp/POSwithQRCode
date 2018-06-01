@@ -553,8 +553,10 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                                         wrong.reset();
                                         wrong.release();
                                     }
-                                    resultDialog.dismiss();
-                                    dialog.dismiss();
+                                    if (resultDialog.isShowing())
+                                        resultDialog.dismiss();
+                                    if (dialog.isShowing())
+                                        dialog.dismiss();
 
                                     // Show Graph Dialog
                                     Dialog aksGraphDialog = new Dialog(MainActivity.this);

@@ -12,7 +12,6 @@ import android.os.Environment;
 import android.provider.Settings;
 import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
-import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.RadioGroup;
@@ -29,7 +28,6 @@ import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 
 public class JSInterface extends Activity {
     static Context mContext;
@@ -401,7 +399,6 @@ public class JSInterface extends Activity {
 
         try {
             File file = new File(splashScreenVideo.fpath + filename);
-
             if (file.exists()) {
                 Uri path = Uri.fromFile(file);
                 Intent intent = new Intent(mContext, VideoPlay.class);
@@ -413,7 +410,7 @@ public class JSInterface extends Activity {
             } else {
             }
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
     }
@@ -489,10 +486,10 @@ public class JSInterface extends Activity {
                 cal.setTime(sdfForTime.parse(gps[1]));
                 long diffSeconds = diff / 1000 % 60;
                 cal.add(Calendar.SECOND, (int) -diffSeconds);
-                score.StartTime=  gps[0]+" "
-                        +((cal.get(Calendar.HOUR_OF_DAY) < 10) ? "0" : "")+ cal.get(Calendar.HOUR_OF_DAY) +":"
-                        +((cal.get(Calendar.MINUTE) < 10) ? "0" : "")+ cal.get(Calendar.MINUTE)+":"
-                        +((cal.get(Calendar.SECOND) < 10) ? "0" : "")+ cal.get(Calendar.SECOND);
+                score.StartTime = gps[0] + " "
+                        + ((cal.get(Calendar.HOUR_OF_DAY) < 10) ? "0" : "") + cal.get(Calendar.HOUR_OF_DAY) + ":"
+                        + ((cal.get(Calendar.MINUTE) < 10) ? "0" : "") + cal.get(Calendar.MINUTE) + ":"
+                        + ((cal.get(Calendar.SECOND) < 10) ? "0" : "") + cal.get(Calendar.SECOND);
 
 //                Log.d("format_time::", ""+cal.get(Calendar.HOUR_OF_DAY)+":"+cal.get(Calendar.MINUTE)+":"+cal.get(Calendar.SECOND));
 
