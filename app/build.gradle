@@ -26,7 +26,9 @@ android {
         exclude "META-INF/MSFTSIG.SF"
         exclude "META-INF/MSFTSIG.RSA"
     }
-
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
     compileOptions {
         targetCompatibility 1.8
         sourceCompatibility 1.8
@@ -52,7 +54,7 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:26.+'
     implementation 'com.google.code.gson:gson:2.6.2'
     implementation 'com.github.bumptech.glide:glide:3.7.0'
-    implementation 'com.android.support:multidex:1.0.0'
+    implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.squareup.okhttp3:okhttp:3.4.1'
     implementation 'com.jjoe64:graphview:4.2.1'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'

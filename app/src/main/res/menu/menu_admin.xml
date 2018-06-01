@@ -14,4 +14,10 @@
         android:orderInCategory="100"
         android:title="Leaderboard"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/action_QrLogin"
+        android:icon="@drawable/qr_icon"
+        android:orderInCategory="100"
+        android:title="Leaderboard"
+        app:showAsAction="always" />
 </menu>

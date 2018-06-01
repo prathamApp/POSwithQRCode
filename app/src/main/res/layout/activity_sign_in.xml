@@ -28,18 +28,18 @@
         android:weightSum="2">
 
         <ImageButton
-            android:id="@+id/btn_QR"
+            android:id="@+id/btn_Regular_5to7"
             android:layout_width="100dp"
             android:layout_height="350dp"
             android:layout_margin="64dp"
             android:layout_weight="1"
-            android:background="@drawable/scan_qr"
-            android:onClick="goToQRLogin"
+            android:background="@drawable/simple_login"
+            android:onClick="goToMultiphotoSelect"
             android:scaleType="fitCenter" />
 
 
         <ImageButton
-            android:id="@+id/btn_Regular"
+            android:id="@+id/btn_Regular_8to14"
             android:layout_width="100dp"
             android:layout_height="350dp"
             android:layout_margin="64dp"
