@@ -161,6 +161,11 @@ public class PushData extends AppCompatActivity {
                     Toast.makeText(this, "Data succesfully pushed to the server !!!", Toast.LENGTH_LONG).show();
                     Toast.makeText(this, "Files moved in pushedUsage folder !!!", Toast.LENGTH_SHORT).show();
 
+                    // reset GpsFixDuration
+                    StatusDBHelper statusDBHelper = new StatusDBHelper(this);
+                    statusDBHelper.Update("gpsFixDuration", "0");
+                    BackupDatabase.backup(this);
+
                 } else if (!sentFlag) {
                     progress.dismiss();
                     Toast.makeText(this, "Data NOT pushed to the server !!!", Toast.LENGTH_LONG).show();
@@ -771,6 +776,10 @@ public class PushData extends AppCompatActivity {
         } else {
             Toast.makeText(c, "Problem in clearing Logs database", Toast.LENGTH_SHORT).show();
         }
+        // reset GpsFixDuration
+        StatusDBHelper statusDBHelper = new StatusDBHelper(this);
+        statusDBHelper.Update("gpsFixDuration", "0");
+        BackupDatabase.backup(this);
 
         BackupDatabase.backup(c);
     }

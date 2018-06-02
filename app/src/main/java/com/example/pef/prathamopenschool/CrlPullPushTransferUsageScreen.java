@@ -1047,5 +1047,10 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
         }
         clearDBRecords();
         tv_Details.setText("\nFiles Transferred : " + cnt + fileName);
+        // reset GpsFixDuration
+        StatusDBHelper statusDBHelper = new StatusDBHelper(this);
+        statusDBHelper.Update("gpsFixDuration", "0");
+        BackupDatabase.backup(this);
+
     }
 }

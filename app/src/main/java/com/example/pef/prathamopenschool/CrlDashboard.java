@@ -380,7 +380,6 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
 
     }
 
-
     // Mandatory File Check
     private class fileChecker extends AsyncTask<Void, Void, Void> {
 
@@ -423,7 +422,6 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
         if (!destFolder.exists())
             destFolder.mkdir();
     }
-
 
     // Copy Avatars from Drawables
     private void copyB1() throws IOException {

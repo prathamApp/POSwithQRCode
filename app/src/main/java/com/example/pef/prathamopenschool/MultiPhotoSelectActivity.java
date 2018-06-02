@@ -239,7 +239,12 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                 }
                 if (checkQJson == null) {
                     aajKaSawalPlayed = 3;
+                } else {
+                    // if old que json then aksplayer = 3
+                    if (!checkQJson.contains("nodelist"))
+                        aajKaSawalPlayed = 3;
                 }
+
 
                 // Aaj Ka Sawaal Played
                 if (aajKaSawalPlayed == 1) {
@@ -397,6 +402,10 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                 }
                 if (checkQJson == null) {
                     aajKaSawalPlayed = 3;
+                } else {
+                    // if old que json then aksplayer = 3
+                    if (!checkQJson.contains("nodelist"))
+                        aajKaSawalPlayed = 3;
                 }
 
                 if (aajKaSawalPlayed == 1) {
