@@ -78,9 +78,7 @@ public class SignInActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-
-        EventBus.getDefault().register(this);
-
+        EventBus.getDefault().register(SignInActivity.this);
         // Multiphotoselect initialization
         MultiPhotoSelectActivity.dilog = new DilogBoxForProcess();
         MultiPhotoSelectActivity.programID = new Utility().getProgramId();
@@ -111,7 +109,6 @@ public class SignInActivity extends AppCompatActivity {
                 s.insertInitialData("appName", "Pratham Digital - Second Chance");
             else if (MultiPhotoSelectActivity.programID.equals("4"))
                 s.insertInitialData("appName", "Pratham Digital - Pratham Institute");
-
         } else {
             s = new StatusDBHelper(this);
             // app name
@@ -123,7 +120,6 @@ public class SignInActivity extends AppCompatActivity {
                 s.Update("appName", "Pratham Digital - Second Chance");
             else if (MultiPhotoSelectActivity.programID.equals("4"))
                 s.Update("appName", "Pratham Digital - Pratham Institute");
-
         }
 
         String deviceID = "";
@@ -188,7 +184,7 @@ public class SignInActivity extends AppCompatActivity {
             gpsTimeDialog.setCancelable(false);
             gpsTimeDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
             gpsTimeDialog.show();
-            MyApplication.getInstance().getLocation(SignInActivity.this);
+//            MyApplication.getInstance().getLocation(SignInActivity.this);
 
             // if time more than minute then show " Go outside dialog " i.e set message
             tv_msgBottom = gpsTimeDialog.findViewById(R.id.tv_msgBottom);
@@ -198,13 +194,16 @@ public class SignInActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
     }
 
     @Subscribe
     public void onEvent(Short msg) {
         if (msg == EventBusMSG.UPDATE_TRACK) {
+            if (gpsTimeDialog != null) {
+                gpsTimeDialog.dismiss();
+                MyApplication.getInstance().stopLocationUpdate();
+            }
             //todo get time and start timer
             DateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.ENGLISH);
             Date gdate = new Date(MyApplication.location.getTime());
@@ -258,22 +257,9 @@ public class SignInActivity extends AppCompatActivity {
             }
 
             BackupDatabase.backup(this);
-
-            // if dialog is open then close
-            if (gpsTimeDialog != null) {
-                if (gpsTimeDialog.isShowing())
-                    gpsTimeDialog.dismiss();
-            }
-            Log.d("before : ", "GetCurrentDateTime ");
+            Log.d("before : ", "GetCurrentDateTime");
             sessionStartTime = new Utility().GetCurrentDateTime(false);
             Log.d("beforeafter : ", "GetCurrentDateTime ");
-
-            // stop getting location
-            MyApplication.getInstance().stopLocationUpdate();
-            if (gpsTimeDialog != null) {
-                gpsTimeDialog.dismiss();
-            }
-
         }
     }
 
@@ -299,9 +285,9 @@ public class SignInActivity extends AppCompatActivity {
 
         checkGPSEnabled();
 
-        if (MyApplication.location == null) {
-            MyApplication.getInstance().getLocation(SignInActivity.this);
-        }
+//        if (MyApplication.location == null) {
+//            MyApplication.getInstance().getLocation(SignInActivity.this);
+//        }
         // Reset Timer
         MyApplication.resetGPSFixTimer();
         MyApplication.startGPSFixTimer();

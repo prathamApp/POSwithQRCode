@@ -60,7 +60,7 @@ public class MyApplication extends Application implements GpsStatus.Listener, Lo
     private int _NumberOfSatellitesUsedInFix = 0;
 
     // Preferences Variables
-    private long prefGPSupdatefrequency = 20000L;
+    private long prefGPSupdatefrequency = 10000L;
     // Singleton instance
     public static Location location;
     public Context context;
@@ -71,7 +71,7 @@ public class MyApplication extends Application implements GpsStatus.Listener, Lo
         public void run() {
             if ((GPSStatus == GPS_OK) || (GPSStatus == GPS_STABILIZING)) {
                 GPSStatus = GPS_TEMPORARYUNAVAILABLE;
-                EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
+//                EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
             }
         }
     };
@@ -79,13 +79,12 @@ public class MyApplication extends Application implements GpsStatus.Listener, Lo
     @Override
     public void onCreate() {
         super.onCreate();
-        mInstance = new MyApplication();
+        mInstance = this;
         context = this;
         getLocation(this);
     }
 
     public void getLocation(Context mcontext) {
-        context = mcontext;
         mlocManager = (LocationManager) mcontext.getSystemService(Context.LOCATION_SERVICE);     // Location Manager
         if (ContextCompat.checkSelfPermission(mcontext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mlocManager.addGpsStatusListener(MyApplication.this);
@@ -150,7 +149,6 @@ public class MyApplication extends Application implements GpsStatus.Listener, Lo
             Log.d("onLocationChanged:", "" + loc.getLatitude());
             Log.d("onLocationChanged:", "" + loc.getLongitude());
             EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
-//            stopLocationUpdate();
         }
 
     }
@@ -162,14 +160,14 @@ public class MyApplication extends Application implements GpsStatus.Listener, Lo
                 //Log.w("VisionApplication", "[#] GPSApplication.java - GPS Out of Service");
                 gpsunavailablehandler.removeCallbacks(unavailr);            // Cancel the previous unavail countdown handler
                 GPSStatus = GPS_OUTOFSERVICE;
-                EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
+//                EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
                 //Toast.makeText( getApplicationContext(), "GPS Out of Service", Toast.LENGTH_SHORT).show();
                 break;
             case LocationProvider.TEMPORARILY_UNAVAILABLE:
                 //Log.w("VisionApplication", "[#] GPSApplication.java - GPS Temporarily Unavailable");
                 gpsunavailablehandler.removeCallbacks(unavailr);            // Cancel the previous unavail countdown handler
                 GPSStatus = GPS_TEMPORARYUNAVAILABLE;
-                EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
+//                EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
                 //Toast.makeText( getApplicationContext(), "GPS Temporarily Unavailable", Toast.LENGTH_SHORT).show();
                 break;
             case LocationProvider.AVAILABLE:
@@ -189,7 +187,7 @@ public class MyApplication extends Application implements GpsStatus.Listener, Lo
     @Override
     public void onProviderDisabled(String provider) {
         GPSStatus = GPS_DISABLED;
-        EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
+//        EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
     }
 
     @Override

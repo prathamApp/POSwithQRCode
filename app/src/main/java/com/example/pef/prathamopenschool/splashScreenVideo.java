@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Locale;
 
 //public class splashScreenVideo extends AppCompatActivity implements MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener {
-public class splashScreenVideo extends AppCompatActivity {
+public class splashScreenVideo extends AppCompatActivity{
 
     VideoView splashVideo;
     ImageView imgLogo;
@@ -66,7 +66,6 @@ public class splashScreenVideo extends AppCompatActivity {
     DateFormat timeStampFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.ENGLISH);
     String timeStamp = "";
     ArrayList<String> dbbackuppath = new ArrayList<String>();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
