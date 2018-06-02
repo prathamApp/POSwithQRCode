@@ -890,20 +890,28 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                             StudentDBHelper stdDBHelper = new StudentDBHelper(this);
                             List<Student> lstStudent = stdDBHelper.getStudentsByGroup(assignedGroupIDs[i]);
                             int stdCount = 0;
+                            int wrongStdCount = 0;
                             // get age of each std & then add grp if student age is less than 8
                             for (int j = 0; j < lstStudent.size(); j++) {
-                                int age = lstStudent.get(i).Age;
+                                int age = lstStudent.get(j).Age;
                                 if (age < 8) {
                                     stdCount++;
-                                    students.add(studentDBHelper.getStudentsList(assignedGroupIDs[i]));
-                                    groupNames.add(groupDBHelper.getGroupById(assignedGroupIDs[i]));
+                                    assignedIds.add(assignedGroupIDs[j]);
+                                    students.add(studentDBHelper.getStudentsList(assignedGroupIDs[j]));
+                                } else {
+                                    wrongStdCount++;
                                 }
                             }
                             // if all student age criteria satisfied
-                            if (stdCount == lstStudent.size())
-                                assignedIds.add(assignedGroupIDs[i]);
-                            else {
-                                // add group if mixed age found in particular grp
+                            if (stdCount == lstStudent.size()) {
+                                groupNames.add(groupDBHelper.getGroupById(assignedGroupIDs[i]));
+                            }
+                            // if all student age criteria not satisfied
+                            else if (wrongStdCount == lstStudent.size()) {
+
+                            }
+                            // few std fullfills criteria then add whole grp
+                            else if (stdCount > 0 && wrongStdCount > 0 && lstStudent.size() > 0) {
                                 students.add(studentDBHelper.getStudentsList(assignedGroupIDs[i]));
                                 groupNames.add(groupDBHelper.getGroupById(assignedGroupIDs[i]));
                                 assignedIds.add(assignedGroupIDs[i]);
@@ -1018,20 +1026,28 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                             StudentDBHelper stdDBHelper = new StudentDBHelper(this);
                             List<Student> lstStudent = stdDBHelper.getStudentsByGroup(assignedGroupIDs[i]);
                             int stdCount = 0;
+                            int wrongStdCount = 0;
                             // get age of each std & then add grp if student age is less than 8
                             for (int j = 0; j < lstStudent.size(); j++) {
-                                int age = lstStudent.get(i).Age;
+                                int age = lstStudent.get(j).Age;
                                 if (age > 7) {
                                     stdCount++;
-                                    students.add(studentDBHelper.getStudentsList(assignedGroupIDs[i]));
-                                    groupNames.add(groupDBHelper.getGroupById(assignedGroupIDs[i]));
+                                    assignedIds.add(assignedGroupIDs[j]);
+                                    students.add(studentDBHelper.getStudentsList(assignedGroupIDs[j]));
+                                } else {
+                                    wrongStdCount++;
                                 }
                             }
                             // if all student age criteria satisfied
-                            if (stdCount == lstStudent.size())
-                                assignedIds.add(assignedGroupIDs[i]);
-                            else {
-                                // add group if mixed age found in particular grp
+                            if (stdCount == lstStudent.size()) {
+                                groupNames.add(groupDBHelper.getGroupById(assignedGroupIDs[i]));
+                            }
+                            // if all student age criteria not satisfied
+                            else if (wrongStdCount == lstStudent.size()) {
+
+                            }
+                            // few std fullfills criteria then add whole grp
+                            else if (stdCount > 0 && wrongStdCount > 0 && lstStudent.size() > 0) {
                                 students.add(studentDBHelper.getStudentsList(assignedGroupIDs[i]));
                                 groupNames.add(groupDBHelper.getGroupById(assignedGroupIDs[i]));
                                 assignedIds.add(assignedGroupIDs[i]);
