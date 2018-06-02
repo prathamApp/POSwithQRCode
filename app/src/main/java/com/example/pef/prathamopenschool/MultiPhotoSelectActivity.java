@@ -86,6 +86,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
     static Long timeout = (long) 20000 * 60;
     static Long duration = timeout;
     static Boolean pauseFlg = false;
+    String ageGrp = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -94,6 +95,9 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
         setContentView(R.layout.group_select);
 
         startService(new Intent(this, WebViewService.class));
+
+        Intent i = getIntent();
+        ageGrp = i.getStringExtra("ageGroup");
 
         dilog = new DilogBoxForProcess();
         grpSelectFlag = true;
@@ -115,114 +119,6 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
 
         // Generate Unique Device ID
         deviceID = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-    }
-
-    public void displayStudents() {
-        String assignedGroupIDs[];
-        students = new ArrayList<JSONArray>();
-        groupNames = new ArrayList<String>();
-        assignedIds = new ArrayList<String>();
-        try {
-            programID = new Utility().getProgramId();
-
-            if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
-                tv_title.setText("Select Groups");
-            } else {
-                tv_title.setText("Select Units");
-            }
-
-            if (programID.equals("1") || programID.equals("2") || programID.equals("3") || programID.equals("4")) {
-                next = (Button) findViewById(R.id.goNext);
-                if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
-                    next.setText("Select Groups");
-                } else {
-                    next.setText("Select Units");
-                }
-                assignedGroupIDs = statusDBHelper.getGroupIDs();
-                if (!assignedGroupIDs[0].equals("")) {
-                    for (int i = 0; i < assignedGroupIDs.length; i++) {
-                        if (!assignedGroupIDs[i].equals("0")) {
-                            students.add(studentDBHelper.getStudentsList(assignedGroupIDs[i]));
-                            groupNames.add(groupDBHelper.getGroupById(assignedGroupIDs[i]));
-                            assignedIds.add(assignedGroupIDs[i]);
-                        }
-                    }
-                }
-                next.setClickable(false);
-                int groupCount = groupNames.size();
-                if (groupNames.isEmpty()) {
-                    if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
-                        Toast.makeText(this, "Assign Groups First", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(this, "Assign Units First", Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    next.setClickable(false);
-                    radioGroup.setPadding(0, 50, 0, 0);
-                    RadioButton rb;
-                    for (int i = 0; i < groupCount; i++) {
-                        rb = new RadioButton(this);
-
-                        RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(
-                                RadioGroup.LayoutParams.WRAP_CONTENT,
-                                RadioGroup.LayoutParams.WRAP_CONTENT
-                        );
-                        params.setMargins(8, 0, 0, 0);
-                        rb.setLayoutParams(params);
-
-                        rb.setHeight(160);
-                        rb.setWidth(135);
-                        rb.setTextSize(16);
-
-                        // For HL
-                        if (MultiPhotoSelectActivity.programID.equals("1") || MultiPhotoSelectActivity.programID.equals("3") || MultiPhotoSelectActivity.programID.equals("4")) {
-                            rb.setBackgroundResource(R.drawable.groups);
-                        } else if (MultiPhotoSelectActivity.programID.equals("2")) {
-                            rb.setBackgroundResource(R.drawable.units);
-                        }
-
-                        rb.setPadding(0, 0, 2, 0);
-                        rb.setId(i);
-                        rb.setText(groupNames.get(i));
-                        radioGroup.addView(rb);
-                    }
-                    next.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            try {
-                                // get selected radio button from radioGroup
-                                int selectedId = radioGroup.getCheckedRadioButtonId();
-
-                                if (selectedId == -1) {
-                                    if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
-                                        Toast.makeText(MultiPhotoSelectActivity.this, "Select atleast one group", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        Toast.makeText(MultiPhotoSelectActivity.this, "Select atleast one unit", Toast.LENGTH_SHORT).show();
-                                    }
-                                } else {
-                                    // find the radiobutton by returned id
-                                    radioButton = (RadioButton) findViewById(selectedId);
-                                    radioButton.setBackgroundColor(getResources().getColor(R.color.selected));
-                                    selectedGroupId = assignedIds.get(selectedId);
-                                    selectedGroupName = (String) radioButton.getText();
-                                    if (selectedGroupName.equals(null)) {
-                                        Toast.makeText(MultiPhotoSelectActivity.this, "Assign Groups First", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        setSelectedStudents(selectedGroupName);
-                                    }
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                }
-            } else {
-                Toast.makeText(this, "Invalid Program Id", Toast.LENGTH_SHORT).show();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public static String getLanguage(Context c) {
@@ -795,7 +691,9 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
         if (radioGroup.getChildCount() > 0) {
             radioGroup.removeAllViews();
         }
-        displayStudents();
+
+        displayStudentsByAgeGroup(ageGrp);
+
         setLanguage();
 
         // set Title according to program
@@ -844,6 +742,378 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
             pauseFlg = false;
         }
 
+    }
+
+    private void displayStudentsByAgeGroup(String ageGrp) {
+        if (ageGrp.contains("5")) {
+            display5to7Students();
+        } else if (ageGrp.contains("8")) {
+            display8to14Students();
+        }
+    }
+
+    public void displayStudents() {
+        String assignedGroupIDs[];
+        students = new ArrayList<JSONArray>();
+        groupNames = new ArrayList<String>();
+        assignedIds = new ArrayList<String>();
+        try {
+            programID = new Utility().getProgramId();
+
+            if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
+                tv_title.setText("Select Groups");
+            } else {
+                tv_title.setText("Select Units");
+            }
+
+            if (programID.equals("1") || programID.equals("2") || programID.equals("3") || programID.equals("4")) {
+                next = (Button) findViewById(R.id.goNext);
+                if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
+                    next.setText("Select Groups");
+                } else {
+                    next.setText("Select Units");
+                }
+                assignedGroupIDs = statusDBHelper.getGroupIDs();
+                if (!assignedGroupIDs[0].equals("")) {
+                    for (int i = 0; i < assignedGroupIDs.length; i++) {
+                        if (!assignedGroupIDs[i].equals("0")) {
+                            students.add(studentDBHelper.getStudentsList(assignedGroupIDs[i]));
+                            groupNames.add(groupDBHelper.getGroupById(assignedGroupIDs[i]));
+                            assignedIds.add(assignedGroupIDs[i]);
+                        }
+                    }
+                }
+                next.setClickable(false);
+                int groupCount = groupNames.size();
+                if (groupNames.isEmpty()) {
+                    if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
+                        Toast.makeText(this, "Assign Groups First", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this, "Assign Units First", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    next.setClickable(false);
+                    radioGroup.setPadding(0, 50, 0, 0);
+                    RadioButton rb;
+                    for (int i = 0; i < groupCount; i++) {
+                        rb = new RadioButton(this);
+
+                        RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(
+                                RadioGroup.LayoutParams.WRAP_CONTENT,
+                                RadioGroup.LayoutParams.WRAP_CONTENT
+                        );
+                        params.setMargins(8, 0, 0, 0);
+                        rb.setLayoutParams(params);
+
+                        rb.setHeight(160);
+                        rb.setWidth(135);
+                        rb.setTextSize(16);
+
+                        // For HL
+                        if (MultiPhotoSelectActivity.programID.equals("1") || MultiPhotoSelectActivity.programID.equals("3") || MultiPhotoSelectActivity.programID.equals("4")) {
+                            rb.setBackgroundResource(R.drawable.groups);
+                        } else if (MultiPhotoSelectActivity.programID.equals("2")) {
+                            rb.setBackgroundResource(R.drawable.units);
+                        }
+
+                        rb.setPadding(0, 0, 2, 0);
+                        rb.setId(i);
+                        rb.setText(groupNames.get(i));
+                        radioGroup.addView(rb);
+                    }
+                    next.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            try {
+                                // get selected radio button from radioGroup
+                                int selectedId = radioGroup.getCheckedRadioButtonId();
+
+                                if (selectedId == -1) {
+                                    if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
+                                        Toast.makeText(MultiPhotoSelectActivity.this, "Select atleast one group", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(MultiPhotoSelectActivity.this, "Select atleast one unit", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    // find the radiobutton by returned id
+                                    radioButton = (RadioButton) findViewById(selectedId);
+                                    radioButton.setBackgroundColor(getResources().getColor(R.color.selected));
+                                    selectedGroupId = assignedIds.get(selectedId);
+                                    selectedGroupName = (String) radioButton.getText();
+                                    if (selectedGroupName.equals(null)) {
+                                        Toast.makeText(MultiPhotoSelectActivity.this, "Assign Groups First", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        setSelectedStudents(selectedGroupName);
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            } else {
+                Toast.makeText(this, "Invalid Program Id", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void display5to7Students() {
+        String assignedGroupIDs[];
+        students = new ArrayList<JSONArray>();
+        groupNames = new ArrayList<String>();
+        assignedIds = new ArrayList<String>();
+        try {
+            programID = new Utility().getProgramId();
+
+            if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
+                tv_title.setText("Select Groups");
+            } else {
+                tv_title.setText("Select Units");
+            }
+
+            if (programID.equals("1") || programID.equals("2") || programID.equals("3") || programID.equals("4")) {
+                next = (Button) findViewById(R.id.goNext);
+                if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
+                    next.setText("Select Groups");
+                } else {
+                    next.setText("Select Units");
+                }
+                assignedGroupIDs = statusDBHelper.getGroupIDs();
+                if (!assignedGroupIDs[0].equals("")) {
+                    for (int i = 0; i < assignedGroupIDs.length; i++) {
+                        if (!assignedGroupIDs[i].equals("0")) {
+                            // check students age & add accordingly
+                            // Get Std count by group id
+                            StudentDBHelper stdDBHelper = new StudentDBHelper(this);
+                            List<Student> lstStudent = stdDBHelper.getStudentsByGroup(assignedGroupIDs[i]);
+                            int stdCount = 0;
+                            // get age of each std & then add grp if student age is less than 8
+                            for (int j = 0; j < lstStudent.size(); j++) {
+                                int age = lstStudent.get(i).Age;
+                                if (age < 8) {
+                                    stdCount++;
+                                    students.add(studentDBHelper.getStudentsList(assignedGroupIDs[i]));
+                                    groupNames.add(groupDBHelper.getGroupById(assignedGroupIDs[i]));
+                                }
+                            }
+                            // if all student age criteria satisfied
+                            if (stdCount == lstStudent.size())
+                                assignedIds.add(assignedGroupIDs[i]);
+                            else {
+                                // add group if mixed age found in particular grp
+                                students.add(studentDBHelper.getStudentsList(assignedGroupIDs[i]));
+                                groupNames.add(groupDBHelper.getGroupById(assignedGroupIDs[i]));
+                                assignedIds.add(assignedGroupIDs[i]);
+                            }
+                        }
+                    }
+                }
+                next.setClickable(false);
+                int groupCount = groupNames.size();
+                if (groupNames.isEmpty()) {
+                    if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
+                        Toast.makeText(this, "Assign Groups First", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this, "Assign Units First", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    next.setClickable(false);
+                    radioGroup.setPadding(0, 50, 0, 0);
+                    RadioButton rb;
+                    for (int i = 0; i < groupCount; i++) {
+                        rb = new RadioButton(this);
+
+                        RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(
+                                RadioGroup.LayoutParams.WRAP_CONTENT,
+                                RadioGroup.LayoutParams.WRAP_CONTENT
+                        );
+                        params.setMargins(8, 0, 0, 0);
+                        rb.setLayoutParams(params);
+
+                        rb.setHeight(160);
+                        rb.setWidth(135);
+                        rb.setTextSize(16);
+
+                        // For HL
+                        if (MultiPhotoSelectActivity.programID.equals("1") || MultiPhotoSelectActivity.programID.equals("3") || MultiPhotoSelectActivity.programID.equals("4")) {
+                            rb.setBackgroundResource(R.drawable.groups);
+                        } else if (MultiPhotoSelectActivity.programID.equals("2")) {
+                            rb.setBackgroundResource(R.drawable.units);
+                        }
+
+                        rb.setPadding(0, 0, 2, 0);
+                        rb.setId(i);
+                        rb.setText(groupNames.get(i));
+                        radioGroup.addView(rb);
+                    }
+                    next.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            try {
+                                // get selected radio button from radioGroup
+                                int selectedId = radioGroup.getCheckedRadioButtonId();
+
+                                if (selectedId == -1) {
+                                    if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
+                                        Toast.makeText(MultiPhotoSelectActivity.this, "Select atleast one group", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(MultiPhotoSelectActivity.this, "Select atleast one unit", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    // find the radiobutton by returned id
+                                    radioButton = (RadioButton) findViewById(selectedId);
+                                    radioButton.setBackgroundColor(getResources().getColor(R.color.selected));
+                                    selectedGroupId = assignedIds.get(selectedId);
+                                    selectedGroupName = (String) radioButton.getText();
+                                    if (selectedGroupName.equals(null)) {
+                                        Toast.makeText(MultiPhotoSelectActivity.this, "Assign Groups First", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        setSelectedStudents(selectedGroupName);
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            } else {
+                Toast.makeText(this, "Invalid Program Id", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void display8to14Students() {
+        String assignedGroupIDs[];
+        students = new ArrayList<JSONArray>();
+        groupNames = new ArrayList<String>();
+        assignedIds = new ArrayList<String>();
+        try {
+            programID = new Utility().getProgramId();
+
+            if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
+                tv_title.setText("Select Groups");
+            } else {
+                tv_title.setText("Select Units");
+            }
+
+            if (programID.equals("1") || programID.equals("2") || programID.equals("3") || programID.equals("4")) {
+                next = (Button) findViewById(R.id.goNext);
+                if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
+                    next.setText("Select Groups");
+                } else {
+                    next.setText("Select Units");
+                }
+                assignedGroupIDs = statusDBHelper.getGroupIDs();
+                if (!assignedGroupIDs[0].equals("")) {
+                    for (int i = 0; i < assignedGroupIDs.length; i++) {
+                        if (!assignedGroupIDs[i].equals("0")) {
+                            // check students age & add accordingly
+                            // Get Std count by group id
+                            StudentDBHelper stdDBHelper = new StudentDBHelper(this);
+                            List<Student> lstStudent = stdDBHelper.getStudentsByGroup(assignedGroupIDs[i]);
+                            int stdCount = 0;
+                            // get age of each std & then add grp if student age is less than 8
+                            for (int j = 0; j < lstStudent.size(); j++) {
+                                int age = lstStudent.get(i).Age;
+                                if (age > 7) {
+                                    stdCount++;
+                                    students.add(studentDBHelper.getStudentsList(assignedGroupIDs[i]));
+                                    groupNames.add(groupDBHelper.getGroupById(assignedGroupIDs[i]));
+                                }
+                            }
+                            // if all student age criteria satisfied
+                            if (stdCount == lstStudent.size())
+                                assignedIds.add(assignedGroupIDs[i]);
+                            else {
+                                // add group if mixed age found in particular grp
+                                students.add(studentDBHelper.getStudentsList(assignedGroupIDs[i]));
+                                groupNames.add(groupDBHelper.getGroupById(assignedGroupIDs[i]));
+                                assignedIds.add(assignedGroupIDs[i]);
+                            }
+                        }
+                    }
+                }
+                next.setClickable(false);
+                int groupCount = groupNames.size();
+                if (groupNames.isEmpty()) {
+                    if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
+                        Toast.makeText(this, "Assign Groups First", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this, "Assign Units First", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    next.setClickable(false);
+                    radioGroup.setPadding(0, 50, 0, 0);
+                    RadioButton rb;
+                    for (int i = 0; i < groupCount; i++) {
+                        rb = new RadioButton(this);
+
+                        RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(
+                                RadioGroup.LayoutParams.WRAP_CONTENT,
+                                RadioGroup.LayoutParams.WRAP_CONTENT
+                        );
+                        params.setMargins(8, 0, 0, 0);
+                        rb.setLayoutParams(params);
+
+                        rb.setHeight(160);
+                        rb.setWidth(135);
+                        rb.setTextSize(16);
+
+                        // For HL
+                        if (MultiPhotoSelectActivity.programID.equals("1") || MultiPhotoSelectActivity.programID.equals("3") || MultiPhotoSelectActivity.programID.equals("4")) {
+                            rb.setBackgroundResource(R.drawable.groups);
+                        } else if (MultiPhotoSelectActivity.programID.equals("2")) {
+                            rb.setBackgroundResource(R.drawable.units);
+                        }
+
+                        rb.setPadding(0, 0, 2, 0);
+                        rb.setId(i);
+                        rb.setText(groupNames.get(i));
+                        radioGroup.addView(rb);
+                    }
+                    next.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            try {
+                                // get selected radio button from radioGroup
+                                int selectedId = radioGroup.getCheckedRadioButtonId();
+
+                                if (selectedId == -1) {
+                                    if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
+                                        Toast.makeText(MultiPhotoSelectActivity.this, "Select atleast one group", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(MultiPhotoSelectActivity.this, "Select atleast one unit", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    // find the radiobutton by returned id
+                                    radioButton = (RadioButton) findViewById(selectedId);
+                                    radioButton.setBackgroundColor(getResources().getColor(R.color.selected));
+                                    selectedGroupId = assignedIds.get(selectedId);
+                                    selectedGroupName = (String) radioButton.getText();
+                                    if (selectedGroupName.equals(null)) {
+                                        Toast.makeText(MultiPhotoSelectActivity.this, "Assign Groups First", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        setSelectedStudents(selectedGroupName);
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            } else {
+                Toast.makeText(this, "Invalid Program Id", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

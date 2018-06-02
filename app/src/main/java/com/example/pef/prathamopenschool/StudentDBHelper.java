@@ -479,4 +479,15 @@ public class StudentDBHelper extends DBHelper {
         cursor.close();
         database.close();
     }
+
+    public List<Student> getStudentsByGroup(String assignedGroupID) {
+        try {
+            database = getWritableDatabase();
+            Cursor cursor = database.rawQuery("select * from Student where GroupID = ?", new String[]{assignedGroupID});
+            return _PopulateListFromCursor(cursor);
+        } catch (Exception ex) {
+            _PopulateLogValues(ex, "getStudentsByGroup");
+            return null;
+        }
+    }
 }

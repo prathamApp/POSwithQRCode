@@ -417,8 +417,15 @@ public class SignInActivity extends AppCompatActivity {
     }
 
 
-    public void goToMultiphotoSelect(View view) {
+    public void Login5to7Multiphoto(View view) {
         Intent i = new Intent(this, MultiPhotoSelectActivity.class);
+        i.putExtra("ageGroup", "5to7");
+        startActivity(i);
+    }
+
+    public void Login8to14Multiphoto(View view) {
+        Intent i = new Intent(this, MultiPhotoSelectActivity.class);
+        i.putExtra("ageGroup", "8to14");
         startActivity(i);
     }
 }

@@ -33,8 +33,8 @@
             android:layout_height="350dp"
             android:layout_margin="64dp"
             android:layout_weight="1"
-            android:background="@drawable/simple_login"
-            android:onClick="goToMultiphotoSelect"
+            android:background="@drawable/btn_age_5_7"
+            android:onClick="Login5to7Multiphoto"
             android:scaleType="fitCenter" />
 
 
@@ -44,8 +44,8 @@
             android:layout_height="350dp"
             android:layout_margin="64dp"
             android:layout_weight="1"
-            android:background="@drawable/simple_login"
-            android:onClick="goToMultiphotoSelect"
+            android:background="@drawable/btn_age_8_14"
+            android:onClick="Login8to14Multiphoto"
             android:scaleType="fitCenter" />
 
     </LinearLayout>
