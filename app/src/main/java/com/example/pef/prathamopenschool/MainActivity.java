@@ -906,7 +906,18 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
         super.onBackPressed();
         if (mainFlag) {
             super.onBackPressed();
-            finish();
+            // close app from main screen
+            sessionFlg = true;
+            scoreDBHelper = new ScoreDBHelper(sessionContex);
+            playVideo.calculateEndTime(scoreDBHelper);
+            BackupDatabase.backup(sessionContex);
+            try {
+                System.exit(0);
+                finishAffinity();
+            } catch (Exception e) {
+                e.getMessage();
+            }
+
         } else if (loadFlg) {
             loadFlg = false;
             Intent intent = new Intent(mContext, AssessmentResult.class);

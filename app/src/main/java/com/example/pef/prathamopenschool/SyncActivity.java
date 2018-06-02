@@ -1160,7 +1160,9 @@ public class SyncActivity extends AppCompatActivity {
                     scoreDBHelper = new ScoreDBHelper(sessionContex);
                     playVideo.calculateEndTime(scoreDBHelper);
                     BackupDatabase.backup(sessionContex);
+                    System.exit(0);
                     finishAffinity();
+
                 }
             }
         }.start();

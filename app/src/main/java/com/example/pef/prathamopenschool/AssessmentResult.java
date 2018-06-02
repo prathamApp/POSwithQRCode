@@ -207,6 +207,7 @@ public class AssessmentResult extends AppCompatActivity {
                     playVideo.calculateEndTime(scoreDBHelper);
                     BackupDatabase.backup(sessionContex);
                     try {
+                        System.exit(0);
                         finishAffinity();
                     } catch (Exception e) {
                         e.getMessage();

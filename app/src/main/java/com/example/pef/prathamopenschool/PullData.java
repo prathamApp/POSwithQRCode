@@ -858,7 +858,9 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
                     scoreDBHelper = new ScoreDBHelper(sessionContex);
                     playVideo.calculateEndTime(scoreDBHelper);
                     BackupDatabase.backup(sessionContex);
+                    System.exit(0);
                     finishAffinity();
+
                 }
 
                 if (MultiPhotoSelectActivity.dilog != null) {

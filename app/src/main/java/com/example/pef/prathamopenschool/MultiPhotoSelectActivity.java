@@ -905,7 +905,6 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                                 int age = lstStudent.get(j).Age;
                                 if (age < 8) {
                                     stdCount++;
-                                    assignedIds.add(assignedGroupIDs[j]);
                                     students.add(studentDBHelper.getStudentsList(assignedGroupIDs[j]));
                                 } else {
                                     wrongStdCount++;
@@ -913,6 +912,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                             }
                             // if all student age criteria satisfied
                             if (stdCount == lstStudent.size()) {
+                                assignedIds.add(assignedGroupIDs[i]);
                                 groupNames.add(groupDBHelper.getGroupById(assignedGroupIDs[i]));
                             }
                             // if all student age criteria not satisfied
@@ -1041,7 +1041,6 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                                 int age = lstStudent.get(j).Age;
                                 if (age > 7) {
                                     stdCount++;
-                                    assignedIds.add(assignedGroupIDs[j]);
                                     students.add(studentDBHelper.getStudentsList(assignedGroupIDs[j]));
                                 } else {
                                     wrongStdCount++;
@@ -1049,6 +1048,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                             }
                             // if all student age criteria satisfied
                             if (stdCount == lstStudent.size()) {
+                                assignedIds.add(assignedGroupIDs[i]);
                                 groupNames.add(groupDBHelper.getGroupById(assignedGroupIDs[i]));
                             }
                             // if all student age criteria not satisfied

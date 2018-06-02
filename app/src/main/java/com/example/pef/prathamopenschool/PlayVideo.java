@@ -157,7 +157,9 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
                 BackupDatabase.backup(getApplicationContext());
 
                 try{
-                    finishAffinity();}
+                    System.exit(0);
+                    finishAffinity();
+                }
                 catch (Exception e)
                 {
                     e.getMessage();

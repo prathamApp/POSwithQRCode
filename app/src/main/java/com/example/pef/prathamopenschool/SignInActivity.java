@@ -371,7 +371,9 @@ public class SignInActivity extends AppCompatActivity {
                     playVideo.calculateEndTime(scoreDBHelper);
                     BackupDatabase.backup(sessionContex);
                     try {
+                        System.exit(0);
                         finishAffinity();
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

@@ -522,7 +522,9 @@ public class AKSGraph extends AppCompatActivity implements GroupListViewInterfac
                     scoreDBHelper = new ScoreDBHelper(sessionContex);
                     playVideo.calculateEndTime(scoreDBHelper);
                     BackupDatabase.backup(sessionContex);
+                    System.exit(0);
                     finishAffinity();
+
                 }
             }
         }.start();

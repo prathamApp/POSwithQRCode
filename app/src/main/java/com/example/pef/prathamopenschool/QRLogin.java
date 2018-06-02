@@ -246,7 +246,9 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
             playVideo.calculateEndTime(scoreDBHelper);
             BackupDatabase.backup(this);
             try {
+                System.exit(0);
                 finishAffinity();
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -244,7 +244,9 @@ public class QRLogin_OnlyJson extends AppCompatActivity implements ZXingScannerV
             playVideo.calculateEndTime(scoreDBHelper);
             BackupDatabase.backup(this);
             try {
+                System.exit(0);
                 finishAffinity();
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
