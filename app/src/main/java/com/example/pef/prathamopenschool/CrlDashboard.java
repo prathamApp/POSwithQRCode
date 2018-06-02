@@ -757,9 +757,7 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
                     scoreDBHelper = new ScoreDBHelper(sessionContex);
                     playVideo.calculateEndTime(scoreDBHelper);
                     BackupDatabase.backup(sessionContex);
-                    System.exit(0);
                     finishAffinity();
-
                 }
             }
         }.start();
@@ -774,7 +772,6 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
         if (wifiEnabled) {
             wifiManager.setWifiEnabled(false);
         }
-
         // turn off FTP Server & Hotspot
         if (ftpConnect.checkServiceRunning()) {
             ftpConnect.stopServer();

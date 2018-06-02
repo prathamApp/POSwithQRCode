@@ -1037,14 +1037,17 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
         String fileName = "";
         for (int i = 0; i < files.length; i++) {
             if (files[i].getName().startsWith("pushNewDataToServer")) {
+                Log.d("onFilesRecievedComplete:", ""+files[i].length());
                 try {
-                    FileUtils.moveFileToDirectory(new File(files[i].getAbsolutePath()),
+                    fileName += "\n" + files[i].getName() + "   " + Integer.parseInt(String.valueOf(files[i].length() / 1024)) + " kb";
+                    FileUtils.copyFileToDirectory(new File(files[i].getAbsolutePath()),
                             new File(Environment.getExternalStorageDirectory().toString() + "/.POSinternal/pushedUsage"), false);
+                    cnt++;
                 } catch (IOException e) {
                     e.printStackTrace();
+                }finally {
+                    files[i].delete();
                 }
-                fileName += "\n" + files[i].getName() + "   " + Integer.parseInt(String.valueOf(files[i].length() / 1024)) + " kb";
-                cnt++;
             }
         }
         clearDBRecords();
