@@ -227,6 +227,15 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                     tv_opt3.setText(Option3);
                     tv_opt4.setText(Option4);
 
+                    // hide video hint button if resource not found
+                    String resSrc = splashScreenVideo.fpath + "Media/" + resourcePath;
+                    File file = new File(resSrc);
+                    if (file.exists()) {
+                        btn_videoHint.setVisibility(View.VISIBLE);
+                    } else {
+                        btn_videoHint.setVisibility(View.GONE);
+                    }
+
 
                 } catch (Exception e) {
                     e.getMessage();
@@ -388,7 +397,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                         score.Add(sc);
                         BackupDatabase.backup(MainActivity.this);
 
-/*                        // Show Graph Dialog
+                        // Show Graph Dialog
                         Dialog aksGraphDialog = new Dialog(MainActivity.this);
                         aksGraphDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                         aksGraphDialog.setContentView(R.layout.aks_graph_dialog);
@@ -420,7 +429,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
 
                         aksGraphDialog.setCanceledOnTouchOutside(false);
                         aksGraphDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                        aksGraphDialog.show();*/
+                        aksGraphDialog.show();
 
                         // Open Graph Activity
 //                        Intent graph = new Intent(MainActivity.this, AKSGraph.class);
@@ -565,7 +574,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                                     if (dialog.isShowing())
                                         dialog.dismiss();
 
-                                    /*// Show Graph Dialog
+                                    // Show Graph Dialog
                                     Dialog aksGraphDialog = new Dialog(MainActivity.this);
                                     aksGraphDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                     aksGraphDialog.setContentView(R.layout.aks_graph_dialog);
@@ -598,7 +607,6 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                                     aksGraphDialog.setCanceledOnTouchOutside(false);
                                     aksGraphDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
                                     aksGraphDialog.show();
-*/
 
                                     // Show Graph Activity
 //                                    Intent graph = new Intent(MainActivity.this, AKSGraph.class);
