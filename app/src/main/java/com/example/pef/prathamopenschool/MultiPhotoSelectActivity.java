@@ -227,10 +227,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
 
                 }
 
-                //set accordingly
-                // int aajKaSawalPlayed = sdbh.getAajKaSawalPlayedStatus(selectedGroupId); //OLD LOGIC
-
-                // if Questions.json not present
+                /*// if Questions.json not present
                 JSONArray queJsonArray = null;
                 try {
                     checkQJson = loadQueJSONFromAsset();
@@ -243,7 +240,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                     // if old que json then aksplayer = 3
                     if (!checkQJson.contains("nodelist"))
                         aajKaSawalPlayed = 3;
-                }
+                }*/
 
 
                 // Aaj Ka Sawaal Played
@@ -390,10 +387,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
 
                 }
 
-                //set accordingly
-                // int aajKaSawalPlayed = sdbh.getAajKaSawalPlayedStatus(selectedGroupId); //OLD LOGIC
-
-                // if Questions.json not present
+                /*// if Questions.json not present
                 JSONArray queJsonArray = null;
                 try {
                     checkQJson = loadQueJSONFromAsset();
@@ -406,7 +400,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                     // if old que json then aksplayer = 3
                     if (!checkQJson.contains("nodelist"))
                         aajKaSawalPlayed = 3;
-                }
+                }*/
 
                 if (aajKaSawalPlayed == 1) {
                     Intent main = new Intent(MultiPhotoSelectActivity.this, MainActivity.class);
@@ -905,7 +899,6 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                                 int age = lstStudent.get(j).Age;
                                 if (age < 8) {
                                     stdCount++;
-                                    students.add(studentDBHelper.getStudentsList(assignedGroupIDs[j]));
                                 } else {
                                     wrongStdCount++;
                                 }
@@ -913,6 +906,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                             // if all student age criteria satisfied
                             if (stdCount == lstStudent.size()) {
                                 assignedIds.add(assignedGroupIDs[i]);
+                                students.add(studentDBHelper.getStudentsList(assignedGroupIDs[i]));
                                 groupNames.add(groupDBHelper.getGroupById(assignedGroupIDs[i]));
                             }
                             // if all student age criteria not satisfied
@@ -1041,7 +1035,6 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                                 int age = lstStudent.get(j).Age;
                                 if (age > 7) {
                                     stdCount++;
-                                    students.add(studentDBHelper.getStudentsList(assignedGroupIDs[j]));
                                 } else {
                                     wrongStdCount++;
                                 }
@@ -1050,6 +1043,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                             if (stdCount == lstStudent.size()) {
                                 assignedIds.add(assignedGroupIDs[i]);
                                 groupNames.add(groupDBHelper.getGroupById(assignedGroupIDs[i]));
+                                students.add(studentDBHelper.getStudentsList(assignedGroupIDs[i]));
                             }
                             // if all student age criteria not satisfied
                             else if (wrongStdCount == lstStudent.size()) {

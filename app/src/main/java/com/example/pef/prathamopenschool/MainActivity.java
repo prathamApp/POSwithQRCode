@@ -41,6 +41,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
@@ -181,8 +182,14 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                 try {
 
                     aajKaSawaalStartTime = Util.GetCurrentDateTime(false);
-                    // Load Json in Array
-                    JSONArray subJsonArray = loadQueJSONFromAsset();
+                    // check marathi or hindi
+
+                    JSONArray subJsonArray;
+                    if (getLanguageByConfigJson().contains("खेळ-वाडी") || getLanguageByConfigJson().contains("खेळ-पुरी") || getLanguageByConfigJson().contains("बघा आणि शिका")) {
+                        subJsonArray = loadMarathiQueJSONFromAsset();
+                    } else {
+                        subJsonArray = loadHindiQueJSONFromAsset();
+                    }
 
                     // Generate Random Subject No
                     Random rS = new Random();
@@ -381,7 +388,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                         score.Add(sc);
                         BackupDatabase.backup(MainActivity.this);
 
-                        // Show Graph Dialog
+/*                        // Show Graph Dialog
                         Dialog aksGraphDialog = new Dialog(MainActivity.this);
                         aksGraphDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                         aksGraphDialog.setContentView(R.layout.aks_graph_dialog);
@@ -413,7 +420,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
 
                         aksGraphDialog.setCanceledOnTouchOutside(false);
                         aksGraphDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                        aksGraphDialog.show();
+                        aksGraphDialog.show();*/
 
                         // Open Graph Activity
 //                        Intent graph = new Intent(MainActivity.this, AKSGraph.class);
@@ -558,7 +565,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                                     if (dialog.isShowing())
                                         dialog.dismiss();
 
-                                    // Show Graph Dialog
+                                    /*// Show Graph Dialog
                                     Dialog aksGraphDialog = new Dialog(MainActivity.this);
                                     aksGraphDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                     aksGraphDialog.setContentView(R.layout.aks_graph_dialog);
@@ -591,7 +598,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                                     aksGraphDialog.setCanceledOnTouchOutside(false);
                                     aksGraphDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
                                     aksGraphDialog.show();
-
+*/
 
                                     // Show Graph Activity
 //                                    Intent graph = new Intent(MainActivity.this, AKSGraph.class);
@@ -704,6 +711,66 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
 
         return aksNavigate;
 
+    }
+
+    // get Language
+    public String getLanguageByConfigJson() {
+        String jsonStr = "";
+        try {
+            File myJsonFile = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/Config.json");
+            FileInputStream stream = new FileInputStream(myJsonFile);
+            try {
+                FileChannel fc = stream.getChannel();
+                MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
+                jsonStr = Charset.defaultCharset().decode(bb).toString();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                stream.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonStr;
+
+    }
+
+    public JSONArray loadHindiQueJSONFromAsset() {
+        String json = null;
+        JSONArray aksNavigate = null;
+        try {
+            InputStream is = getAssets().open("Questions_Hindi.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+            JSONObject aksObj = new JSONObject(json);
+            aksNavigate = aksObj.getJSONArray("nodelist");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return aksNavigate;
+    }
+
+    public JSONArray loadMarathiQueJSONFromAsset() {
+        String json = null;
+        JSONArray aksNavigate = null;
+        try {
+            InputStream is = getAssets().open("Questions_Marathi.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+            JSONObject aksObj = new JSONObject(json);
+            aksNavigate = aksObj.getJSONArray("nodelist");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return aksNavigate;
     }
 
 

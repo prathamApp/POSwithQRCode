@@ -138,7 +138,7 @@ public class ScoreDBHelper extends DBHelper {
         logs.exceptionMessage = ex.getMessage().toString();
         logs.exceptionStackTrace = ex.getStackTrace().toString();
         logs.methodName = method;
-        logs.groupId = MultiPhotoSelectActivity.selectedGroupId.equals(null) ? "GroupID" : MultiPhotoSelectActivity.selectedGroupId;
+        logs.groupId = (MultiPhotoSelectActivity.selectedGroupId.equals("null") || MultiPhotoSelectActivity.selectedGroupId == null) ? "GroupID" : MultiPhotoSelectActivity.selectedGroupId;
         logs.deviceId = MultiPhotoSelectActivity.deviceID;
 
         contentValues.put("CurrentDateTime", logs.currentDateTime);
