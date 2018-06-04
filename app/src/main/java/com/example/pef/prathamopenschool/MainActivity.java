@@ -293,7 +293,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                         tv_opt3.setBackgroundResource(R.drawable.ans_box_left);
                         tv_opt4.setBackgroundResource(R.drawable.ans_box_right);
 
-                        selectedOption = tv_opt1.getText().toString();
+                        selectedOption = tv_opt1.getText().toString().trim();
                         selectedBtn = R.id.opt1;
 
                     }
@@ -310,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                         tv_opt3.setBackgroundResource(R.drawable.ans_box_left);
                         tv_opt4.setBackgroundResource(R.drawable.ans_box_right);
 
-                        selectedOption = tv_opt2.getText().toString();
+                        selectedOption = tv_opt2.getText().toString().trim();
                         selectedBtn = R.id.opt2;
 
                     }
@@ -327,7 +327,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                         tv_opt3.setBackgroundResource(R.drawable.ans_box_left_selected);
                         tv_opt4.setBackgroundResource(R.drawable.ans_box_right);
 
-                        selectedOption = tv_opt3.getText().toString();
+                        selectedOption = tv_opt3.getText().toString().trim();
                         selectedBtn = R.id.opt3;
 
                     }
@@ -344,7 +344,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                         tv_opt3.setBackgroundResource(R.drawable.ans_box_left);
                         tv_opt4.setBackgroundResource(R.drawable.ans_box_right_selected);
 
-                        selectedOption = tv_opt4.getText().toString();
+                        selectedOption = tv_opt4.getText().toString().trim();
                         selectedBtn = R.id.opt4;
 
                     }
@@ -490,7 +490,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
 
 
                         // get selected textview
-                        if (selectedOption.equals(Answer)) {
+                        if (selectedOption.equals(Answer.trim())) {
                             // Correct Animation
                             Button selBut = dialog.findViewById(selectedBtn);
                             selBut.setBackgroundResource(R.drawable.ans_box_correct);
@@ -518,13 +518,13 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                             selBut.setBackgroundResource(R.drawable.ans_box_wrong);
 
                             // Setting Correct Answer background
-                            if (tv_opt1.getText().toString().equals(Answer))
+                            if (tv_opt1.getText().toString().equals(Answer.trim()))
                                 tv_opt1.setBackgroundResource(R.drawable.ans_box_correct);
-                            else if (tv_opt2.getText().toString().equals(Answer))
+                            else if (tv_opt2.getText().toString().equals(Answer.trim()))
                                 tv_opt2.setBackgroundResource(R.drawable.ans_box_correct);
-                            else if (tv_opt3.getText().toString().equals(Answer))
+                            else if (tv_opt3.getText().toString().equals(Answer.trim()))
                                 tv_opt3.setBackgroundResource(R.drawable.ans_box_correct);
-                            else if (tv_opt4.getText().toString().equals(Answer))
+                            else if (tv_opt4.getText().toString().equals(Answer.trim()))
                                 tv_opt4.setBackgroundResource(R.drawable.ans_box_correct);
 
 
@@ -536,7 +536,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                             LinearLayout wrongScreen = resultDialog.findViewById(R.id.aajkaSawaal_wrong);
 
                             TextView tvWrong = resultDialog.findViewById(R.id.tv_wrong_ans);
-                            tvWrong.setText("Correct Answer is " + Answer + " !!!");
+                            tvWrong.setText("Correct Answer is " + Answer.trim() + " !!!");
 
                             mainScreen.setVisibility(View.GONE);
                             correctScreen.setVisibility(View.GONE);

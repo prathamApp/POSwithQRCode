@@ -430,4 +430,11 @@ public class SignInActivity extends AppCompatActivity {
         i.putExtra("ageGroup", "8to14");
         startActivity(i);
     }
+
+    @Override
+    public void onBackPressed() {
+        System.exit(0);
+        finishAffinity();
+        super.onBackPressed();
+    }
 }
