@@ -259,6 +259,8 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                             dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
                             dialog.setCanceledOnTouchOutside(false);
                             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                            WindowManager.LayoutParams a = dialog.getWindow().getAttributes();a.dimAmount = 0;
+                            dialog.getWindow().setAttributes(a);
                             dialog.show();
 
                             videoView = dialog.findViewById(R.id.videoView);
