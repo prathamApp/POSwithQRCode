@@ -146,7 +146,6 @@ public class VideoPlay extends Activity implements OnCompletionListener, OnPrepa
                     playVideo.calculateEndTime(scoreDBHelper);
                     BackupDatabase.backup(sessionContex);
                     System.exit(0);
-                    System.exit(0);
                     finishAffinity();
 
                 }

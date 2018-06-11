@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -120,7 +121,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
         //holder.thumbnail.setImageURI( card.getThumbnail() );
         /*final Bitmap[] bitmap = {BitmapFactory.decodeFile(card.nodeImage)};
         holder.thumbnail.setImageBitmap(bitmap[0]);*/
-
+        Log.d("onBindViewHolder::", "file://" + card.nodeImage);
         Glide.with(holder.itemView.getContext())
                 .load("file://" + card.nodeImage)
                 .into(holder.thumbnail);

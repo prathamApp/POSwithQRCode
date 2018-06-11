@@ -152,7 +152,7 @@ public class WebViewActivity extends AppCompatActivity implements WebViewInterfa
                     scoreDBHelper = new ScoreDBHelper(sessionContex);
                     playVideo.calculateEndTime(scoreDBHelper);
                     BackupDatabase.backup(sessionContex);
-                    System.exit(0);
+//                    System.exit(0);
                     finishAffinity();
 
 

@@ -278,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                             videoView.requestFocus();
 
                         } else {
-                            Toast.makeText(mContext, "Video not available !!!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "AKS Video not available !!!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -1018,6 +1018,8 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
             MultiPhotoSelectActivity.pauseFlg = false;
             MultiPhotoSelectActivity.duration = MultiPhotoSelectActivity.timeout;
         }
+        if(adapter!=null)
+            adapter.notifyDataSetChanged();
     }
 
     @Override

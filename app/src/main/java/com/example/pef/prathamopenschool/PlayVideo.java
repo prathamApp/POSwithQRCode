@@ -47,7 +47,8 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
         myVideoView.setOnCompletionListener(this);
         util = new Utility();
 //        videoStartTime = getIntent().getStringExtra("startTime");
-        videoStartTime = util.GetCurrentDateTime(false);;
+        videoStartTime = util.GetCurrentDateTime(false);
+        ;
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         playVideo(Uri.parse(groupId));
@@ -77,7 +78,8 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
         int vidDuration = 0;
         if (MainActivity.sessionFlg) {
 //            videoStartTime = SignInActivity.sessionStartTime;
-            videoStartTime = util.GetCurrentDateTime(false);;
+            videoStartTime = util.GetCurrentDateTime(false);
+            ;
             vidDuration = 0;
             res_id = "SessionTracking";
         }
@@ -104,7 +106,7 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
             score.TotalMarks = vidDuration;
             score.StartTime = videoStartTime;
             String gid = MultiPhotoSelectActivity.selectedGroupsScore;
-            if(gid.contains(","))
+            if (gid.contains(","))
                 gid = gid.split(",")[0];
             score.GroupID = gid;//ketan 17/6/17
             String deviceId = MultiPhotoSelectActivity.deviceID;
@@ -130,6 +132,7 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d("onPause ::: ", "onPause Called !!!");
         myVideoView.pause();
         MainActivity.sessionFlg = true;
 
@@ -155,13 +158,10 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
                     CardAdapter.vidFlg = false;
                 }
                 BackupDatabase.backup(getApplicationContext());
-
-                try{
-                    System.exit(0);
+                try {
+//                    System.exit(0);
                     finishAffinity();
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.getMessage();
                 }
             }
@@ -182,12 +182,13 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        calculateEndTime(scoreDBHelper);
-        Runtime rs = Runtime.getRuntime();
-        rs.freeMemory();
-        rs.gc();
-        rs.freeMemory();
-        this.finish();
+//        calculateEndTime(scoreDBHelper);
+//        Runtime rs = Runtime.getRuntime();
+//        rs.freeMemory();
+//        rs.gc();
+//        rs.freeMemory();
+//        this.finish();
+        onBackPressed();
         //JSInterface.MediaFlag=false;
     }
 
