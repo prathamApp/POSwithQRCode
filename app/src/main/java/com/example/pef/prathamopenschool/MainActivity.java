@@ -259,7 +259,8 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                             dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
                             dialog.setCanceledOnTouchOutside(false);
                             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                            WindowManager.LayoutParams a = dialog.getWindow().getAttributes();a.dimAmount = 0;
+                            WindowManager.LayoutParams a = dialog.getWindow().getAttributes();
+                            a.dimAmount = 0;
                             dialog.getWindow().setAttributes(a);
                             dialog.show();
 
@@ -460,6 +461,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                         // Disable buttons after selection
                         btn_Submit.setEnabled(false);
                         btn_Skip.setEnabled(false);
+                        btn_videoHint.setEnabled(false);
                         tv_opt1.setEnabled(false);
                         tv_opt2.setEnabled(false);
                         tv_opt3.setEnabled(false);
@@ -467,6 +469,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
 
                         btn_Submit.setClickable(false);
                         btn_Skip.setClickable(false);
+                        btn_videoHint.setClickable(false);
                         tv_opt1.setClickable(false);
                         tv_opt2.setClickable(false);
                         tv_opt3.setClickable(false);
@@ -1018,7 +1021,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
             MultiPhotoSelectActivity.pauseFlg = false;
             MultiPhotoSelectActivity.duration = MultiPhotoSelectActivity.timeout;
         }
-        if(adapter!=null)
+        if (adapter != null)
             adapter.notifyDataSetChanged();
     }
 
