@@ -9,6 +9,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -45,7 +47,7 @@ import java.util.List;
 import java.util.Locale;
 
 //public class splashScreenVideo extends AppCompatActivity implements MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener {
-public class splashScreenVideo extends AppCompatActivity{
+public class splashScreenVideo extends AppCompatActivity {
 
     VideoView splashVideo;
     ImageView imgLogo;
@@ -399,7 +401,9 @@ public class splashScreenVideo extends AppCompatActivity{
         boolean apkVersion = false;
         boolean appName = false;
         boolean gpsFixDuration = false;
+        boolean wifiMAC = false;
 
+        wifiMAC = s.initialDataAvailable("wifiMAC");
         gpsFixDuration = s.initialDataAvailable("gpsFixDuration");
         aksAvailable = s.initialDataAvailable("aajKaSawalPlayed");
         langAvailable = s.initialDataAvailable("TabLanguage");
@@ -425,6 +429,13 @@ public class splashScreenVideo extends AppCompatActivity{
         apkVersion = s.initialDataAvailable("apkVersion");
         appName = s.initialDataAvailable("appName");
 
+        if (wifiMAC == false) {
+            WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            WifiInfo wInfo = wifiManager.getConnectionInfo();
+            String macAddress = wInfo.getMacAddress();
+            s = new StatusDBHelper(this);
+            s.insertInitialData("wifiMAC", "" + macAddress);
+        }
         if (gpsFixDuration == false) {
             s = new StatusDBHelper(this);
             s.insertInitialData("gpsFixDuration", "");
