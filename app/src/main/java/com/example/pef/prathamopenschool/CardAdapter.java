@@ -135,7 +135,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
         String resType = card.resourceType;
         myNodetype = card.nodeType;
 
-        if ( myNodetype.equals("Assessment") ) {
+        if (myNodetype.equals("Assessment")) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -229,6 +229,8 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
                         Intent intent = new Intent(mContext, PlayVideo.class);
                         intent.putExtra("path", path.toString());
                         intent.putExtra("startTime", myDateTime);
+//                        intent.putExtra("nodeList", nodeList.toString());
+//                        Log.d("nodeList :::", "" + nodeList.toString());
                         Runtime rs = Runtime.getRuntime();
                         rs.freeMemory();
                         rs.gc();
@@ -253,6 +255,9 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
                         Intent intent = new Intent(mContext, PlayVideo.class);
                         intent.putExtra("path", path.toString());
                         intent.putExtra("startTime", myDateTime);
+//                        intent.putExtra("nodeList", nodeList.toString());
+//                        Log.d("nodeList Thumbclick :::", "" + nodeList.toString());
+//                        Toast.makeText(mContext, "NodeList : " + nodeList.toString(), Toast.LENGTH_LONG).show();
                         Runtime rs = Runtime.getRuntime();
                         rs.freeMemory();
                         rs.gc();
