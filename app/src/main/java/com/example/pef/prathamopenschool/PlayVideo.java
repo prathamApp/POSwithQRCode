@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.Settings;
@@ -12,6 +13,11 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.MediaController;
 import android.widget.VideoView;
+
+import com.example.pef.prathamopenschool.gps.EventBusMSG;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener {
 
@@ -66,7 +72,6 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
         }
         myVideoView.setMediaController(mediaController);
         myVideoView.requestFocus();
-
     }
 
     //************************************************************//
@@ -124,7 +129,6 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     //************************************************************//
@@ -196,6 +200,19 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
     public void onPrepared(MediaPlayer mp) {
         myVideoView.start();
         duration = myVideoView.getDuration();
+        onEvent();
+    }
+
+    public void onEvent() {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                do {
+                    Log.d("onEvent::", myVideoView.getCurrentPosition() + "");
+                } while (myVideoView.getCurrentPosition() <= myVideoView.getDuration());
+                return null;
+            }
+        }.execute();
     }
 
     @Override
