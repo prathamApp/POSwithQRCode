@@ -1,7 +1,9 @@
 
 package com.example.pef.prathamopenschool;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -10,14 +12,28 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.MediaController;
+import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.example.pef.prathamopenschool.gps.EventBusMSG;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener {
 
@@ -31,6 +47,8 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
     Utility util;
     String deviceID = "";
     String videoStartTime;
+    List<Modal_VideoQuestion> videoQuestions;
+    int count = 0;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -43,7 +61,6 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
         // Generate Unique Device ID
         deviceID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
-
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         setContentView(R.layout.activity_play_video);
 
@@ -54,11 +71,21 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
         util = new Utility();
 //        videoStartTime = getIntent().getStringExtra("startTime");
         videoStartTime = util.GetCurrentDateTime(false);
-        ;
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         playVideo(Uri.parse(groupId));
+    }
 
+    public void parseVideoQuestion() {
+        try {
+            String questions = getIntent().getStringExtra("nodeList");
+            Gson gson = new Gson();
+            Type listType = new TypeToken<List<Modal_VideoQuestion>>() {
+            }.getType();
+            videoQuestions = gson.fromJson(questions, listType);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void playVideo(Uri path) {
@@ -200,19 +227,8 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
     public void onPrepared(MediaPlayer mp) {
         myVideoView.start();
         duration = myVideoView.getDuration();
-        onEvent();
-    }
-
-    public void onEvent() {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                do {
-                    Log.d("onEvent::", myVideoView.getCurrentPosition() + "");
-                } while (myVideoView.getCurrentPosition() <= myVideoView.getDuration());
-                return null;
-            }
-        }.execute();
+        long time = TimeUnit.SECONDS.toMillis(Long.parseLong(videoQuestions.get(count).getNodeTime())); //convert to millisecond
+        new Video_Question(time).execute();
     }
 
     @Override
@@ -225,5 +241,64 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
         rs.freeMemory();
         this.finish();
     }
+
+    public class Video_Question extends AsyncTask<Void, Void, Boolean> {
+        long time;
+
+        public Video_Question(long time) {
+            this.time = time;
+            Log.d("time::", time + "");
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            if (!myVideoView.isPlaying()) {
+                myVideoView.start();
+            }
+            do {
+                Log.d("onEvent::", myVideoView.getCurrentPosition() + "");
+                if (count < videoQuestions.size()) {
+                    if (myVideoView.getCurrentPosition() == time) {
+                        if (myVideoView.isPlaying()) {
+                            myVideoView.pause();
+                            return true;
+                        }
+                    }
+                }
+            } while (myVideoView.getCurrentPosition() <= myVideoView.getDuration());
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (aBoolean) {
+                count += 1;
+                showQuestion();
+            }
+        }
+    }
+
+    private void showQuestion() {
+        Dialog dialog = new Dialog(PlayVideo.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.video_question_dialog);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        TextView tv_question = (TextView) dialog.findViewById(R.id.tv_question);
+        Button opt1 = (Button) dialog.findViewById(R.id.opt1);
+        Button opt2 = (Button) dialog.findViewById(R.id.opt2);
+        Button opt3 = (Button) dialog.findViewById(R.id.opt3);
+        Button opt4 = (Button) dialog.findViewById(R.id.opt4);
+        ImageButton btn_submit = (ImageButton) dialog.findViewById(R.id.btn_submit);
+        ImageButton btn_skip = (ImageButton) dialog.findViewById(R.id.btn_skip);
+        btn_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                long time = TimeUnit.SECONDS.toMillis(Long.parseLong(videoQuestions.get(count).getNodeTime())); //convert to millisecond
+                new Video_Question(time).execute();
+            }
+        });
+    }
+
 }
 
