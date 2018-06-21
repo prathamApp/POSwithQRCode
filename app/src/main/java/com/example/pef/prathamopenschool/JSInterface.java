@@ -447,7 +447,7 @@ public class JSInterface extends Activity {
             String systime = Util.GetCurrentDateTime(true);  //here we get sys time
             String[] gps = Util.GetCurrentDateTime(false).split(" ");
             SimpleDateFormat sdfForTime = new SimpleDateFormat("HH:mm:ss");
-            long diff = (sdfForTime.parse(systime.split(" ")[1]).getTime() - sdfForTime.parse(customTime).getTime());
+            long diff = (sdfForTime.parse(systime).getTime() - sdfForTime.parse(customTime).getTime());
             Calendar cal = Calendar.getInstance();
             cal.setTime(sdfForTime.parse(gps[1]));
             long diffSeconds = diff / 1000 % 60;
