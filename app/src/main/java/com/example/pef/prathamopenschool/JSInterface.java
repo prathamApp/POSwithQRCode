@@ -426,6 +426,63 @@ public class JSInterface extends Activity {
         }
     }
 
+    @JavascriptInterface
+    public void wordEntry(String word, int gameID, int SM, int TM, int level, String StartTime) {
+
+        try {
+
+            boolean _wasSuccessful = false;
+            String[] splited;
+            String[] splitedDate;
+            String[] splitedTime;
+            String customDate;
+            String customTime;
+
+            splited = StartTime.split("\\s+");
+            splitedDate = splited[0].split("\\-+");
+            splitedTime = splited[1].split("\\:+");
+            customDate = formatCustomDate(splitedDate, "-");
+            customTime = formatCustomDate(splitedTime, ":");
+
+            String systime = Util.GetCurrentDateTime(true);  //here we get sys time
+            String[] gps = Util.GetCurrentDateTime(false).split(" ");
+            SimpleDateFormat sdfForTime = new SimpleDateFormat("HH:mm:ss");
+            long diff = (sdfForTime.parse(systime.split(" ")[1]).getTime() - sdfForTime.parse(customTime).getTime());
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(sdfForTime.parse(gps[1]));
+            long diffSeconds = diff / 1000 % 60;
+            cal.add(Calendar.SECOND, (int) -diffSeconds);
+
+            ScoreDBHelper scoreDBHelper = new ScoreDBHelper(mContext);
+
+            String gid = MultiPhotoSelectActivity.selectedGroupsScore;
+            if (gid.contains(","))
+                gid = gid.split(",")[0];
+            String deviceId = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
+
+
+            Score score = new Score();
+            score.SessionID = MultiPhotoSelectActivity.sessionId;
+            score.ResourceID = word;
+            score.QuestionId = gameID;
+            score.ScoredMarks = SM;
+            score.TotalMarks = TM;
+            score.StartTime = gps[0] + " "
+                    + ((cal.get(Calendar.HOUR_OF_DAY) < 10) ? "0" : "") + cal.get(Calendar.HOUR_OF_DAY) + ":"
+                    + ((cal.get(Calendar.MINUTE) < 10) ? "0" : "") + cal.get(Calendar.MINUTE) + ":"
+                    + ((cal.get(Calendar.SECOND) < 10) ? "0" : "") + cal.get(Calendar.SECOND);
+            score.GroupID = gid;
+            score.DeviceID = deviceId.equals(null) ? "0000" : deviceId;
+            score.EndTime = Util.GetCurrentDateTime(false);
+            score.Level = level;
+
+            _wasSuccessful = scoreDBHelper.Add(score);
+            BackupDatabase.backup(mContext);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @JavascriptInterface
     public void addScore(String resId, int questionId, int scorefromGame, int totalMarks, int level, String startTime) {
