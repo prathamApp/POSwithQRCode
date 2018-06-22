@@ -634,6 +634,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
                         obj.put("appName", statusDBHelper.getValue("appName"));
                         obj.put("gpsFixDuration", statusDBHelper.getValue("gpsFixDuration"));
                         obj.put("wifiMAC", statusDBHelper.getValue("wifiMAC"));
+                        obj.put("apkType", statusDBHelper.getValue("apkType"));
 
                         String requestString = "{ " +
                                 "\"metadata\": " + obj + "," +

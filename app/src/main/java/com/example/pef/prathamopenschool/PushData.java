@@ -579,6 +579,7 @@ public class PushData extends AppCompatActivity {
                         obj.put("appName", statusDBHelper.getValue("appName"));
                         obj.put("gpsFixDuration", statusDBHelper.getValue("gpsFixDuration"));
                         obj.put("wifiMAC", statusDBHelper.getValue("wifiMAC"));
+                        obj.put("apkType", statusDBHelper.getValue("apkType"));
 
                         // creating json file
                         String requestString = "{ \"metadata\": " + obj + ", \"scoreData\": " + scoreData + ", \"LogsData\": " + logsData + ", \"attendanceData\": " + attendanceData + ", \"newStudentsData\": " + studentData + ", \"newCrlsData\": " + crlData + ", \"newGroupsData\": " + grpData + ", \"AserTableData\": " + aserData + "}";//Ketan

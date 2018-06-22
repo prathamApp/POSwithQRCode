@@ -402,7 +402,9 @@ public class splashScreenVideo extends AppCompatActivity {
         boolean appName = false;
         boolean gpsFixDuration = false;
         boolean wifiMAC = false;
+        boolean apkType = false;
 
+        apkType = s.initialDataAvailable("apkType");
         wifiMAC = s.initialDataAvailable("wifiMAC");
         gpsFixDuration = s.initialDataAvailable("gpsFixDuration");
         aksAvailable = s.initialDataAvailable("aajKaSawalPlayed");
@@ -429,6 +431,10 @@ public class splashScreenVideo extends AppCompatActivity {
         apkVersion = s.initialDataAvailable("apkVersion");
         appName = s.initialDataAvailable("appName");
 
+        if (apkType == false) {
+            s = new StatusDBHelper(this);
+            s.insertInitialData("apkType", "QRCode, GPS");
+        }
         if (wifiMAC == false) {
             WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             WifiInfo wInfo = wifiManager.getConnectionInfo();
