@@ -145,6 +145,30 @@
                 android:textSize="16sp" />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/Line4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/Line3"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_changePrathamCode"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="16dp"
+                android:background="@color/button"
+                android:onClick="changePrathamCode"
+                android:text="  Change Pratham Code  "
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+
 
     </RelativeLayout>
 
@@ -217,4 +241,27 @@
             android:hint="Device ID" />
 
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/id4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/id1"
+        android:layout_margin="8dp"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pratham Code : "
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_prathamCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="prathamCode" />
+
+    </LinearLayout>
+
 </RelativeLayout>

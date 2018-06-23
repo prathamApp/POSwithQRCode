@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
     String selectedGroupId;
     private String gid = "";
 
+
     @TargetApi(Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -884,7 +885,32 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
 
                 String numberOnly = phase.replaceAll("[^0-9]", "");
 
-                cardList.add(card);
+                // Login Age 8-14 hide khelbadi
+                if (MyApplication.ageGrp.contains("8")) {
+                    if (card.nodeAge.equalsIgnoreCase("3-6")) {
+                    } else if (card.resourcePath == null || card.resourcePath.equalsIgnoreCase("null")) {
+                        cardList.add(card);
+                    } else if (card.resourcePath != null && card.resourcePath.contains("KhelPuri") || card.resourceType.contains("video") ||
+                            card.resourcePath.contains("videos") )
+                        cardList.add(card);
+                    else
+                        cardList.add(card);
+                }
+
+                // Login Age 5-7 for showing Khelbadi only
+                else if (MyApplication.ageGrp.contains("5")) {
+                    if (card.nodeAge.equalsIgnoreCase("6-10") || card.nodeAge.equalsIgnoreCase("8-14") || card.nodeImage.contains("TCE.png") || card.nodeImage.contains("Games.png")) {
+                    } else if (card.resourcePath == null || card.resourcePath.equalsIgnoreCase("null")) {
+                        cardList.add(card);
+                    } else if (card.resourcePath != null && card.resourcePath.contains("KhelBadi"))
+                        cardList.add(card);
+                    else
+                        cardList.add(card);
+                }
+                // QRCode
+                else {
+                    cardList.add(card);
+                }
 
                 if (myNodeType.equals("Resource") && assessmentLogin.assessmentFlg) {
                     loadFlg = true;

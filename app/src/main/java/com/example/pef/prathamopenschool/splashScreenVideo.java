@@ -2,24 +2,32 @@ package com.example.pef.prathamopenschool;
 
 import android.app.ActivityManager;
 import android.app.AlarmManager;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -300,24 +308,75 @@ public class splashScreenVideo extends AppCompatActivity {
                     }
                 }
 
-                new Handler().postDelayed(new Runnable() {
+                // todo check prathamCode exists or not
+                StatusDBHelper statusDBHelper = new StatusDBHelper(splashScreenVideo.this);
+                String pCode = statusDBHelper.getValue("prathamCode");
 
-                    /*
-                     * Showing splash screen with a timer. This will be useful when you
-                     * want to show case your app logo / company
-                     */
+                if (pCode.equalsIgnoreCase("")) {
+                    final Dialog dialog = new Dialog(splashScreenVideo.this);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+                    dialog.setContentView(R.layout.login_code_dialog);
+                    dialog.getWindow().setLayout(600, 350);
+                    dialog.setCancelable(true);
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.show();
 
-                    @Override
-                    public void run() {
-                        // This method will be executed once the timer is over
-                        // Start your app main activity
-                        Intent splash = new Intent(splashScreenVideo.this, SignInActivity.class);
-                        startActivity(splash);
+                    dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialogInterface) {
+                            if (dialog.isShowing())
+                                dialog.dismiss();
+                            finish();
+                        }
+                    });
 
-                        // close this activity
-                        finish();
-                    }
-                }, SPLASH_TIME_OUT);
+                    EditText edt_code = (EditText) dialog.findViewById(R.id.edt_code);
+                    Button btn_Submit = (Button) dialog.findViewById(R.id.btn_Submit);
+
+                    btn_Submit.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (edt_code.getText().toString().trim().length() > 0) {
+                                if (dialog.isShowing())
+                                    dialog.dismiss();
+                                StatusDBHelper statusDBHelper = new StatusDBHelper(splashScreenVideo.this);
+                                statusDBHelper.Update("prathamCode", "" + edt_code.getText().toString().trim());
+                                Intent splash = new Intent(splashScreenVideo.this, SignInActivity.class);
+                                startActivity(splash);
+                                finish();
+                            } else {
+                                Toast.makeText(splashScreenVideo.this, "Please enter your Pratham Code !!!", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+
+                } else {
+                    Intent splash = new Intent(splashScreenVideo.this, SignInActivity.class);
+                    startActivity(splash);
+                    finish();
+                }
+
+
+//                new Handler().postDelayed(new Runnable() {
+//
+//                    /*
+//                     * Showing splash screen with a timer. This will be useful when you
+//                     * want to show case your app logo / company
+//                     */
+//
+//                    @Override
+//                    public void run() {
+//                        // This method will be executed once the timer is over
+//                        // Start your app main activity
+//                        Intent splash = new Intent(splashScreenVideo.this, SignInActivity.class);
+//                        startActivity(splash);
+//
+//                        // close this activity
+//                        finish();
+//                    }
+//                }, SPLASH_TIME_OUT);
 
             } else {
                 appEnd = true;
@@ -403,7 +462,9 @@ public class splashScreenVideo extends AppCompatActivity {
         boolean gpsFixDuration = false;
         boolean wifiMAC = false;
         boolean apkType = false;
+        boolean prathamCode = false;
 
+        prathamCode = s.initialDataAvailable("prathamCode");
         apkType = s.initialDataAvailable("apkType");
         wifiMAC = s.initialDataAvailable("wifiMAC");
         gpsFixDuration = s.initialDataAvailable("gpsFixDuration");
@@ -431,9 +492,16 @@ public class splashScreenVideo extends AppCompatActivity {
         apkVersion = s.initialDataAvailable("apkVersion");
         appName = s.initialDataAvailable("appName");
 
+        if (prathamCode == false) {
+            s = new StatusDBHelper(this);
+            s.insertInitialData("prathamCode", "");
+        }
         if (apkType == false) {
             s = new StatusDBHelper(this);
             s.insertInitialData("apkType", "QRCode, GPS");
+        } else {
+            s = new StatusDBHelper(this);
+            s.Update("apkType", "QRCode, GPS");
         }
         if (wifiMAC == false) {
             WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);

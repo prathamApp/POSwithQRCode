@@ -252,6 +252,8 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            MyApplication.ageGrp = "0";
+            main.putExtra("ageGrp", "0");
             main.putExtra("aajKaSawalPlayed", "3");
             main.putExtra("selectedGroupId", "QR");
             startActivity(main);
@@ -281,6 +283,8 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            MyApplication.ageGrp = "0";
+            main.putExtra("ageGrp", "0");
             main.putExtra("aajKaSawalPlayed", "3");
             main.putExtra("selectedGroupId", "QR");
 
@@ -307,6 +311,8 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            MyApplication.ageGrp = "0";
+            main.putExtra("ageGrp", "0");
             main.putExtra("aajKaSawalPlayed", "3");
             main.putExtra("selectedGroupId", "QR");
 

@@ -3,11 +3,13 @@ package com.example.pef.prathamopenschool;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
@@ -21,6 +23,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -46,7 +49,7 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
     StatusDBHelper sdbh;
     PlayVideo playVideo;
     boolean timer;
-    TextView tv_version_code, tv_Serial, tv_DeviceID;
+    TextView tv_version_code, tv_Serial, tv_DeviceID, tv_prathamCode;
     static String CreatedBy, currentAdmin;
     public static Boolean transferFlag = false;
     static String deviceID = "";
@@ -80,6 +83,7 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
         tv_version_code = (TextView) findViewById(R.id.tv_Version);
         tv_Serial = (TextView) findViewById(R.id.tv_Serial);
         tv_DeviceID = (TextView) findViewById(R.id.tv_DeviceID);
+        tv_prathamCode = (TextView) findViewById(R.id.tv_prathamCode);
 
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -93,9 +97,11 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
 
         String Serial = sdbh.getValue("SerialID");
         String DID = sdbh.getValue("AndroidID");
+        String pCode = sdbh.getValue("prathamCode");
 
         tv_Serial.setText("" + Serial);
         tv_DeviceID.setText("" + DID);
+        tv_prathamCode.setText("" + pCode);
 
         // replace all null values in db if exists
         new checkforNulls().execute();
@@ -329,6 +335,51 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
 
     }
 
+    public void changePrathamCode(View view) {
+        final Dialog dialog = new Dialog(CrlDashboard.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.setContentView(R.layout.login_code_dialog);
+        dialog.getWindow().setLayout(600, 350);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                if (dialog.isShowing())
+                    dialog.dismiss();
+            }
+        });
+
+        EditText edt_code = (EditText) dialog.findViewById(R.id.edt_code);
+        Button btn_Submit = (Button) dialog.findViewById(R.id.btn_Submit);
+
+        btn_Submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (edt_code.getText().toString().trim().length() > 0) {
+                    if (dialog.isShowing())
+                        dialog.dismiss();
+                    StatusDBHelper statusDBHelper = new StatusDBHelper(CrlDashboard.this);
+                    statusDBHelper.Update("prathamCode", "" + edt_code.getText().toString().trim());
+                    sdbh = new StatusDBHelper(CrlDashboard.this);
+
+                    String pCode = sdbh.getValue("prathamCode");
+                    tv_prathamCode.setText("" + pCode);
+                    BackupDatabase.backup(CrlDashboard.this);
+
+                    Toast.makeText(CrlDashboard.this, "PrathamCode changed successfully !!!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(CrlDashboard.this, "Please enter valid Pratham Code !!!", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+
+    }
 
     /********************************************** RECEIVE DATA ******************************************************/
 

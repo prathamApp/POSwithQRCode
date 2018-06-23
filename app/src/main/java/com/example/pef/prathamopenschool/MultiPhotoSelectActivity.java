@@ -258,6 +258,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    main.putExtra("ageGrp", ageGrp);
                     main.putExtra("aajKaSawalPlayed", "1");
                     main.putExtra("selectedGroupId", selectedGroupId);
                     startActivity(main);
@@ -284,6 +285,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    main.putExtra("ageGrp", ageGrp);
                     main.putExtra("aajKaSawalPlayed", "0");
                     main.putExtra("selectedGroupId", selectedGroupId);
 
@@ -307,6 +309,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    main.putExtra("ageGrp", ageGrp);
                     main.putExtra("aajKaSawalPlayed", "3");
                     main.putExtra("selectedGroupId", selectedGroupId);
 
@@ -416,6 +419,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    main.putExtra("ageGrp", ageGrp);
                     main.putExtra("aajKaSawalPlayed", "1");
                     main.putExtra("selectedGroupId", selectedGroupId);
                     startActivity(main);
@@ -440,6 +444,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    main.putExtra("ageGrp", ageGrp);
                     main.putExtra("aajKaSawalPlayed", "0");
                     main.putExtra("selectedGroupId", selectedGroupId);
                     startActivity(main);
@@ -461,6 +466,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    main.putExtra("ageGrp", ageGrp);
                     main.putExtra("aajKaSawalPlayed", "3");
                     main.putExtra("selectedGroupId", selectedGroupId);
                     startActivity(main);

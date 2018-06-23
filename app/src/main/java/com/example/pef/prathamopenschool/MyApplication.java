@@ -63,6 +63,8 @@ public class MyApplication extends Application implements GpsStatus.Listener, Lo
     private long prefGPSupdatefrequency = 10000L;
     // Singleton instance
     public static Location location;
+    public static String ageGrp = "0";
+
 
     final Handler gpsunavailablehandler = new Handler();
     Runnable unavailr = new Runnable() {

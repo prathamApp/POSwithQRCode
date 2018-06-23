@@ -45,14 +45,11 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
     private String nList;
     String selectedOption = "";
     int selectedBtn;
-    int position;
+    private int position = 0;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(savedInstanceState!=null){
-            position=savedInstanceState.getInt("pos");
-        }
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         scoreDBHelper = new ScoreDBHelper(getApplicationContext());
         MainActivity.sessionFlg = false;
@@ -168,6 +165,7 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
     protected void onPause() {
         super.onPause();
         Log.d("onPause ::: ", "onPause Called !!!");
+        position = myVideoView.getCurrentPosition(); //stopPosition is an int
         myVideoView.pause();
         MainActivity.sessionFlg = true;
 
@@ -205,6 +203,14 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
     @Override
     protected void onResume() {
         super.onResume();
+        //if we have a position on savedInstanceState, the video playback should start from here
+        myVideoView.seekTo(position);
+        if (position == 0) {
+            myVideoView.start();
+        } else {//if we come from a resumed activity, video playback will be paused
+            position = myVideoView.getCurrentPosition(); //stopPosition is an int
+            myVideoView.pause();
+        }
         MainActivity.sessionFlg = false;
         MultiPhotoSelectActivity.duration = MultiPhotoSelectActivity.timeout;
         System.out.println("REMAINING TIME FOR VIDEO IS :" + duration);
@@ -220,11 +226,35 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
     }
 
     @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        //we use onSaveInstanceState in order to store the video playback position for orientation change
+        savedInstanceState.putInt("Position", myVideoView.getCurrentPosition());
+        myVideoView.pause();
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        //we use onRestoreInstanceState in order to play the video playback from the stored position
+        position = savedInstanceState.getInt("Position");
+        myVideoView.seekTo(position);
+    }
+
+    @Override
     public void onPrepared(MediaPlayer mp) {
-        if (myVideoView.isPlaying())
-            myVideoView.resume();
-        else
+//        if (myVideoView.isPlaying())
+//            myVideoView.resume();
+//        else
+//            myVideoView.start();
+        //if we have a position on savedInstanceState, the video playback should start from here
+        myVideoView.seekTo(position);
+        if (position == 0) {
             myVideoView.start();
+        } else {//if we come from a resumed activity, video playback will be paused
+            position = myVideoView.getCurrentPosition(); //stopPosition is an int
+            myVideoView.pause();
+        }
         duration = myVideoView.getDuration();
         if (!nList.equalsIgnoreCase("null")) {
             try {
@@ -249,6 +279,7 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
                 @Override
                 public void run() {
                     if (myVideoView.isPlaying()) {
+                        position = myVideoView.getCurrentPosition(); //stopPosition is an int
                         myVideoView.pause();
                     }
                     try {
