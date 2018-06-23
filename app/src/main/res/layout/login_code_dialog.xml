@@ -13,20 +13,47 @@
         android:layout_height="wrap_content"
         android:layout_margin="32dp"
         android:gravity="center_horizontal"
-        android:text="Enter Your Pratham Login Code"
+        android:text="Enter Your Pratham Device Code"
         android:textAlignment="center"
         android:textColor="@color/button"
         android:textSize="32sp"
         android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/edt_code"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="32dp"
-        android:hint="enter here ..."
-        android:textColor="#000000"
-        android:textSize="20sp" />
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <EditText
+            android:id="@+id/edt_code_char"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp"
+            android:layout_weight="1"
+            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            android:hint="e.g MH"
+            android:inputType="textCapCharacters"
+            android:maxLength="2"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/edt_code_no"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp"
+            android:layout_weight="1"
+            android:digits="0123456789"
+            android:hint="e.g 143"
+            android:inputType="number"
+            android:maxLength="3"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textSize="20sp" />
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/btn_Submit"

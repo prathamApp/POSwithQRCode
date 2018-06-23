@@ -354,30 +354,26 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
             }
         });
 
-        EditText edt_code = (EditText) dialog.findViewById(R.id.edt_code);
+        EditText edt_code_char = (EditText) dialog.findViewById(R.id.edt_code_char);
+        EditText edt_code_no = (EditText) dialog.findViewById(R.id.edt_code_no);
         Button btn_Submit = (Button) dialog.findViewById(R.id.btn_Submit);
 
         btn_Submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (edt_code.getText().toString().trim().length() > 0) {
+                if (edt_code_char.getText().toString().trim().length() == 2 && edt_code_no.getText().toString().trim().length() == 3) {
                     if (dialog.isShowing())
                         dialog.dismiss();
                     StatusDBHelper statusDBHelper = new StatusDBHelper(CrlDashboard.this);
-                    statusDBHelper.Update("prathamCode", "" + edt_code.getText().toString().trim());
-                    sdbh = new StatusDBHelper(CrlDashboard.this);
-
+                    statusDBHelper.Update("prathamCode", "" + edt_code_char.getText().toString().trim() + edt_code_no.getText().toString().trim());
+                    BackupDatabase.backup(CrlDashboard.this);
                     String pCode = sdbh.getValue("prathamCode");
                     tv_prathamCode.setText("" + pCode);
-                    BackupDatabase.backup(CrlDashboard.this);
-
-                    Toast.makeText(CrlDashboard.this, "PrathamCode changed successfully !!!", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(CrlDashboard.this, "Please enter valid Pratham Code !!!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(CrlDashboard.this, "Please enter valid Pratham Device Code !!!", Toast.LENGTH_LONG).show();
                 }
             }
         });
-
 
     }
 
