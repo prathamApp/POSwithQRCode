@@ -891,7 +891,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                     } else if (card.resourcePath == null || card.resourcePath.equalsIgnoreCase("null")) {
                         cardList.add(card);
                     } else if (card.resourcePath != null && card.resourcePath.contains("KhelPuri") || card.resourceType.contains("video") ||
-                            card.resourcePath.contains("videos") )
+                            card.resourcePath.contains("videos"))
                         cardList.add(card);
                     else
                         cardList.add(card);
@@ -1018,8 +1018,9 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
             playVideo.calculateEndTime(scoreDBHelper);
             BackupDatabase.backup(sessionContex);
             try {
-                System.exit(0);
-                finishAffinity();
+                Intent i = new Intent(this, SignInActivity.class);
+                startActivity(i);
+//                finish();
             } catch (Exception e) {
                 e.getMessage();
             }
