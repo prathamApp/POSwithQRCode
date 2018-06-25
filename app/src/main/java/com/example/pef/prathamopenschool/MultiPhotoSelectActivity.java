@@ -755,9 +755,9 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
 
     private void displayStudentsByAgeGroup(String ageGrp) {
         if (ageGrp.contains("5")) {
-            display5to7Students();
+            display3to6Students();
         } else if (ageGrp.contains("8")) {
-            display8to14Students();
+            display7to14Students();
         }
     }
 
@@ -869,7 +869,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
         }
     }
 
-    public void display5to7Students() {
+    public void display3to6Students() {
         String assignedGroupIDs[];
         students = new ArrayList<JSONArray>();
         groupNames = new ArrayList<String>();
@@ -903,7 +903,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                             // get age of each std & then add grp if student age is less than 8
                             for (int j = 0; j < lstStudent.size(); j++) {
                                 int age = lstStudent.get(j).Age;
-                                if (age < 8) {
+                                if (age < 7) {
                                     stdCount++;
                                 } else {
                                     wrongStdCount++;
@@ -1005,7 +1005,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
         }
     }
 
-    public void display8to14Students() {
+    public void display7to14Students() {
         String assignedGroupIDs[];
         students = new ArrayList<JSONArray>();
         groupNames = new ArrayList<String>();
@@ -1039,7 +1039,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                             // get age of each std & then add grp if student age is less than 8
                             for (int j = 0; j < lstStudent.size(); j++) {
                                 int age = lstStudent.get(j).Age;
-                                if (age > 7) {
+                                if (age > 6) {
                                     stdCount++;
                                 } else {
                                     wrongStdCount++;
