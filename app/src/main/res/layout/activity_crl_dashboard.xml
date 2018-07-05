@@ -103,7 +103,7 @@
                 android:layout_margin="16dp"
                 android:background="@color/button"
                 android:onClick="goToCrlShareReceiveProfiles"
-                android:text="Share / Receive"
+                android:text="Share Profiles/ Jsons/ Update"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp" />

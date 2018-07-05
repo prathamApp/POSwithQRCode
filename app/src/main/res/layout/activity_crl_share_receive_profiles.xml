@@ -15,7 +15,7 @@
         android:drawableLeft="@drawable/icon"
         android:gravity="center"
         android:paddingLeft="16dp"
-        android:text=" Share / Receive Operations "
+        android:text=" Share / Update Operations "
         android:textColor="#FFFFFF"
         android:textSize="32sp"
         android:textStyle="bold" />
