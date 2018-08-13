@@ -163,7 +163,7 @@ public class PushData extends AppCompatActivity {
 
                     // reset GpsFixDuration
                     StatusDBHelper statusDBHelper = new StatusDBHelper(this);
-                    statusDBHelper.Update("gpsFixDuration", "0");
+                    statusDBHelper.Update("gpsFixDuration", "");
                     BackupDatabase.backup(this);
 
                 } else if (!sentFlag) {
@@ -781,7 +781,7 @@ public class PushData extends AppCompatActivity {
         }
         // reset GpsFixDuration
         StatusDBHelper statusDBHelper = new StatusDBHelper(this);
-        statusDBHelper.Update("gpsFixDuration", "0");
+        statusDBHelper.Update("gpsFixDuration", "");
         BackupDatabase.backup(this);
 
         BackupDatabase.backup(c);

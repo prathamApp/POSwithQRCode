@@ -253,8 +253,13 @@ public class SignInActivity extends AppCompatActivity {
                 // fetch & append gps fix
                 s = new StatusDBHelper(this);
                 String previousFix = s.getValue("gpsFixDuration");
-                s.Update("gpsFixDuration", "" + previousFix + "," + MyApplication.getGPSFixTimerCount());
-//            Toast.makeText(this, "GPSFixDuration = " + MyApplication.getGPSFixTimerCount(), Toast.LENGTH_SHORT).show();
+                if (previousFix.length() > 2000) {
+                    // reset & reinitialize gpsFixDuration if length of record is greater than 2000
+                    s.Update("gpsFixDuration", "" + MyApplication.getGPSFixTimerCount());
+                } else {
+                    // go on creating records
+                    s.Update("gpsFixDuration", "" + previousFix + "," + MyApplication.getGPSFixTimerCount());
+                }
             }
 
             BackupDatabase.backup(this);
