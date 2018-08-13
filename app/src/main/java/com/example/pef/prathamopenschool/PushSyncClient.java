@@ -78,11 +78,14 @@ public class PushSyncClient extends AsyncTask<ArrayList<String>, Void, ArrayList
             String resultFromServerForLogs, resultFromServer, pushURL;
             if (MultiPhotoSelectActivity.programID.equals("1") || MultiPhotoSelectActivity.programID.equals("3")) {
                 pushURL = "HLpushToServerURL";   //HL push URL
+            } else if (MultiPhotoSelectActivity.programID.equals("2")) {
+                pushURL = "RIpushToServerURL";   //RI push URL
             } else if (MultiPhotoSelectActivity.programID.equals("4")) {
                 pushURL = "PIpushToServerURL";   //PI push URL
             } else {
-                pushURL = "RIpushToServerURL";   //RI push URL
+                pushURL = "HLpushToServerURL";   //Default push URL (H Learning)
             }
+
             resultFromServer = this.PostDataToServer(Utility.getProperty(pushURL, mContext), url1);
 
             if (resultFromServer.equals("Success")) {
