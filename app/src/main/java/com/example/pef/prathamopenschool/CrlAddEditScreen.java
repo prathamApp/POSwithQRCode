@@ -13,7 +13,6 @@ import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -191,6 +190,10 @@ public class CrlAddEditScreen extends AppCompatActivity {
             tableLayout.setVisibility(View.GONE);
             listOfCreatedGroups.setVisibility(View.GONE);
             tv_CreatedGroups.setVisibility(View.GONE);
+        } else {
+            tableLayout.setVisibility(View.GONE);
+            listOfCreatedGroups.setVisibility(View.GONE);
+            tv_CreatedGroups.setVisibility(View.GONE);
         }
 
         // List<String> TotalCollectedData = analysisReport;
@@ -221,6 +224,9 @@ public class CrlAddEditScreen extends AppCompatActivity {
             btn_AddNewGroup.setVisibility(View.GONE);
             btn_AddNewStd.setVisibility(View.GONE);
             btn_EditStd.setVisibility(View.GONE);
+        } else {
+            btn_AddNewUnit.setVisibility(View.GONE);
+            btn_EditUnit.setVisibility(View.GONE);
         }
 
     }

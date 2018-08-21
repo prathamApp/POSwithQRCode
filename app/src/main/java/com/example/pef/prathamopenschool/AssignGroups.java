@@ -88,6 +88,8 @@ public class AssignGroups extends AppCompatActivity {
         } else if (MultiPhotoSelectActivity.programID.equals("2")) // RI
         {
             villages_spinner.setVisibility(View.GONE);
+        }else{
+            villages_spinner.setVisibility(View.VISIBLE);
         }
 
 
@@ -321,7 +323,9 @@ public class AssignGroups extends AppCompatActivity {
                 } else if (MultiPhotoSelectActivity.programID.equals("2")) // RI
                 {
                     populateRIVillage(selectedBlock);
-
+                }
+                else {
+                    populateVillage(selectedBlock);
                 }
             }
 

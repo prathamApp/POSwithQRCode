@@ -110,6 +110,9 @@ public class SignInActivity extends AppCompatActivity {
                 s.insertInitialData("appName", "Pratham Digital - Second Chance");
             else if (MultiPhotoSelectActivity.programID.equals("4"))
                 s.insertInitialData("appName", "Pratham Digital - Pratham Institute");
+            else
+                s.insertInitialData("appName", "Pratham Digital");
+
         } else {
             s = new StatusDBHelper(this);
             // app name
@@ -121,6 +124,8 @@ public class SignInActivity extends AppCompatActivity {
                 s.Update("appName", "Pratham Digital - Second Chance");
             else if (MultiPhotoSelectActivity.programID.equals("4"))
                 s.Update("appName", "Pratham Digital - Pratham Institute");
+            else
+                s.Update("appName", "Pratham Digital");
         }
 
         String deviceID = "";

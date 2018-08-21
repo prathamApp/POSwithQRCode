@@ -272,6 +272,8 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
             //For PI Pull URLs
             Log.d("Json : ", "CRL");
             UpdateJsonOnline(Utility.getProperty("PIpullCrlsURL", PullData.this), "Crl", selectedState, "3");
+        }else {
+            UpdateJsonOnline(Utility.getProperty("HLpullCrlsURL", PullData.this), "Crl", selectedState, "1");
         }
 
     }
