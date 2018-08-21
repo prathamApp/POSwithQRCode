@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:keepScreenOn="true"
     android:layout_height="match_parent"
+    android:keepScreenOn="true"
     tools:context="com.example.pef.prathamopenschool.CrlDashboard">
 
     <TextView
@@ -40,7 +40,8 @@
             android:text=" Choose Your Actions Here "
             android:textColor="#FFFFFF"
             android:textSize="24sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:visibility="gone" />
 
 
         <LinearLayout
@@ -169,7 +170,6 @@
         </LinearLayout>
 
 
-
     </RelativeLayout>
 
     <LinearLayout
@@ -241,6 +241,7 @@
             android:hint="Device ID" />
 
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/id4"
         android:layout_width="match_parent"

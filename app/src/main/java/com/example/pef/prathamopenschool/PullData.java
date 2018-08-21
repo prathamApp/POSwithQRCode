@@ -272,8 +272,9 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
             //For PI Pull URLs
             Log.d("Json : ", "CRL");
             UpdateJsonOnline(Utility.getProperty("PIpullCrlsURL", PullData.this), "Crl", selectedState, "3");
-        }else {
-            UpdateJsonOnline(Utility.getProperty("HLpullCrlsURL", PullData.this), "Crl", selectedState, "1");
+        } else {
+            String programID = new Utility().getProgramId();
+            UpdateJsonOnline(Utility.getProperty("HLpullCrlsURL", PullData.this), "Crl", selectedState, programID);
         }
 
     }
@@ -515,6 +516,32 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
                                 });
                             }
                             break;
+
+                        default:
+                            if (filename.equalsIgnoreCase("CRL")) {
+                                Log.d("Json : ", "Village");
+                                UpdateJsonOnline(Utility.getProperty("HLpullVillagesURL", PullData.this), "Village", selectedState, programid);
+                            } else if (filename.equalsIgnoreCase("Village")) {
+                                Log.d("Json : ", "Group");
+                                UpdateJsonOnline(Utility.getProperty("HLpullGroupsURL", PullData.this), "Group", selectedState, programid);
+                            } else if (filename.equalsIgnoreCase("Group")) {
+                                Log.d("Json : ", "Student");
+                                UpdateJsonOnline(Utility.getProperty("HLpullStudentsURL", PullData.this), "Student", selectedState, programid);
+                            } else {
+                                Log.d("Json : ", "DONE");
+                                if (pd != null && pd.isShowing())
+                                    pd.dismiss();
+                                btnPressed = 1;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(PullData.this, "Data Successfully Pulled from Server !!! ", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                            }
+                            break;
+
                     }
 
 //                    Toast.makeText(PullData.this, "Pulled From Server !!! " + filename, Toast.LENGTH_SHORT).show();
