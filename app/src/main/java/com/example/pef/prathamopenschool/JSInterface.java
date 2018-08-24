@@ -401,7 +401,7 @@ public class JSInterface extends Activity {
             File file = new File(splashScreenVideo.fpath + filename);
             if (file.exists()) {
                 Uri path = Uri.fromFile(file);
-                Intent intent = new Intent(mContext, PlayVideo.class);
+                Intent intent = new Intent(mContext, VideoPlay.class);
                 intent.putExtra("path", path.toString());
                 videoTracking = new videoTracking(mContext, MultiPhotoSelectActivity.presentStudents, MultiPhotoSelectActivity.sessionId, CardAdapter.resId);
                 //videoTracking.calculateStartTime();

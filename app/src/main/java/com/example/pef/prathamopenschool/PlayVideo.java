@@ -136,7 +136,7 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
         myVideoView.pause();
         MainActivity.sessionFlg = true;
 
-        cd = new CountDownTimer(duration, 1000) {
+        MultiPhotoSelectActivity.cd = new CountDownTimer(MultiPhotoSelectActivity.duration, 1000) {
             //cd = new CountDownTimer(duration, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -175,7 +175,7 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
         MultiPhotoSelectActivity.duration = MultiPhotoSelectActivity.timeout;
         System.out.println("REMAINING TIME FOR VIDEO IS :" + duration);
         if (timer == true) {
-            cd.cancel();
+            MultiPhotoSelectActivity.cd.cancel();
             myVideoView.start();
         }
     }

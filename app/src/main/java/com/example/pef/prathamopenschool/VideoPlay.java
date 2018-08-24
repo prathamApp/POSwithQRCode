@@ -143,7 +143,7 @@ public class VideoPlay extends Activity implements OnCompletionListener, OnPrepa
                 MainActivity.sessionFlg=true;
                 if(!CardAdapter.vidFlg) {
                     scoreDBHelper = new ScoreDBHelper(sessionContex);
-                    playVideo.calculateEndTime(scoreDBHelper);
+//                    playVideo.calculateEndTime(scoreDBHelper);
                     BackupDatabase.backup(sessionContex);
                     System.exit(0);
                     finishAffinity();
