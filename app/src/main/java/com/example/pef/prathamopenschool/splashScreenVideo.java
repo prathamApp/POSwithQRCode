@@ -464,7 +464,9 @@ public class splashScreenVideo extends AppCompatActivity {
         boolean wifiMAC = false;
         boolean apkType = false;
         boolean prathamCode = false;
+        boolean loginMode = false;
 
+        loginMode = s.initialDataAvailable("loginMode");
         prathamCode = s.initialDataAvailable("prathamCode");
         apkType = s.initialDataAvailable("apkType");
         wifiMAC = s.initialDataAvailable("wifiMAC");
@@ -493,6 +495,10 @@ public class splashScreenVideo extends AppCompatActivity {
         apkVersion = s.initialDataAvailable("apkVersion");
         appName = s.initialDataAvailable("appName");
 
+        if (loginMode == false) {
+            s = new StatusDBHelper(this);
+            s.insertInitialData("loginMode", "Group Select");
+        }
         if (prathamCode == false) {
             s = new StatusDBHelper(this);
             s.insertInitialData("prathamCode", "");

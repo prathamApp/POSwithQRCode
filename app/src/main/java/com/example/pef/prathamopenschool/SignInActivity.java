@@ -72,6 +72,7 @@ public class SignInActivity extends AppCompatActivity {
     boolean appName = false;
     StatusDBHelper s;
     public static String sessionStartTime;
+    private String loginMode;
 
 
     @Override
@@ -294,6 +295,9 @@ public class SignInActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        BackupDatabase.backup(this);
+        loginMode = s.getValue("loginMode");
+
         checkGPSEnabled();
 
 //        if (MyApplication.location == null) {
@@ -431,17 +435,29 @@ public class SignInActivity extends AppCompatActivity {
 
 
     public void Login5to7Multiphoto(View view) {
-        Intent i = new Intent(this, MultiPhotoSelectActivity.class);
-        i.putExtra("ageGroup", "5to7");
-        MyApplication.ageGrp = "5";
-        startActivity(i);
+
+        if (loginMode.contains("QR")) {
+            Intent i = new Intent(this, QRLogin.class);
+            startActivity(i);
+        } else {
+            Intent i = new Intent(this, MultiPhotoSelectActivity.class);
+            i.putExtra("ageGroup", "5to7");
+            MyApplication.ageGrp = "5";
+            startActivity(i);
+        }
     }
 
     public void Login8to14Multiphoto(View view) {
-        Intent i = new Intent(this, MultiPhotoSelectActivity.class);
-        i.putExtra("ageGroup", "8to14");
-        MyApplication.ageGrp = "8";
-        startActivity(i);
+
+        if (loginMode.contains("QR")) {
+            Intent i = new Intent(this, QRLogin.class);
+            startActivity(i);
+        } else {
+            Intent i = new Intent(this, MultiPhotoSelectActivity.class);
+            i.putExtra("ageGroup", "8to14");
+            MyApplication.ageGrp = "8";
+            startActivity(i);
+        }
     }
 
     @Override

@@ -18,13 +18,17 @@ import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,7 +53,7 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
     StatusDBHelper sdbh;
     PlayVideo playVideo;
     boolean timer;
-    TextView tv_version_code, tv_Serial, tv_DeviceID, tv_prathamCode;
+    TextView tv_version_code, tv_Serial, tv_DeviceID, tv_prathamCode, tv_loginMode;
     static String CreatedBy, currentAdmin;
     public static Boolean transferFlag = false;
     static String deviceID = "";
@@ -59,6 +63,8 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
     Button btn_Disconnect;
     Dialog receiverDialog;
     private ProgressBar recievingProgress;
+    private String LoginMode = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +90,7 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
         tv_Serial = (TextView) findViewById(R.id.tv_Serial);
         tv_DeviceID = (TextView) findViewById(R.id.tv_DeviceID);
         tv_prathamCode = (TextView) findViewById(R.id.tv_prathamCode);
+        tv_loginMode = (TextView) findViewById(R.id.tv_loginMode);
 
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -98,10 +105,12 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
         String Serial = sdbh.getValue("SerialID");
         String DID = sdbh.getValue("AndroidID");
         String pCode = sdbh.getValue("prathamCode");
+        String lMode = sdbh.getValue("loginMode");
 
         tv_Serial.setText("" + Serial);
         tv_DeviceID.setText("" + DID);
         tv_prathamCode.setText("" + pCode);
+        tv_loginMode.setText("" + lMode);
 
         // replace all null values in db if exists
         new checkforNulls().execute();
@@ -130,6 +139,39 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
         }
 
     }
+
+    // login mode
+    public void selectLoginMode(View view) {
+        // Dialog
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(CrlDashboard.this);
+        LayoutInflater inflater = CrlDashboard.this.getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.login_mode_dialog, null);
+        dialogBuilder.setView(dialogView);
+        dialogBuilder.setCancelable(false);
+        dialogBuilder.setTitle("Please Select Login Mode ");
+
+        dialogBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                RadioGroup rgLoginMode = (RadioGroup) dialogView.findViewById(R.id.rg_LoginMode);
+                // get selected radio button from radioGroup
+                int selectedId = rgLoginMode.getCheckedRadioButtonId();
+                RadioButton selectedLoginMode = (RadioButton) dialogView.findViewById(selectedId);
+                LoginMode = selectedLoginMode.getText().toString();
+                StatusDBHelper sdb = new StatusDBHelper(CrlDashboard.this);
+                sdb.Update("loginMode", LoginMode.trim());
+                BackupDatabase.backup(CrlDashboard.this);
+                tv_loginMode.setText(LoginMode);
+            }
+        });
+        dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //Cancel
+            }
+        });
+        AlertDialog b = dialogBuilder.create();
+        b.show();
+    }
+
 
     // Delete NewJson.zip from Bluetooth folder
     private void deleteZips() {
