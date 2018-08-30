@@ -268,10 +268,14 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
             //For Second Chance Pull URLs
             Log.d("Json : ", "CRL");
             UpdateJsonOnline(Utility.getProperty("HLpullCrlsURL", PullData.this), "Crl", selectedState, "3");
-        } else if (MultiPhotoSelectActivity.programID.equals("4")) {
+        }/* else if (MultiPhotoSelectActivity.programID.equals("4")) {
             //For PI Pull URLs
             Log.d("Json : ", "CRL");
-            UpdateJsonOnline(Utility.getProperty("PIpullCrlsURL", PullData.this), "Crl", selectedState, "3");
+            UpdateJsonOnline(Utility.getProperty("PIpullCrlsURL", PullData.this), "Crl", selectedState, "4");
+        }*/ else if (MultiPhotoSelectActivity.programID.equals("8")) {
+            //For PI Pull URLs
+            Log.d("Json : ", "CRL");
+            UpdateJsonOnline(Utility.getProperty("PIpullCrlsURL", PullData.this), "Crl", selectedState, "8");
         } else {
             String programID = new Utility().getProgramId();
             UpdateJsonOnline(Utility.getProperty("HLpullCrlsURL", PullData.this), "Crl", selectedState, programID);

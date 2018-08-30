@@ -714,6 +714,8 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
             setTitle("Pratham Digital - Second Chance");
         else if (MultiPhotoSelectActivity.programID.equals("4"))
             setTitle("Pratham Digital - Pratham Institute");
+        else if (MultiPhotoSelectActivity.programID.equals("8"))
+            setTitle("Pratham Digital - ECE");
         else
             setTitle("Pratham Digital");
 
@@ -730,6 +732,8 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                 s.insertInitialData("appName", "Pratham Digital - Second Chance");
             else if (MultiPhotoSelectActivity.programID.equals("4"))
                 s.insertInitialData("appName", "Pratham Digital - Pratham Institute");
+            else if (MultiPhotoSelectActivity.programID.equals("8"))
+                s.insertInitialData("appName", "Pratham Digital - ECE");
             else
                 s.insertInitialData("appName", "Pratham Digital");
 
@@ -744,6 +748,8 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                 s.Update("appName", "Pratham Digital - Second Chance");
             else if (MultiPhotoSelectActivity.programID.equals("4"))
                 s.Update("appName", "Pratham Digital - Pratham Institute");
+            else if (MultiPhotoSelectActivity.programID.equals("8"))
+                s.Update("appName", "Pratham Digital - ECE");
             else
                 s.Update("appName", "Pratham Digital");
         }
