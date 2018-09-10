@@ -423,6 +423,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
                         _obj.put("StartDateTime", _score.StartTime);
                         _obj.put("EndDateTime", _score.EndTime);
                         _obj.put("Level", _score.Level);
+                        _obj.put("Label", _score.Label);
                         scoreData.put(_obj);
                     } catch (JSONException e) {
                         e.printStackTrace();

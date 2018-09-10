@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.provider.Settings;
 import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
+import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.RadioGroup;
@@ -592,6 +593,112 @@ public class JSInterface extends Activity {
             BackupDatabase.backup(mContext);
 
         } catch (Exception e) {
+            SyncActivityLogs syncActivityLogs = new SyncActivityLogs(mContext);
+            syncActivityLogs.addToDB("addScore-JSInterface", e, "Error");
+            BackupDatabase.backup(mContext);
+        }
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @JavascriptInterface
+    public void addScore(String piStudId, int questionId, int scorefromGame, int totalMarks, int level, String startTime, String Label) {
+
+        Log.d("scoreMethodCheck::", "---------NEW Method---------");
+
+        boolean _wasSuccessful = false;
+        String[] splited;
+        String[] splitedDate;
+        String[] splitedTime;
+        String customDate;
+        String customTime;
+        //put try catch block for error handling
+        try {
+
+            StatusDBHelper statusDBHelper = new StatusDBHelper(mContext);
+            ScoreDBHelper scoreDBHelper = new ScoreDBHelper(mContext);
+
+            AssessmentScoreDBHelper assessmentDBHelper = new AssessmentScoreDBHelper(mContext);
+            AssessmentScore assessment = new AssessmentScore();
+
+            Score score = new Score();
+
+            score.SessionID = MultiPhotoSelectActivity.sessionId;
+
+            if (assessmentLogin.assessmentFlg)
+                score.ResourceID = WebViewActivity.webResId;
+            else
+                score.ResourceID = CardAdapter.resId;
+            score.QuestionId = questionId;
+            score.ScoredMarks = scorefromGame;
+            score.TotalMarks = totalMarks;
+
+            splited = startTime.split("\\s+");
+            splitedDate = splited[0].split("\\-+");
+            splitedTime = splited[1].split("\\:+");
+            customDate = formatCustomDate(splitedDate, "-");
+            customTime = formatCustomDate(splitedTime, ":");
+
+//                score.StartTime = customDate + " " + customTime;
+
+            String systime = Util.GetCurrentDateTime(true);  //here we get sys time
+
+            String[] gps = Util.GetCurrentDateTime(false).split(" ");
+
+            SimpleDateFormat sdfForTime = new SimpleDateFormat("HH:mm:ss");
+            long diff = (sdfForTime.parse(systime.split(" ")[1]).getTime() - sdfForTime.parse(customTime).getTime());/*
+                Log.d("score_time::", gps[0] + "::::" + gps[1] + "::::" + customDate + "::::" + customTime + "::::" + systime);
+                Log.d("start_time::", ""+diff);*/
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(sdfForTime.parse(gps[1]));
+            long diffSeconds = diff / 1000 % 60;
+            cal.add(Calendar.SECOND, (int) -diffSeconds);
+            score.StartTime = gps[0] + " "
+                    + ((cal.get(Calendar.HOUR_OF_DAY) < 10) ? "0" : "") + cal.get(Calendar.HOUR_OF_DAY) + ":"
+                    + ((cal.get(Calendar.MINUTE) < 10) ? "0" : "") + cal.get(Calendar.MINUTE) + ":"
+                    + ((cal.get(Calendar.SECOND) < 10) ? "0" : "") + cal.get(Calendar.SECOND);
+
+            String gid = MultiPhotoSelectActivity.selectedGroupsScore;
+            if (gid.contains(","))
+                gid = gid.split(",")[0];
+            score.GroupID = gid;//ketan 17/6/17
+
+            String deviceId = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
+            score.DeviceID = deviceId.equals(null) ? "0000" : deviceId;
+            score.EndTime = Util.GetCurrentDateTime(false);  //here we get gps time
+            score.Level = level;
+            score.Label = piStudId+","+Label;
+            _wasSuccessful = scoreDBHelper.Add(score);
+
+            if (assessmentLogin.assessmentFlg) {
+
+                assessment.SessionID = MultiPhotoSelectActivity.sessionId;
+                assessment.ResourceID = WebViewActivity.webResId;
+                assessment.QuestionId = 0;
+                assessment.ScoredMarks = scorefromGame;
+                assessment.TotalMarks = totalMarks;
+
+                splited = startTime.split("\\s+");
+                splitedDate = splited[0].split("\\-+");
+                splitedTime = splited[1].split("\\:+");
+                customDate = formatCustomDate(splitedDate, "-");
+                customTime = formatCustomDate(splitedTime, ":");
+//                    assessment.StartTime = customDate + " " + customTime;
+                assessment.StartTime = score.StartTime;
+
+                String studId = attendanceDBHelper.GetStudentId(MultiPhotoSelectActivity.sessionId);
+
+                assessment.GroupID = studId;//ketan 17/6/17
+                assessment.DeviceID = WebViewActivity.resName;
+                assessment.EndTime = Util.GetCurrentDateTime(false);
+                assessment.Level = level;
+                assessment.LessonSession = MainActivity.lessonSession;
+                _wasSuccessful = assessmentDBHelper.Add(assessment);
+            }
+            BackupDatabase.backup(mContext);
+
+        } catch (Exception e) {
+            e.printStackTrace();
             SyncActivityLogs syncActivityLogs = new SyncActivityLogs(mContext);
             syncActivityLogs.addToDB("addScore-JSInterface", e, "Error");
             BackupDatabase.backup(mContext);

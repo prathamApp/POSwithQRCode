@@ -25,7 +25,9 @@ public final class DatabaseInitialization {
     //public static final String CreateScoreTable = "CREATE TABLE Scores (SessionID TEXT NOT NULL, PlayerID INTEGER, ResourceID text NOT NULL, QuestionID INTEGER NOT NULL, ScoredMarks integer NOT NULL, TotalMarks integer NOT NULL, StartDateTime TEXT NOT NULL, EndDateTime TEXT, Level INTEGER DEFAULT 1, DeviceId TEXT NOT NULL);";
 
     /******************************************Above code will be used for adding deviceId to score table***********************************************************/
-    public static final String CreateScoreTable = "CREATE TABLE Scores (SessionID TEXT NOT NULL, GroupID TEXT, DeviceID TEXT NOT NULL, ResourceID text NOT NULL, QuestionID INTEGER NOT NULL, ScoredMarks integer NOT NULL, TotalMarks integer NOT NULL, StartDateTime TEXT NOT NULL, EndDateTime TEXT, Level INTEGER DEFAULT 1);";
+    public static final String CreateScoreTable = "CREATE TABLE Scores (SessionID TEXT NOT NULL, GroupID TEXT, DeviceID TEXT NOT NULL, ResourceID text NOT NULL, QuestionID INTEGER NOT NULL, ScoredMarks integer NOT NULL, TotalMarks integer NOT NULL, StartDateTime TEXT NOT NULL, EndDateTime TEXT, Level INTEGER DEFAULT 1,Label text);";
+    public static final String AlterScoreTable = "ALTER TABLE Scores ADD COLUMN Label text AFTER Level;";
+
     public static final String CreateAssessmentScoreTable = "CREATE TABLE AssessmentScores (aSessionID TEXT NOT NULL, aGroupID TEXT, aDeviceID TEXT NOT NULL, aResourceID text NOT NULL, aQuestionID INTEGER NOT NULL, aScoredMarks integer NOT NULL, aTotalMarks integer NOT NULL, aStartDateTime TEXT NOT NULL, aEndDateTime TEXT, aLevel INTEGER DEFAULT 1, aLessonSession TEXT NOT NULL);";
     // public static final String CreateScoreTable = "CREATE TABLE Scores (SessionID TEXT NOT NULL, PlayerID TEXT, ResourceID INTEGER NOT NULL, QuestionID INTEGER NOT NULL,ScoredMarks INT NOT NULL,StartDateTime TEXT NOT NULL, EndDateTime TEXT,Level INTEGER DEFAULT 1);";
     // Constants needed for Session entity

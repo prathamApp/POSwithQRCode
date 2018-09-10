@@ -13,4 +13,5 @@ public class Score {
     public String EndTime;
     public String GroupID;
     public String DeviceID ;
+    public String Label ;
 }
