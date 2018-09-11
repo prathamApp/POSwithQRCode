@@ -223,6 +223,7 @@ public class ScoreDBHelper extends DBHelper {
         contentValues.put("StartDateTime", score.StartTime);
         contentValues.put("EndDateTime", score.EndTime);
         contentValues.put("Level", score.Level);
+        contentValues.put("Label", score.Label);
     }
 
     private List<Score> _PopulateListFromCursor(Cursor cursor) {
@@ -244,6 +245,7 @@ public class ScoreDBHelper extends DBHelper {
                 score.Level = cursor.getInt(cursor.getColumnIndex("Level"));
                 score.StartTime = cursor.getString(cursor.getColumnIndex("StartDateTime"));
                 score.EndTime = cursor.getString(cursor.getColumnIndex("EndDateTime"));
+                score.Label = cursor.getString(cursor.getColumnIndex("Label"));
 
                 scoreList.add(score);
                 cursor.moveToNext();
