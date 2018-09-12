@@ -355,7 +355,8 @@ public class SignInActivity extends AppCompatActivity {
             startActivity(goToAdminLogin);
         }
         if (id == R.id.action_leaderboard) {
-            Intent goToAdminLogin = new Intent(SignInActivity.this, TabUsage.class);
+            Intent goToAdminLogin = new Intent(SignInActivity.this, StudentsAppUsage.class);
+//            Intent goToAdminLogin = new Intent(SignInActivity.this, TabUsage.class);
 //            finish();
             startActivity(goToAdminLogin);
         }

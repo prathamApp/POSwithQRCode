@@ -342,6 +342,10 @@
         <service android:name=".ftpSettings.WifiStateChangeReceiver$StartServerService" />
         <service android:name=".ftpSettings.WifiStateChangeReceiver$StopServerService" />
 
+        <activity
+            android:name=".StudentsAppUsage"
+            android:screenOrientation="sensorLandscape" />
+
     </application>
 
 </manifest>
