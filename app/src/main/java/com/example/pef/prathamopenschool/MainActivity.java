@@ -589,6 +589,14 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                                     TextView tv_name = aksGraphDialog.findViewById(R.id.tv_name);
                                     TextView tv_todayScore = aksGraphDialog.findViewById(R.id.tv_todayscore);
                                     TextView tv_totalScore = aksGraphDialog.findViewById(R.id.tv_totalscore);
+                                    Button btn_back = aksGraphDialog.findViewById(R.id.btn_back);
+
+                                    btn_back.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            aksGraphDialog.dismiss();
+                                        }
+                                    });
 
                                     // todo set AKS Scoreboard
                                     ScoreDBHelper scoreDBHelper = new ScoreDBHelper(MainActivity.this);
@@ -1025,7 +1033,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
             } catch (Exception e) {
                 e.getMessage();
             }
-
+            MultiPhotoSelectActivity.sessionId = "NA";
         } else if (loadFlg) {
             loadFlg = false;
             Intent intent = new Intent(mContext, AssessmentResult.class);

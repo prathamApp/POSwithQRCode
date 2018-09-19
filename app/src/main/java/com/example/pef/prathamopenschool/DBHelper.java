@@ -14,9 +14,10 @@ public class DBHelper extends SQLiteOpenHelper {
     public SQLiteDatabase db;
     public ContentValues contentValues;
     public Context c;
+    public static int DBVersion = 23;
 
     public DBHelper(Context context) {
-        super(context, DATABASE_NAME, null, 22);
+        super(context, DATABASE_NAME, null, DBVersion);
         try {
             c = context;
             contentValues = new ContentValues();
@@ -73,10 +74,7 @@ public class DBHelper extends SQLiteOpenHelper {
         try {
             Log.d("onUpgrade : ", "Old version : " + oldVersion + " New Version : " + newVersion);
 
-            if ((oldVersion < newVersion) && (newVersion == 22)) {
-
-                // Alter Score Table Query
-                db.execSQL(DatabaseInitialization.AlterScoreTable);
+            if ((oldVersion < newVersion) && (newVersion == 21)) {
 
                 // Alter Aser Table Query
                 db.execSQL(DatabaseInitialization.AlterAserTableSharedBy);
@@ -106,6 +104,12 @@ public class DBHelper extends SQLiteOpenHelper {
                 db.execSQL(DatabaseInitialization.AlterCRLTableAppName);
                 db.execSQL(DatabaseInitialization.AlterCRLTableCreatedOn);
 
+            } else if ((oldVersion < newVersion) && (newVersion == DBVersion)) {
+                // Alter Score Table Query
+                db.execSQL(DatabaseInitialization.AlterScoreTable);
+                // Alter Session Table Query
+                db.execSQL(DatabaseInitialization.DropSessionTable);
+                db.execSQL(DatabaseInitialization.CreateSessionTable);
             }
 
             BackupDatabase.backup(c);

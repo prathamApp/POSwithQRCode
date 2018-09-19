@@ -31,7 +31,10 @@ public final class DatabaseInitialization {
     public static final String CreateAssessmentScoreTable = "CREATE TABLE AssessmentScores (aSessionID TEXT NOT NULL, aGroupID TEXT, aDeviceID TEXT NOT NULL, aResourceID text NOT NULL, aQuestionID INTEGER NOT NULL, aScoredMarks integer NOT NULL, aTotalMarks integer NOT NULL, aStartDateTime TEXT NOT NULL, aEndDateTime TEXT, aLevel INTEGER DEFAULT 1, aLessonSession TEXT NOT NULL);";
     // public static final String CreateScoreTable = "CREATE TABLE Scores (SessionID TEXT NOT NULL, PlayerID TEXT, ResourceID INTEGER NOT NULL, QuestionID INTEGER NOT NULL,ScoredMarks INT NOT NULL,StartDateTime TEXT NOT NULL, EndDateTime TEXT,Level INTEGER DEFAULT 1);";
     // Constants needed for Session entity
-    public static final String CreateSessionTable = "CREATE TABLE Session(SessionID TEXT NOT NULL, UserID TEXT NOT NULL);";
+
+    // Constants needed for Session entity
+    public static final String CreateSessionTable = "CREATE TABLE Session(SessionID TEXT PRIMARY KEY, StartTime TEXT, EndTime TEXT);";
+    public static String DropSessionTable= "drop table Session";
 
     // Constants needed for Resource entity
     public static final String CreateResourceTable = "CREATE TABLE Resource(ResourceID INTEGER NOT NULL, ResourceTypeID INTEGER NOT NULL, ResourceName TEXT NOT NULL, CreatedOn TEXT NOT NULL, DeletedOn TEXT NULL, IsActive INTEGER DEFAULT 1);";

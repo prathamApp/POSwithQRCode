@@ -176,6 +176,13 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
         Attendance attendance = null;
         AttendanceDBHelper attendanceDBHelper = new AttendanceDBHelper(this);
 
+        SessionDBHelper sessionDBHelper = new SessionDBHelper(this);
+        Session s = new Session();
+        s.SessionID = MultiPhotoSelectActivity.sessionId;
+        s.StartTime = new Utility().GetCurrentDateTime(false);
+        s.EndTime = "NA";
+        sessionDBHelper.Add(s);
+
         // If no student present in RI
         if (programID.equals("2") && students.get(0).length() == 0) {
             presentStudents = new String[1];

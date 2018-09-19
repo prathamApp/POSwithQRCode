@@ -6,6 +6,9 @@ import android.database.Cursor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by PEF-2 on 23/06/2016.
  */
@@ -119,6 +122,27 @@ public class AttendanceDBHelper extends DBHelper {
         contentValues.put("SessionID", attendance.SessionID.toString());
         contentValues.put("GroupID", attendance.GroupID);
         contentValues.put("PresentStudentIds", attendance.PresentStudentIds);
+    }
+
+    public List<String> getAllSessionsByStdID(String studentID) {
+        try {
+            database = getWritableDatabase();
+            List<String> list = new ArrayList<String>();
+            list.clear();
+            {
+                Cursor cursor = database.rawQuery("SELECT SessionID FROM Attendance WHERE PresentStudentIds = ? ", new String[]{studentID});
+                cursor.moveToFirst();
+                while (cursor.isAfterLast() == false) {
+                    list.add(cursor.getString(cursor.getColumnIndex("SessionID")));
+                    cursor.moveToNext();
+                }
+                database.close();
+            }
+            return list;
+        } catch (Exception ex) {
+            _PopulateLogValues(ex, "getAllSessionsByStdID");
+            return null;
+        }
     }
 
 

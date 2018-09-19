@@ -115,4 +115,18 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/btn_back"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/l2"
+        android:layout_centerInParent="true"
+        android:layout_margin="32dp"
+        android:background="@color/button"
+        android:text="Back"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+
 </RelativeLayout>

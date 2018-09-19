@@ -78,6 +78,9 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
         int vidDuration = 0;
         if (MainActivity.sessionFlg) {
 //            videoStartTime = SignInActivity.sessionStartTime;
+            SessionDBHelper sessionDBHelper = new SessionDBHelper(MyApplication.getInstance());
+            sessionDBHelper.UpdateEndTime(MultiPhotoSelectActivity.sessionId);
+
             videoStartTime = util.GetCurrentDateTime(false);
             ;
             vidDuration = 0;
@@ -92,39 +95,43 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
             assessmentLogin.assessmentFlg = false;
         }
 
-        try {
-            Boolean _wasSuccessful = null;
-            String endTime = util.GetCurrentDateTime(false);
+        if (MultiPhotoSelectActivity.sessionId.equalsIgnoreCase("NA")) {
+            // no session created
+        } else {
+
+            try {
+                Boolean _wasSuccessful = null;
+                String endTime = util.GetCurrentDateTime(false);
 
 //            statusDBHelper = new StatusDBHelper(getApplicationContext());
 
-            Score score = new Score();
-            score.SessionID = MultiPhotoSelectActivity.sessionId;
-            score.ResourceID = res_id;
-            score.QuestionId = 0;
-            score.ScoredMarks = vidDuration;
-            score.TotalMarks = vidDuration;
-            score.StartTime = videoStartTime;
-            String gid = MultiPhotoSelectActivity.selectedGroupsScore;
-            if (gid.contains(","))
-                gid = gid.split(",")[0];
-            score.GroupID = gid;//ketan 17/6/17
-            String deviceId = MultiPhotoSelectActivity.deviceID;
-            score.DeviceID = deviceId.equals(null) ? "0000" : deviceId;
-            score.EndTime = endTime;
-            score.Level = 0;
-            _wasSuccessful = scoreDBHelper.Add(score);
-            if (!_wasSuccessful) {
+                Score score = new Score();
+                score.SessionID = MultiPhotoSelectActivity.sessionId;
+                score.ResourceID = res_id;
+                score.QuestionId = 0;
+                score.ScoredMarks = vidDuration;
+                score.TotalMarks = vidDuration;
+                score.StartTime = videoStartTime;
+                String gid = MultiPhotoSelectActivity.selectedGroupsScore;
+                if (gid.contains(","))
+                    gid = gid.split(",")[0];
+                score.GroupID = gid;//ketan 17/6/17
+                String deviceId = MultiPhotoSelectActivity.deviceID;
+                score.DeviceID = deviceId.equals(null) ? "0000" : deviceId;
+                score.EndTime = endTime;
+                score.Level = 0;
+                _wasSuccessful = scoreDBHelper.Add(score);
+                if (!_wasSuccessful) {
 
+                }
+                if (CardAdapter.vidFlg)
+                    BackupDatabase.backup(this);
+
+                CardAdapter.vidFlg = false;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            if (CardAdapter.vidFlg)
-                BackupDatabase.backup(this);
-
-            CardAdapter.vidFlg = false;
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-
     }
 
     //************************************************************//

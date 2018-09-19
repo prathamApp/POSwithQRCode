@@ -43,8 +43,11 @@ public class CustomUsageExpandableListAdapter extends BaseExpandableListAdapter 
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.list_item_usage, null);
         }
-        TextView expandedListTextView = (TextView) convertView
-                .findViewById(R.id.expandedListItem);
+        // child item
+        TextView tv_stdRank = (TextView) convertView.findViewById(R.id.stdRank);
+        tv_stdRank.setText("#" + (expandedListPosition + 1));
+
+        TextView expandedListTextView = (TextView) convertView.findViewById(R.id.expandedListItem);
         expandedListTextView.setText(expandedListText);
         return convertView;
     }

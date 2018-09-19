@@ -638,6 +638,8 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
                         obj.put("apkType", statusDBHelper.getValue("apkType"));
                         obj.put("prathamCode", statusDBHelper.getValue("prathamCode"));
 
+                        obj.put("DBVersion", statusDBHelper.getValue("DBVersion"));
+
                         String requestString = "{ " +
                                 "\"metadata\": " + obj + "," +
                                 " \"scoreData\": " + scoreData + ", " +

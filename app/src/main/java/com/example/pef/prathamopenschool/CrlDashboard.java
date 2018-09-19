@@ -59,7 +59,7 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
     static String deviceID = "";
     FTPConnect ftpConnect;
     RelativeLayout receiveFtpDialogLayout;
-    TextView tv_ssid, tv_ip, tv_port, tv_Details;
+    TextView tv_ssid, tv_ip, tv_port, tv_Details, tv_wifiMAC;
     Button btn_Disconnect;
     Dialog receiverDialog;
     private ProgressBar recievingProgress;
@@ -91,6 +91,7 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
         tv_DeviceID = (TextView) findViewById(R.id.tv_DeviceID);
         tv_prathamCode = (TextView) findViewById(R.id.tv_prathamCode);
         tv_loginMode = (TextView) findViewById(R.id.tv_loginMode);
+        tv_wifiMAC = (TextView) findViewById(R.id.tv_wifiMAC);
 
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -106,11 +107,13 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
         String DID = sdbh.getValue("AndroidID");
         String pCode = sdbh.getValue("prathamCode");
         String lMode = sdbh.getValue("loginMode");
+        String mac = sdbh.getValue("wifiMAC");
 
         tv_Serial.setText("" + Serial);
         tv_DeviceID.setText("" + DID);
         tv_prathamCode.setText("" + pCode);
         tv_loginMode.setText("" + lMode);
+        tv_wifiMAC.setText("" + mac);
 
         // replace all null values in db if exists
         new checkforNulls().execute();

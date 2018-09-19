@@ -465,7 +465,9 @@ public class splashScreenVideo extends AppCompatActivity {
         boolean apkType = false;
         boolean prathamCode = false;
         boolean loginMode = false;
+        boolean DBVersion = false;
 
+        DBVersion = s.initialDataAvailable("DBVersion");
         loginMode = s.initialDataAvailable("loginMode");
         prathamCode = s.initialDataAvailable("prathamCode");
         apkType = s.initialDataAvailable("apkType");
@@ -495,6 +497,13 @@ public class splashScreenVideo extends AppCompatActivity {
         apkVersion = s.initialDataAvailable("apkVersion");
         appName = s.initialDataAvailable("appName");
 
+        if (DBVersion == false) {
+            s = new StatusDBHelper(this);
+            s.insertInitialData("DBVersion", String.valueOf(DBHelper.DBVersion));
+        } else {
+            s = new StatusDBHelper(this);
+            s.Update("DBVersion", String.valueOf(DBHelper.DBVersion));
+        }
         if (loginMode == false) {
             s = new StatusDBHelper(this);
             s.insertInitialData("loginMode", "Group Select");

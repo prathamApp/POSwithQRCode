@@ -583,6 +583,8 @@ public class PushData extends AppCompatActivity {
                         obj.put("apkType", statusDBHelper.getValue("apkType"));
                         obj.put("prathamCode", statusDBHelper.getValue("prathamCode"));
 
+                        obj.put("DBVersion", statusDBHelper.getValue("DBVersion"));
+
                         // creating json file
                         String requestString = "{ \"metadata\": " + obj + ", \"scoreData\": " + scoreData + ", \"LogsData\": " + logsData + ", \"attendanceData\": " + attendanceData + ", \"newStudentsData\": " + studentData + ", \"newCrlsData\": " + crlData + ", \"newGroupsData\": " + grpData + ", \"AserTableData\": " + aserData + "}";//Ketan
                         WriteSettings(c, requestString, "pushNewDataToServer-" + (deviceId.equals(null) ? "0000" : deviceId));

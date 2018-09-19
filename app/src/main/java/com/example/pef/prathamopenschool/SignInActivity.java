@@ -84,7 +84,7 @@ public class SignInActivity extends AppCompatActivity {
         // Multiphotoselect initialization
         MultiPhotoSelectActivity.dilog = new DilogBoxForProcess();
         MultiPhotoSelectActivity.programID = new Utility().getProgramId();
-        MultiPhotoSelectActivity.sessionId = new Utility().GetUniqueID().toString();
+        MultiPhotoSelectActivity.sessionId = "NA";
         MultiPhotoSelectActivity.timeout = (long) 20000 * 60;
         MultiPhotoSelectActivity.duration = MultiPhotoSelectActivity.timeout;
         MultiPhotoSelectActivity.deviceID = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -299,6 +299,8 @@ public class SignInActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        MultiPhotoSelectActivity.sessionId = "NA";
+
         BackupDatabase.backup(this);
         loginMode = s.getValue("loginMode");
 
@@ -350,17 +352,23 @@ public class SignInActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            MultiPhotoSelectActivity.sessionId = new Utility().GetUniqueID().toString();
+
             Intent goToAdminLogin = new Intent(SignInActivity.this, AdminActivity.class);
 //            finish();
             startActivity(goToAdminLogin);
         }
         if (id == R.id.action_leaderboard) {
+            MultiPhotoSelectActivity.sessionId = new Utility().GetUniqueID().toString();
+
             Intent goToAdminLogin = new Intent(SignInActivity.this, StudentsAppUsage.class);
 //            Intent goToAdminLogin = new Intent(SignInActivity.this, TabUsage.class);
 //            finish();
             startActivity(goToAdminLogin);
         }
         if (id == R.id.action_QrLogin) {
+            MultiPhotoSelectActivity.sessionId = new Utility().GetUniqueID().toString();
+
             Intent i = new Intent(this, QRLogin.class);
             startActivity(i);
         }
@@ -440,6 +448,7 @@ public class SignInActivity extends AppCompatActivity {
 
 
     public void Login5to7Multiphoto(View view) {
+        MultiPhotoSelectActivity.sessionId = new Utility().GetUniqueID().toString();
 
         if (loginMode.contains("QR")) {
             Intent i = new Intent(this, QRLogin.class);
@@ -453,6 +462,7 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     public void Login8to14Multiphoto(View view) {
+        MultiPhotoSelectActivity.sessionId = new Utility().GetUniqueID().toString();
 
         if (loginMode.contains("QR")) {
             Intent i = new Intent(this, QRLogin.class);

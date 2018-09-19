@@ -3,16 +3,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="horizontal"
+    android:paddingLeft="96dp">
+
+    <TextView
+        android:id="@+id/stdRank"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_margin="8dp"
+        android:background="@drawable/badge"
+        android:gravity="center"
+        android:hint="#1"
+        android:textColor="@color/solid_background"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/expandedListItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:hint="item"
-        android:paddingBottom="10dp"
-        android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
-        android:paddingTop="10dp"
         android:textColor="@color/button"
-        android:textSize="18sp" />
+        android:textSize="16sp" />
 </LinearLayout>

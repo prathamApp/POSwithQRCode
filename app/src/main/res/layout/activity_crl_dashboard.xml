@@ -205,13 +205,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Pratham Code : "
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_prathamCode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="prathamCode" />
+                android:hint="code"
+                android:textSize="16sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -225,13 +227,38 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Login Mode : "
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_loginMode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="login Mode" />
+                android:hint="login Mode"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/id1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Version : "
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_Version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Version"
+                android:textSize="16sp" />
+
         </LinearLayout>
 
     </LinearLayout>
@@ -245,7 +272,6 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:id="@+id/id1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
@@ -254,15 +280,16 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Version : "
+                android:text="Mac ID : "
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tv_Version"
+                android:id="@+id/tv_wifiMAC"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Version" />
-
+                android:hint="Mac Address"
+                android:textSize="16sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -276,13 +303,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Device ID : "
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_DeviceID"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Device ID" />
+                android:hint="Device ID"
+                android:textSize="16sp" />
 
         </LinearLayout>
 
@@ -297,17 +326,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Serial No : "
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_Serial"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Serial No" />
+                android:hint="Serial No"
+                android:textSize="16sp" />
 
         </LinearLayout>
 
     </LinearLayout>
-
 
 </RelativeLayout>

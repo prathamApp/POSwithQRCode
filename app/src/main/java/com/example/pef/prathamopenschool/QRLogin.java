@@ -182,6 +182,14 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
                     }
                     attendanceDBHelper.Add(attendance);
                 }
+
+                SessionDBHelper sessionDBHelper = new SessionDBHelper(this);
+                Session s = new Session();
+                s.SessionID = MultiPhotoSelectActivity.sessionId;
+                s.StartTime = new Utility().GetCurrentDateTime(false);
+                s.EndTime = "NA";
+                sessionDBHelper.Add(s);
+
                 BackupDatabase.backup(this);
             }
         } catch (Exception e) {
