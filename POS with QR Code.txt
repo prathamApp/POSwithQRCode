@@ -471,3 +471,6 @@ clear session table after pushing crltransferusage cleardbrecords() --- done
 sessiondb helper delete all --- done
 clear attendance table after pushing push data cleardbrecords() --- done
 clear attendance table after pushing crltransferusage cleardbrecords() --- done
+revisit expandable list logic --- done
+dependancy vector --- done
+get session id by grp id --- done

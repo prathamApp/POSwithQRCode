@@ -24,6 +24,27 @@ public class AttendanceDBHelper extends DBHelper {
         database = this.getWritableDatabase();
     }
 
+    public List<String> getAllSessionsByGrpID(String grpID) {
+        try {
+            database = getWritableDatabase();
+            List<String> list = new ArrayList<String>();
+            list.clear();
+            {
+                Cursor cursor = database.rawQuery("SELECT SessionID FROM Attendance WHERE GroupID = ? ", new String[]{grpID});
+                cursor.moveToFirst();
+                while (cursor.isAfterLast() == false) {
+                    list.add(cursor.getString(cursor.getColumnIndex("SessionID")));
+                    cursor.moveToNext();
+                }
+                database.close();
+            }
+            return list;
+        } catch (Exception ex) {
+            _PopulateLogValues(ex, "getAllSessionsByGrpID");
+            return null;
+        }
+    }
+
 
     public String GetStudentId(String SessionId) {
 

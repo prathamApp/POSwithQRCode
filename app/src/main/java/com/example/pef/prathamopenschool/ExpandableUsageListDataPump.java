@@ -7,8 +7,10 @@ import android.widget.ArrayAdapter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 public class ExpandableUsageListDataPump {
 
@@ -89,7 +91,43 @@ public class ExpandableUsageListDataPump {
             for (int x = 0; x < usageStudentList.size(); x++)
                 sortedStdList.add("" + usageStudentList.get(x).getGrpName() + "\t" + usageStudentList.get(x).getUsageTimeInDays());
 
-            // get Group's total Usage
+            // todo GROUP'S TOTAL USAGE CALCULATION
+            // NEW LOGIC
+            AttendanceDBHelper attendanceDBHelper = new AttendanceDBHelper(MyApplication.getInstance());
+            SessionIDs.clear();
+            SessionIDs = attendanceDBHelper.getAllSessionsByGrpID(grpID);
+
+            // eliminate same session id
+            Set<String> hs = new HashSet<>();
+            hs.addAll(SessionIDs);
+            SessionIDs.clear();
+            SessionIDs.addAll(hs);
+
+            // maintain a varible of time & query session table & calculate total time for those sessions
+            SessionDBHelper sessionDBHelper;
+            sessionDBHelper = new SessionDBHelper(MyApplication.getInstance());
+            long grpUsageTime = 0;
+
+            for (int r = 0; r < SessionIDs.size(); r++) {
+                List<ScoreList> usageTimeList = sessionDBHelper.getUsageDetails(SessionIDs.get(r));
+                if (usageTimeList != null) {
+                    grpUsageTime = grpUsageTime + calculateUsageTime(usageTimeList);
+                } else {
+                    grpUsageTime = grpUsageTime + 0;
+                }
+            }
+
+            // converting total time to days
+            long usageTime = grpUsageTime;
+
+            long diffSeconds = usageTime / 1000 % 60;
+            long diffMinutes = usageTime / (60 * 1000) % 60;
+            long diffHours = usageTime / (60 * 60 * 1000) % 24;
+            long diffDays = usageTime / (24 * 60 * 60 * 1000);
+            String days = diffDays + " Days, " + diffHours + " Hours, " + diffMinutes + " Minutes, " + diffSeconds + " Seconds.";
+
+/*
+            // OLD LOGIC
             ScoreDBHelper sdb = new ScoreDBHelper(MyApplication.getInstance());
             List<ScoreList> usageTimeList = sdb.getUsageDetails(grpID);
             long usageTime = calculateUsageTime(usageTimeList);
@@ -99,6 +137,7 @@ public class ExpandableUsageListDataPump {
             long diffHours = usageTime / (60 * 60 * 1000) % 24;
             long diffDays = usageTime / (24 * 60 * 60 * 1000);
             String days = diffDays + " Days, " + diffHours + " Hours, " + diffMinutes + " Minutes, " + diffSeconds + " Seconds.";
+*/
 
 //            listAdapter.add(new Usage(grpName, usageTime, days, studentList));
             listAdapter.add(new Usage(grpName, usageTime, days, sortedStdList));
