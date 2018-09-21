@@ -1,0 +1,473 @@
+/************************************************* POS v2.1.6 ******************************************************/
+
+April 04
+Serial No & Device ID in Dashboard --- done
+QR code Login --- done
+Handle backbutton gps handling --- done
+
+
+April 05
+2.1.6 --- done
+change buttons --- done
+Show admin module in Main screen (Sign In ) ---- done
+convert multiphoto code to QR Login ---- done 
+handle on backpressed from main activity --- done
+change calls of session id --- done
+on pause -- done
+
+
+April 06
+change background for frame ---- done
+QR code issue on backpressed & nextActivity --- resolved
+aaj ka sawal null handle ---- done 
+put QR in grps -- done
+insert multiple students in attendance --- done
+present student, present grp issue QR --- resolved
+aks 990 991 99 --- done
+RI groups were not reflecting new values immediately ---- resolved
+alarm service pm to sign in activity --- done
+handle backpressed from main activity after selecting std --- resolved
+aaj ka sawal no green on right ans --- resolved json issue
+if 5 qr scanned then hide view --- done
+push received data no internet message --- done
+comment updatetrailer count for aaj ka sawal since its not being used --- done
+qrcode crash due to null --- handled
+how to identify aaj ka sawal grp played or not --- done 
+	
+
+April 07
+comment update trailer count in mainactivity --- done
+comment update trailer count in multiphoto --- done
+comment update trailer count in QrLogin --- done
+change aaj ka sawal after score Leaderboard  --- aks total score n aks today score --- done
+we cant show name of student with QR since we are not putting it anywhere in db -- done
+aks report on submit --- done
+aks report on skip ----  done
+aks crash --- if new qr ---  fixed
+multiqr code aks --- issue need to figure out --- not neeeded
+AKS will not be shown if QR --- done
+total leaderboard only for assigned std -- done
+show leaderboard (total time played) ----- done
+beautifiy leaderboard (total time played) ---- done
+show leaderboard according to time usage  --- 	done
+
+/******************************************************** v2.1.7 ************************************************/
+
+April 13
+check .posdbbackups folder on dashboard --- done
+make .POSDBBackups where db backups will be stored in json format --- done
+after backupdb create json & Store it in dbbackups folder & then clear db --- done
+folder check on dashboard --- done
+if appversion not equal to 2.1.7 then backup -- done
+checkinitial status db data --- done
+change flow ---  start if db exists then backup only on install ---  done
+send multiple files via bluetooth when transfer usage --- done
+when transferring usage share db backup jsons & delete json after successfull transfer usage ----- done
+show count of transferred files -- done
+keep files to pushedusage if successfully transferred --- done
+transfer files from pos backup to transferred usage after successful transfer usage --- done
+delete files after transfer & posbackup --- done
+when push push db backup jsons too & delete json after successfull push --- done
+
+
+April 16
+copy posbackup to received usage for self push ---- done
+when selfpushing push db backup jsons too & delete json after successfull push --- done
+add initial values --- done
+handle null on grp id in logs --- done
+aksplayed flag reset in status table --- done
+track gps fix duration ---- done
+pull data progress dialog ---- done
+
+
+
+April 18
+splash gpsFixDuration --- done
+push gpsFixDuration --- done
+transfer gpsFixDuration --- done
+handle splashscreen issue caused by apkveresion --- resolved
+
+
+
+/****************************************************** FTP MODULE *********************************************/
+April 21
+
+transfer usage path change from transfer usage to posdbbackup --- done	
+move to pushed usage after successful transfer usage -- done
+ftp module share profile --- done
+ftp module receive profile --- done
+ftp module shareoffjson --- done
+ftp module receiveoffjson --- done
+ftp module transfer usage --- done
+ftp module receive usage --- done
+ftp module dialog on receive usage ----- done
+ftp module dialog on receive profile ----- done
+ftp module dialog on receiveoffjson ----- done
+db entry after receiveoff json ----done
+db entry after receive profiles --- done
+
+
+
+April 23
+
+push files from posdbbackups instead of bluetooth --- done
+pushself usage from dbbackups + ---- done
+on receive profile change  received usage to received content -- done
+change received usage to receivedcontent in ftp connect --- done
+delete newjsons.zip from json folder on dashboard --- done
+check all backpressed delete actions --- done
+check all wipe actions --- done
+check all deleteactions --- done
+turn off server on backpressed share profile --- done
+turn off server on backpressed shareoffjson --- done
+turn off server on backpressed transfer usage --- done
+
+
+April 24
+
+dynamic SSID when server is getting started --- done
+show ssid on notification --- done
+change noti icon --- done
+
+
+show available networks --- skipped
+
+check all progress dialogs --- skipped
+show scores on share usage screen ---skipped
+show scores on receive usage screen ---skipped
+show files count on transfer usage ---- skipped
+show files count on receive usage ---- skipped
+
+
+/************************************************************ NEW FTP FLOW v2.1.8 *****************************************************/
+
+April 26
+
+Share Profiles/ ShareOffJsons/ TransferUsage Button & Single Receive Button for creating ftp ---- done
+hide receive usage, receive profiles, receive off jsons ---- done
+create receive data button on dashboard where ftp will be created by CRLNAME Hotspot --- done
+close server & Hotspot on backpressed crl dashboard --- done
+close server & Hotspot onDestroy crl dashboard --- done
+
+show available networks --- done
+check wifi on or off before show available networks ---- done
+listview listener --- done
+update layout of ftp dialog --- done
+
+
+April 27 (v2.1.8)
+
+remove port from dialog --- done
+if ip not entered then disable button click --- done
+connect to wifi if correct ssid -- done
+transfer usage ftp --- done
+share profiles ftp --- done
+connect to ftp screen on share profiles --- done
+connect to ftp screen on share off json --- done
+connect to ftp screen on Transfer Usage --- done
+check all progress dialogs ---  done
+show files count on transfer usage ---- done
+show files count on share profiles ---- done
+show files count on shareoff json ---- done
+take out share profiles one screen --- done
+resolve share profile reclicked issue --- resolved
+update ui ftp dialog ---- done
+refresh button on choose network --- done
+
+
+
+
+May 02
+show files count on Receive Data ---- done
+show files count on Receive profiles ---- done
+show files count on Receive Usage ---- done
+hide hostname & give static entry 192.168.43.1 --- done
+downgrade from 2.1.9 to 2.1.8 --- done
+custom dialog at receiver end --- done
+show message correctly ---- done
+check wifi connected to desired network or not --- done
+
+May 03
+QR Code scan json -- done
+
+May 05
+file size while sending transdfer usage at receivers end  --- solved	
+transfer file taking some time --- solved
+
+May 08
+Universal SD Card Path --- done
+
+
+May 10
+backpress share profile -- done
+screen off while receiving --- done
+spell check --- done
+if no file available show dialog --- done
+after transfer coming to main screen issue --- resolved 
+check ssid on connect button --- done
+transfer usage size 0 isssue --- solved
+
+
+
+May 11
+
+app not creating json file of db --- done
+increase delay for create ftp server --- done
+assigned groups doesnt appear on multiphoto ---- done
+turn off wifi on backpressed dashboard --- done
+turn off wifi on destroy dashboard --- done
+turn on wifi onresume dashboard --- done
+turn on wifi onresume share profiles --- done
+turn on wifi onresume transferUsage --- done
+refresh wifi new code --- works
+connect network list click taking time ---
+
+May 21
+Session Time update in play video class --- done
+
+
+v2.1.9
+May 23
+Session Entry in QRLogin & Multiphoto (Ketan) --- done
+GPS Hardware manifest --- done
+update gps fix field -- done
+
+May 24
+Invalid QR Code handling -- done
+play video initialization --- done
+AppName repeat in status table --- fixed
+Dual QR Login i.e for with json & for old qr code --- done
+
+
+/******************************************* v2.1.10 (QRchange,Improved Gps Module, Less Crashes, Login Filter ) ***********/
+
+June 1
+
+New GPS module --- done
+shift qr login to top ---- done
+prompt gps --- done
+5-7 login theme changes--- done
+8- 14 login theme changes -- done
+
+
+June 2 (v2.1.10)
+New Login & attendance logic --- done
+Null Handling on splash screen --- done
+Folder creation on splash screen --- done
+reset gpsfixduration after push --- done
+reset gpsfixduration after push self--- done
+reset gpsfixduration after transfer data --- done 
+aks file checking --- done
+v2.1.10 --- done
+increase size of QR Code screen ---- done
+stop gps --- done
+black group select if no student added ri --- done
+session created every time we login (if session is already active then dont do entry ) QRLogin --- solution on backpresseed session close --- done
+session created every time we login (if session is already active then dont do entry ) Multiphotoselect --- solution on backpresseed session close --- done 
+gps service for not getting gps once taken in a session --- not required as we are closing the app 
+ftp 0 kb sharing issue --- done
+
+
+June 4
+remove analysis screen after aaj ka sawal --- done
+load aks json from assets --- done
+check assign students login again --- done
+keep analysis screen --- done
+dont show video hint button resource not found --- done
+signin onbackpressed kill app --- done
+trim whitespaces aks --- done
+
+June 5
+generate new aks jsons -- done
+increase brightness for aks video play --- done
+
+
+June 11
+Video not available issue on video completion (system.exit(0) in video player, webview activity) --- done
+update aks jsons --- done
+disable vdo hint button after submitting ans aks --- done
+
+June 14
+Mac Address entry in status table--- done
+MAC address while transfer data --- done
+MAC address while Push data --- done
+MAC address while Push Self data --- done  
+
+v2.1.11
+June 15   
+files affected --- cardadapter,playvideo
+send nodelist from cardadapter to play video --- done
+video questions module --- 
+disable media controller if video json found --- 
+dialog of questions when video paused --- 
+syncing data no internet toast issue --- 
+remove video entry in score while playing video from game videio (showvideo/ play video jsinterface) ---
+video - issue --
+
+
+v2.1.12
+June 21
+wordEntry method in jsinterface --- done
+video questions module --- done
+files affected --- cardadapter,playvideo, jsinterface
+send nodelist from cardadapter to play video --- done
+disable media controller if video json found --- done
+dialog of questions when video paused --- done
+update wordEntry logic again --- done
+
+
+June 22
+files affected --- splash, playvideo, pushdata, crlpullpushtransfer, multiphoto, mainactivity
+apk type in status table --- done
+check for nulls in nodelist for questions --- done
+convert time in milis --- done
+if nodelist null then only show mediaplayer in play video --- done
+set all the fields from json --- done
+add to score --- done
+transparent background --- done
+put apktype in push data to server --- done
+put apktype in push self data to server --- done
+put apktype in transfer data --- done
+update playvideo java file --- done
+prathamCode i.e logincode for pos at splash ---- done
+put prathamcode in push data to server --- done
+put prathamcode in push self data to server --- done 
+put prathamcode in transfer data --- done
+prathamCode edit option in dashboard --- done
+show prathamCode in dashboard ---  done
+
+June 23
+age grp in qr -- done
+show only khelbadi for 5-7 age group --- done
+dont show khelbadi in 8-14 age group ---- done
+qr code login show all --- done
+update apktype --- done
+prathamCode validation --- done
+change login image --- done
+
+v2.1.13
+June 25
+backpress main activity action change --- done
+change login images --- done
+change method name age criteria age 3-6 & age 7-14 main activity-- done
+change age limit in age selection age 3-6 & age 7-14 main activity --- done
+
+July 05
+Change Share/receive name in admin panel --- done
+
+August 13
+Limit gps entries to 2000 chars --- done
+Default push api is H learning  --- done
+
+v2.1.14
+August 18
+shuffle data --- done
+
+August 21
+Default Pull API HL --- done
+Assign Groups else condition to all programid --- done
+CrlAddEdit else condition to all programid --- done
+MultiPhotoSelect else condition to all programid --- done
+Pull Data else condition to all programid --- done
+QRLogin else condition to all programid --- done
+SignInActivity else condition to all programid --- done
+Pull APi based on program id --- done
+change dash ui --- done
+
+
+
+August 24
+Session Tracking entry due to playvideo --- (changed to video play) --- done
+start webviewservice for on destroy in qr --- done
+video play class in jsinterface --- done
+
+August 29
+Login Mode dialog in CrlDashboard ( QR/ Group Select) -- done
+Login Mode status in CrlDashboard ( QR/ Group Select) -- done
+change ui of crl dashboard -- done
+initial data splash login mode --- done
+login action according to button clicked in sign in activity --- done
+
+August 30
+pull api for program 8 --- done
+remove pull pi apis from pos --- done
+remove push pi apis from pos --- done
+appName ECE for program id 8 QRLogin --- done
+appName ECE for program id 8 SignInAct -- done
+appName ECE for program id 8 MultiPhoto -- done 
+
+
+Sept 10
+v2.1.15 ---- done
+add Login in score pojo --- done
+New score logic & label column in db --- done
+Score table Label entry in score table --- done
+syncactivity log handle reference -- done
+push new score Label field (pullpushtransferusage, pushdata)---done
+
+Sept 11
+scoredbhelper label field update --- done
+
+Sept12
+push data & equalize pos with & without gps --- done
+alterSession table --- done
+Show App usage in expandable view --- done
+refactor usersession to session pojo --- done
+refactor usesrsession db helper to sessiondbhelper --- done
+new session pojo --- done
+new fields in session db helper --- done
+add startSessionTime at attendance QRLogin --- done
+add startSessionTime at attendance Multiphoto --- done
+add EndSessionTime at attendance PlayVideo --- done
+update endtime after closing session --- done
+
+Sept 14
+update db version to 22 --- done
+create static db version field in DBHelper -- done
+maintain db version in status table splashscreen --- done
+push db version pushdata --- done
+push db version transfer usage --- done
+back button on aks scoreboard (AKSGraph dialog) screen --- done mainactivity line 596
+aks graph xml change add back button --- done
+
+
+sept 15
+update attendance pojo --- done
+update attendance db helper --- done
+update expandable usagedatapump --  done
+
+sept 17
+change signature of usage for sorted std list --- done
+change query attendance db helper getAllSessionsByStdID --- done
+fix session update issue ( end time issue ) --- done
+change db session session id primary key --- done
+test --- done
+show wifiMac on dashboard --- done
+font adjustment in dashboard -- done
+
+sept 18
+session fixes in web service & play video -- experiment failed
+reinitialization of session id in signin activity while login --- experiment failed
+check emptyness of sessionid then enter score in play video --- done
+
+sept 19
+false entry session issue from main screen if idle (sign in activity on resume/ oncreate / intent changes, on backpressed main activity NA, webview service NA check, play video NA check -- resolved
+automatically take action depending on success & failure push --- done
+handle request timeout while pushing --- done
+show indivisual student usage --- done
+update UI of child of Expandable list --- done
+
+
+Sept 21
+push session table while transferusage --- done 
+push sessiontable while push --- done
+push programid transferusage --- done
+new field in statustable programid --- done
+push programid push data --- done
+splash screen programid --- done
+update programid in signin onresume() --- done
+clear session table after pushing push data cleardbrecords() --- done
+clear session table after pushing crltransferusage cleardbrecords() --- done
+sessiondb helper delete all --- done
+clear attendance table after pushing push data cleardbrecords() --- done
+clear attendance table after pushing crltransferusage cleardbrecords() --- done

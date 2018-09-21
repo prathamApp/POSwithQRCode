@@ -466,7 +466,9 @@ public class splashScreenVideo extends AppCompatActivity {
         boolean prathamCode = false;
         boolean loginMode = false;
         boolean DBVersion = false;
+        boolean ProgramID = false;
 
+        ProgramID = s.initialDataAvailable("ProgramID");
         DBVersion = s.initialDataAvailable("DBVersion");
         loginMode = s.initialDataAvailable("loginMode");
         prathamCode = s.initialDataAvailable("prathamCode");
@@ -503,6 +505,10 @@ public class splashScreenVideo extends AppCompatActivity {
         } else {
             s = new StatusDBHelper(this);
             s.Update("DBVersion", String.valueOf(DBHelper.DBVersion));
+        }
+        if (ProgramID == false) {
+            s = new StatusDBHelper(this);
+            s.insertInitialData("ProgramID", "default");
         }
         if (loginMode == false) {
             s = new StatusDBHelper(this);

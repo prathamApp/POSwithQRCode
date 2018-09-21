@@ -46,6 +46,7 @@ public class PushData extends AppCompatActivity {
     GroupDBHelper gdb;
     CrlDBHelper cdb;
     AserDBHelper aserdb;
+    SessionDBHelper sessionDBHelper;
     Context c;
     Context sessionContex;
     ScoreDBHelper scoreDBHelper;
@@ -76,6 +77,7 @@ public class PushData extends AppCompatActivity {
         cdb = new CrlDBHelper(c);
         gdb = new GroupDBHelper(c);
         aserdb = new AserDBHelper(c);
+        sessionDBHelper = new SessionDBHelper(c);
 
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -347,7 +349,7 @@ public class PushData extends AppCompatActivity {
         } else {
             try {
 
-                JSONArray scoreData = new JSONArray(), logsData = new JSONArray(), attendanceData = new JSONArray(), studentData = new JSONArray(), crlData = new JSONArray(), grpData = new JSONArray(), aserData = new JSONArray();
+                JSONArray scoreData = new JSONArray(), logsData = new JSONArray(), attendanceData = new JSONArray(), studentData = new JSONArray(), crlData = new JSONArray(), grpData = new JSONArray(), aserData = new JSONArray(), sessionData = new JSONArray();
 
                 for (int i = 0; i < scores.size(); i++) {
                     JSONObject _obj = new JSONObject();
@@ -552,8 +554,22 @@ public class PushData extends AppCompatActivity {
                             }
                         }
 
-                        StatusDBHelper statusDBHelper = new StatusDBHelper(this);
+                        //For Session data
+                        List<Session> sessionList = sessionDBHelper.GetAll();
+                        JSONObject sessionObj;
+                        if (sessionData != null) {
+                            for (int i = 0; i < aserList.size(); i++) {
+                                sessionObj = new JSONObject();
+                                sessionObj.put("SessionID", sessionList.get(i).SessionID);
+                                sessionObj.put("StartTime", sessionList.get(i).StartTime);
+                                sessionObj.put("EndTime", sessionList.get(i).EndTime);
 
+                                sessionData.put(sessionObj);
+                            }
+                        }
+
+
+                        StatusDBHelper statusDBHelper = new StatusDBHelper(this);
 
                         JSONObject obj = new JSONObject();
                         obj.put("ScoreCount", scores.size());
@@ -584,9 +600,19 @@ public class PushData extends AppCompatActivity {
                         obj.put("prathamCode", statusDBHelper.getValue("prathamCode"));
 
                         obj.put("DBVersion", statusDBHelper.getValue("DBVersion"));
+                        obj.put("ProgramID", statusDBHelper.getValue("ProgramID"));
 
                         // creating json file
-                        String requestString = "{ \"metadata\": " + obj + ", \"scoreData\": " + scoreData + ", \"LogsData\": " + logsData + ", \"attendanceData\": " + attendanceData + ", \"newStudentsData\": " + studentData + ", \"newCrlsData\": " + crlData + ", \"newGroupsData\": " + grpData + ", \"AserTableData\": " + aserData + "}";//Ketan
+                        String requestString = "{ \"metadata\": " + obj
+                                + ", \"scoreData\": " + scoreData
+                                + ", \"LogsData\": " + logsData
+                                + ", \"attendanceData\": " + attendanceData
+                                + ", \"newStudentsData\": " + studentData
+                                + ", \"newCrlsData\": " + crlData
+                                + ", \"newGroupsData\": " + grpData
+                                + ", \"AserTableData\": " + aserData
+                                + ", \"SessionTableData\": " + sessionData
+                                + "}";//Ketan
                         WriteSettings(c, requestString, "pushNewDataToServer-" + (deviceId.equals(null) ? "0000" : deviceId));
                     }
                 }
@@ -771,17 +797,32 @@ public class PushData extends AppCompatActivity {
     private void clearDBRecords() {
         ScoreDBHelper scoreToDelete = new ScoreDBHelper(c);
         if (scoreToDelete.DeleteAll()) {
-            Toast.makeText(c, "Score database cleared", Toast.LENGTH_SHORT).show();
+            Toast.makeText(c, "Score Table cleared", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(c, "Problem in clearing score database", Toast.LENGTH_SHORT).show();
+            Toast.makeText(c, "Problem in clearing score Table", Toast.LENGTH_SHORT).show();
         }
 
         LogsDBHelper LogsToDelete = new LogsDBHelper(c);
         if (LogsToDelete.DeleteAll()) {
-            Toast.makeText(c, "Logs database cleared", Toast.LENGTH_SHORT).show();
+            Toast.makeText(c, "Logs Table cleared", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(c, "Problem in clearing Logs database", Toast.LENGTH_SHORT).show();
+            Toast.makeText(c, "Problem in clearing Logs Table", Toast.LENGTH_SHORT).show();
         }
+
+        SessionDBHelper sessionDBHelper = new SessionDBHelper(c);
+        if (sessionDBHelper.DeleteAll()) {
+            Toast.makeText(c, "Session Table cleared", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(c, "Problem in clearing Session Table", Toast.LENGTH_SHORT).show();
+        }
+
+        AttendanceDBHelper attendanceDBHelper = new AttendanceDBHelper(c);
+        if (attendanceDBHelper.DeleteAll()) {
+            Toast.makeText(c, "Attendance Table cleared", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(c, "Problem in clearing Attendance Table", Toast.LENGTH_SHORT).show();
+        }
+
         // reset GpsFixDuration
         StatusDBHelper statusDBHelper = new StatusDBHelper(this);
         statusDBHelper.Update("gpsFixDuration", "");

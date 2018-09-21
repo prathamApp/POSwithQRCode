@@ -58,6 +58,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
     GroupDBHelper gdb;
     CrlDBHelper cdb;
     AserDBHelper aserdb;
+    SessionDBHelper sessionDBHelper;
     Context c;
     //    static BluetoothAdapter btAdapter;
     Intent intent = null;
@@ -110,6 +111,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
         cdb = new CrlDBHelper(c);
         gdb = new GroupDBHelper(c);
         aserdb = new AserDBHelper(c);
+        sessionDBHelper = new SessionDBHelper(c);
 
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -405,7 +407,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
         } else {
             try {
                 NoDataToTransfer = false;
-                JSONArray scoreData = new JSONArray(), logsData = new JSONArray(), attendanceData = new JSONArray(), studentData = new JSONArray(), crlData = new JSONArray(), grpData = new JSONArray(), aserData = new JSONArray();
+                JSONArray scoreData = new JSONArray(), logsData = new JSONArray(), attendanceData = new JSONArray(), studentData = new JSONArray(), crlData = new JSONArray(), grpData = new JSONArray(), aserData = new JSONArray(), sessionData = new JSONArray();
 
                 for (int i = 0; i < scores.size(); i++) {
                     JSONObject _obj = new JSONObject();
@@ -609,6 +611,20 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
                             }
                         }
 
+                        //For Session data
+                        List<Session> sessionList = sessionDBHelper.GetAll();
+                        JSONObject sessionObj;
+                        if (sessionData != null) {
+                            for (int i = 0; i < aserList.size(); i++) {
+                                sessionObj = new JSONObject();
+                                sessionObj.put("SessionID", sessionList.get(i).SessionID);
+                                sessionObj.put("StartTime", sessionList.get(i).StartTime);
+                                sessionObj.put("EndTime", sessionList.get(i).EndTime);
+
+                                sessionData.put(sessionObj);
+                            }
+                        }
+
                         StatusDBHelper statusDBHelper = new StatusDBHelper(this);
                         JSONObject obj = new JSONObject();
                         obj.put("ScoreCount", scores.size());
@@ -639,6 +655,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
                         obj.put("prathamCode", statusDBHelper.getValue("prathamCode"));
 
                         obj.put("DBVersion", statusDBHelper.getValue("DBVersion"));
+                        obj.put("ProgramID", statusDBHelper.getValue("ProgramID"));
 
                         String requestString = "{ " +
                                 "\"metadata\": " + obj + "," +
@@ -648,7 +665,8 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
                                 "\"newStudentsData\": " + studentData + ", " +
                                 "\"newCrlsData\": " + crlData + ", " +
                                 "\"newGroupsData\": " + grpData + ", " +
-                                "\"AserTableData\": " + aserData +
+                                "\"AserTableData\": " + aserData + ", " +
+                                "\"SessionTableData\": " + sessionData +
                                 "}";//Ketan
                         WriteSettings(c, requestString, "pushNewDataToServer-" + (deviceId.equals(null) ? "0000" : deviceId));
                     }
@@ -909,6 +927,21 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
         } else {
 //            Toast.makeText(c, "Problem in clearing Logs database", Toast.LENGTH_SHORT).show();
         }
+
+        SessionDBHelper sessionDBHelper = new SessionDBHelper(c);
+        if (sessionDBHelper.DeleteAll()) {
+//            Toast.makeText(c, "Logs database cleared", Toast.LENGTH_SHORT).show();
+        } else {
+//            Toast.makeText(c, "Problem in clearing Logs database", Toast.LENGTH_SHORT).show();
+        }
+
+        AttendanceDBHelper attendanceDBHelper = new AttendanceDBHelper(c);
+        if (attendanceDBHelper.DeleteAll()) {
+//            Toast.makeText(c, "Attendance Table cleared", Toast.LENGTH_SHORT).show();
+        } else {
+//            Toast.makeText(c, "Problem in clearing Attendance Table", Toast.LENGTH_SHORT).show();
+        }
+
         BackupDatabase.backup(c);
     }
 
@@ -1043,7 +1076,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
         String fileName = "";
         for (int i = 0; i < files.length; i++) {
             if (files[i].getName().startsWith("pushNewDataToServer")) {
-                Log.d("onFilesRecievedComplete:", ""+files[i].length());
+                Log.d("onFilesRecievedComplete:", "" + files[i].length());
                 try {
                     fileName += "\n" + files[i].getName() + "   " + Integer.parseInt(String.valueOf(files[i].length() / 1024)) + " kb";
                     FileUtils.copyFileToDirectory(new File(files[i].getAbsolutePath()),
@@ -1051,7 +1084,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
                     cnt++;
                 } catch (IOException e) {
                     e.printStackTrace();
-                }finally {
+                } finally {
                     files[i].delete();
                 }
             }

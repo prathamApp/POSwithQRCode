@@ -42,6 +42,56 @@ public class SessionDBHelper extends DBHelper {
         BackupDatabase.backup(c);
     }
 
+    public boolean DeleteAll() {
+        try {
+            database = getWritableDatabase();
+            long resultCount = database.delete(TABLENAME, null, null);
+            database.close();
+            return true;
+        } catch (Exception ex) {
+            _PopulateLogValues(ex,"DeleteAll-Session");
+            return false;
+        }
+    }
+
+    public List<Session> GetAll() {
+        try {
+            database = getWritableDatabase();
+            Cursor cursor = database.rawQuery("select * from Session", null);
+
+            return _PopulateListFromCursor(cursor);
+        } catch (Exception ex) {
+            _PopulateLogValues(ex, "GetAll");
+            return null;
+        }
+    }
+
+    private List<Session> _PopulateListFromCursor(Cursor cursor) {
+        try {
+            database = getWritableDatabase();
+            List<Session> aser_list = new ArrayList<Session>();
+            Session sessionObject;
+            cursor.moveToFirst();
+
+            while (cursor.isAfterLast() == false) {
+
+                sessionObject = new Session();
+
+                sessionObject.SessionID = cursor.getString(cursor.getColumnIndex("SessionID"));
+                sessionObject.StartTime = cursor.getString(cursor.getColumnIndex("StartTime"));
+                sessionObject.EndTime = cursor.getString(cursor.getColumnIndex("EndTime"));
+
+                aser_list.add(sessionObject);
+                cursor.moveToNext();
+            }
+            cursor.close();
+            database.close();
+            return aser_list;
+        } catch (Exception ex) {
+            _PopulateLogValues(ex, "populateListFromCursor");
+            return null;
+        }
+    }
 
     // calculate total time usage of student from sessionID
     public List<ScoreList> getUsageDetails(String sessionID) {

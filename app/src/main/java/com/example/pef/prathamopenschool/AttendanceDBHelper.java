@@ -113,7 +113,7 @@ public class AttendanceDBHelper extends DBHelper {
             database.close();
             return true;
         } catch (Exception ex) {
-            _PopulateLogValues(ex, "DeleteAll");
+            _PopulateLogValues(ex, "DeleteAll-Attendance");
             return false;
         }
     }
