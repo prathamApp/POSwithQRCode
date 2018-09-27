@@ -520,10 +520,10 @@ public class splashScreenVideo extends AppCompatActivity {
         }
         if (apkType == false) {
             s = new StatusDBHelper(this);
-            s.insertInitialData("apkType", "QRCode, GPS");
+            s.insertInitialData("apkType", "QRCode, GPS, Shuffled Content");
         } else {
             s = new StatusDBHelper(this);
-            s.Update("apkType", "QRCode, GPS");
+            s.Update("apkType", "QRCode, GPS, Shuffled Content");
         }
         if (wifiMAC == false) {
             WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
