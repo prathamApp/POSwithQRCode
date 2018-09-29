@@ -60,6 +60,7 @@ public class AttendanceDBHelper extends DBHelper {
         return presentStudentId;
     }
 
+
     private void _PopulateLogValues(Exception ex, String method) {
 
         Logs logs = new Logs();
@@ -175,4 +176,84 @@ public class AttendanceDBHelper extends DBHelper {
         cursor.close();
         database.close();
     }
+
+
+    public List<String> getAllDistinctSessionIDs() {
+        try {
+            database = getWritableDatabase();
+            List<String> list = new ArrayList<String>();
+            list.clear();
+            {
+                Cursor cursor = database.rawQuery("SELECT DISTINCT SessionID FROM Attendance", null);
+                cursor.moveToFirst();
+                while (cursor.isAfterLast() == false) {
+                    list.add(cursor.getString(cursor.getColumnIndex("SessionID")));
+                    cursor.moveToNext();
+                }
+                database.close();
+            }
+            return list;
+        } catch (Exception ex) {
+            _PopulateLogValues(ex, "getAllDistinctSessionIDs");
+            return null;
+        }
+    }
+
+    public JSONArray GetAllPresentStdBySessionId(String SessionId) {
+        JSONArray jsonArray = null;
+
+        try {
+            Cursor cursor = database.rawQuery("select PresentStudentIds from " + TABLENAME + " where SessionID= '" + SessionId + "'", null);
+            cursor.moveToFirst();
+            jsonArray = new JSONArray();
+            while (cursor.isAfterLast() == false) {
+                JSONObject obj = new JSONObject();
+                obj.put("id", cursor.getString(cursor.getColumnIndex("PresentStudentIds")));
+                jsonArray.put(obj);
+                cursor.moveToNext();
+            }
+        } catch (Exception ex) {
+            _PopulateLogValues(ex, "GetAllPresentStdBySessionId");
+            return null;
+        }
+        return jsonArray;
+    }
+
+
+    public String GetAllPresentStudentBySessionId(String SessionId) {
+        database = getWritableDatabase();
+
+        String presentStudentId = "";
+        try {
+            Cursor cursor = database.rawQuery("select PresentStudentIds from " + TABLENAME + " where SessionID= '" + SessionId + "'", null);
+            cursor.moveToFirst();
+            while (cursor.isAfterLast() == false) {
+                presentStudentId = presentStudentId + "," + cursor.getString(cursor.getColumnIndex("PresentStudentIds"));
+                cursor.moveToNext();
+            }
+            presentStudentId = presentStudentId.replaceFirst(",", "");
+
+
+        } catch (Exception ex) {
+            _PopulateLogValues(ex, "GetStudentId");
+            return null;
+        }
+        //
+        return presentStudentId;
+    }
+
+    public String GetGrpIDBySessionID(String SessionId) {
+        database = getWritableDatabase();
+        String grpid;
+        try {
+            Cursor cursor = database.rawQuery("select GroupID from " + TABLENAME + " where SessionID= '" + SessionId + "'", null);
+            cursor.moveToFirst();
+            grpid = cursor.getString(cursor.getColumnIndex("GroupID"));
+        } catch (Exception ex) {
+            _PopulateLogValues(ex, "GetGrpIdbySessionID");
+            return null;
+        }
+        return grpid;
+    }
+
 }

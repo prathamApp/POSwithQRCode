@@ -411,7 +411,33 @@ public class PushData extends AppCompatActivity {
 
                     if (attendanceData == null) {
                     } else {
-                        for (int i = 0; i < attendanceData.length(); i++) {
+                        attendanceData = new JSONArray();
+
+                        // get list of distinct session id
+                        List<String> distinctSessions = attendanceDBHelper1.getAllDistinctSessionIDs();
+                        JSONObject attendanceObject;
+                        JSONArray presentStudents;
+
+                        // get present grpid & present student ids
+                        for (int x = 0; x < distinctSessions.size(); x++) {
+                            String presentStd = "", grpID = "";
+                            attendanceObject = new JSONObject();
+                            presentStudents = new JSONArray();
+
+                            presentStd = attendanceDBHelper1.GetAllPresentStudentBySessionId(distinctSessions.get(x));
+                            grpID = attendanceDBHelper1.GetGrpIDBySessionID(distinctSessions.get(x));
+                            presentStudents = attendanceDBHelper1.GetAllPresentStdBySessionId(distinctSessions.get(x));
+
+                            attendanceObject.put("SessionID", distinctSessions.get(x));
+                            attendanceObject.put("GroupID", grpID);
+                            attendanceObject.put("PresentStudentIds", presentStudents);
+
+                            Log.d("attendance obj :::", attendanceObject.toString());
+                            attendanceData.put(attendanceObject);
+                        }
+
+                        //OLD LOGIC
+                        /*for (int i = 0; i < attendanceData.length(); i++) {
                             JSONObject jsonObject = attendanceData.getJSONObject(i);
 
                             String ids[] = jsonObject.getString("PresentStudentIds").split(",");
@@ -419,11 +445,12 @@ public class PushData extends AppCompatActivity {
                             for (int j = 0; j < ids.length; j++) {
                                 JSONObject id = new JSONObject();
                                 id.put("id", ids[j]);
+
                                 presentStudents.put(id);
                             }
                             jsonObject.remove("PresentStudentIds");
                             jsonObject.put("PresentStudentIds", presentStudents);
-                        }
+                        }*/
 
                         //pravin
                         //For New Students data
@@ -573,7 +600,7 @@ public class PushData extends AppCompatActivity {
 
                         JSONObject obj = new JSONObject();
                         obj.put("ScoreCount", scores.size());
-                        obj.put("AttendanceCount", attendanceData.length());
+                        obj.put("AttendanceCount", distinctSessions.size());
                         obj.put("CRLID", CrlDashboard.CreatedBy.equals(null) ? "CreatedBy" : CrlDashboard.CreatedBy);
                         //obj.put("LogsCount", logs.size());
                         obj.put("NewStudentsCount", studentData.length());
