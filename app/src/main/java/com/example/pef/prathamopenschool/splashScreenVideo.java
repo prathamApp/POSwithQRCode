@@ -190,7 +190,7 @@ public class splashScreenVideo extends AppCompatActivity {
                     String ver = statusDBHelper.getValue("apkVersion");
                     if (ver == null || ver.equalsIgnoreCase("null")) {
                         createDBJsonforBackup();
-                    } else if (!ver.equalsIgnoreCase("2.1.7") && !ver.equalsIgnoreCase("2.1.8") && !ver.equalsIgnoreCase("2.1.9") && !ver.equalsIgnoreCase("2.1.10") && !ver.equalsIgnoreCase("2.1.11") && !ver.equalsIgnoreCase("2.1.12") && !ver.equalsIgnoreCase("2.1.13") && !ver.equalsIgnoreCase("2.1.14") && !ver.equalsIgnoreCase("2.1.15")) {
+                    } else if (!ver.equalsIgnoreCase("2.1.7") && !ver.equalsIgnoreCase("2.1.8") && !ver.equalsIgnoreCase("2.1.9") && !ver.equalsIgnoreCase("2.1.10") && !ver.equalsIgnoreCase("2.1.11") && !ver.equalsIgnoreCase("2.1.12") && !ver.equalsIgnoreCase("2.1.13") && !ver.equalsIgnoreCase("2.1.14") && !ver.equalsIgnoreCase("2.1.15") && !ver.equalsIgnoreCase("2.1.16")) {
                         createDBJsonforBackup();
                     }
                     //check initial entries
@@ -206,7 +206,7 @@ public class splashScreenVideo extends AppCompatActivity {
                     String ver = statusDBHelper.getValue("apkVersion");
                     if (ver == null || ver.equalsIgnoreCase("null")) {
                         createDBJsonforBackup();
-                    } else if (!ver.equalsIgnoreCase("2.1.7") && !ver.equalsIgnoreCase("2.1.8") && !ver.equalsIgnoreCase("2.1.9") && !ver.equalsIgnoreCase("2.1.10") && !ver.equalsIgnoreCase("2.1.11") && !ver.equalsIgnoreCase("2.1.12") && !ver.equalsIgnoreCase("2.1.13") && !ver.equalsIgnoreCase("2.1.14") && !ver.equalsIgnoreCase("2.1.15")) {
+                    } else if (!ver.equalsIgnoreCase("2.1.7") && !ver.equalsIgnoreCase("2.1.8") && !ver.equalsIgnoreCase("2.1.9") && !ver.equalsIgnoreCase("2.1.10") && !ver.equalsIgnoreCase("2.1.11") && !ver.equalsIgnoreCase("2.1.12") && !ver.equalsIgnoreCase("2.1.13") && !ver.equalsIgnoreCase("2.1.14") && !ver.equalsIgnoreCase("2.1.15") && !ver.equalsIgnoreCase("2.1.16")) {
                         createDBJsonforBackup();
                     }
                     //check initial entries

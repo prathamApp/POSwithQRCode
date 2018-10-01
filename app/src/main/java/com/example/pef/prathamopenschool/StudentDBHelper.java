@@ -50,6 +50,18 @@ public class StudentDBHelper extends DBHelper {
         BackupDatabase.backup(c);
     }
 
+    public boolean deleteDeletedStdRecords() {
+        try {
+            database = getWritableDatabase();
+            long resultCount = database.delete(TABLENAME, "CreatedBy = ?", new String[]{"deleted"});
+            database.close();
+            return true;
+        } catch (Exception ex) {
+            _PopulateLogValues(ex, "deleteDeletedStdRecords");
+            return false;
+        }
+    }
+
 
     public int GetStudentCount(String GroupID) {
         try {
@@ -197,7 +209,7 @@ public class StudentDBHelper extends DBHelper {
             contentValues.put("LastName", obj.LastName);
             contentValues.put("Age", obj.Age);
             contentValues.put("Class", obj.Class);
-            contentValues.put("UpdatedDate", obj.UpdatedDate);
+            contentValues.put("UpdatedDate", obj.UpdatedDate == null ? "" : obj.UpdatedDate);
             contentValues.put("Gender", obj.Gender);
             contentValues.put("GroupID", obj.GroupID);
             contentValues.put("CreatedBy", obj.CreatedBy);

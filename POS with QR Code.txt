@@ -479,4 +479,7 @@ Sept 29
 improvise attendance table crlpullpushtransfer --- done
 improvise attendance table pushdata --- done
 add new method to attendance db -- done
-delete student when pull data --- awaiting for ganesh sir's api change
+
+Oct 1
+v2.1.16 --- done
+delete student when pull data AssignGroups, StudentDBHelper --- done
