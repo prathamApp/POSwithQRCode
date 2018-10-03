@@ -1,7 +1,10 @@
 package com.example.pef.prathamopenschool;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -19,6 +22,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -54,7 +59,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-//public class splashScreenVideo extends AppCompatActivity implements MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener {
 public class splashScreenVideo extends AppCompatActivity {
 
     VideoView splashVideo;
@@ -79,15 +83,22 @@ public class splashScreenVideo extends AppCompatActivity {
     String timeStamp = "";
     ArrayList<String> dbbackuppath = new ArrayList<String>();
 
+    private Context mContext;
+    private Activity mActivity;
+    private static final int MY_PERMISSIONS_REQUEST_CODE = 123;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen_video);
 
-
         // Hide Actionbar
         getSupportActionBar().hide();
         context = this;
+
+        // Get the application context
+        mContext = getApplicationContext();
+        mActivity = splashScreenVideo.this;
 
         alarmIntentPM = new Intent(context, AlarmReceiverPM.class);
         Log.d("packageName ::: ", context.getPackageName());
@@ -95,6 +106,120 @@ public class splashScreenVideo extends AppCompatActivity {
         imgLogo = (ImageView) findViewById(R.id.logo);
         animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.wobble);
         imgLogo.startAnimation(animFadeIn);
+
+    }
+
+    protected void checkPermission() {
+        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.CAMERA)
+                + ContextCompat.checkSelfPermission(
+                mActivity, Manifest.permission.READ_CONTACTS)
+                + ContextCompat.checkSelfPermission(
+                mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Do something, when permissions not granted
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    mActivity, Manifest.permission.CAMERA)
+                    || ActivityCompat.shouldShowRequestPermissionRationale(
+                    mActivity, Manifest.permission.READ_CONTACTS)
+                    || ActivityCompat.shouldShowRequestPermissionRationale(
+                    mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                // If we should give explanation of requested permissions
+
+                // Show an alert dialog here with request explanation
+                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                builder.setTitle("Permissions");
+                builder.setIcon(R.drawable.ic_warning);
+                builder.setMessage("Please Grant All Permissions in order to Run the App.");
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ActivityCompat.requestPermissions(
+                                mActivity,
+                                new String[]{
+                                        Manifest.permission.CAMERA,
+                                        Manifest.permission.READ_CONTACTS,
+                                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                        Manifest.permission.INTERNET,
+                                        Manifest.permission.BLUETOOTH_ADMIN,
+                                        Manifest.permission.ACCESS_FINE_LOCATION,
+                                        Manifest.permission.RECEIVE_SMS,
+                                        Manifest.permission.RECORD_AUDIO,
+                                        Manifest.permission.READ_CONTACTS,
+                                        Manifest.permission.READ_PHONE_STATE
+
+                                },
+                                MY_PERMISSIONS_REQUEST_CODE
+                        );
+                    }
+                });
+                builder.setNeutralButton("Cancel", null);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            } else {
+                // Directly request for required permissions, without explanation
+                ActivityCompat.requestPermissions(
+                        mActivity,
+                        new String[]{
+                                Manifest.permission.CAMERA,
+                                Manifest.permission.READ_CONTACTS,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                Manifest.permission.INTERNET,
+                                Manifest.permission.BLUETOOTH_ADMIN,
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.RECEIVE_SMS,
+                                Manifest.permission.RECORD_AUDIO,
+                                Manifest.permission.READ_CONTACTS,
+                                Manifest.permission.READ_PHONE_STATE
+
+                        },
+                        MY_PERMISSIONS_REQUEST_CODE
+                );
+            }
+        } else {
+            // Do something, when permissions are already granted
+//            Toast.makeText(mContext, "Permissions already granted", Toast.LENGTH_SHORT).show();
+            // get External SD Card Path for Data Initialization
+            getSdCardPath();
+
+            new LongOperation(splashScreenVideo.this, fpath).execute();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_CODE: {
+                // When request is cancelled, the results array are empty
+                if (
+                        (grantResults.length > 0) &&
+                                (grantResults[0]
+                                        + grantResults[1]
+                                        + grantResults[2]
+                                        + grantResults[3]
+                                        + grantResults[4]
+                                        + grantResults[5]
+                                        + grantResults[6]
+                                        + grantResults[7]
+                                        + grantResults[8]
+                                        == PackageManager.PERMISSION_GRANTED
+                                )
+                        ) {
+                    // get External SD Card Path for Data Initialization
+                    getSdCardPath();
+
+                    new LongOperation(splashScreenVideo.this, fpath).execute();
+
+                    // Permissions are granted
+//                    Toast.makeText(mContext, "Permissions granted.", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Permissions are denied
+                    checkPermission();
+//                    Toast.makeText(mContext, "Permissions denied.", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+        }
     }
 
     // Set Notification at 10:00 AM
@@ -143,13 +268,9 @@ public class splashScreenVideo extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        // get External SD Card Path for Data Initialization
-        getSdCardPath();
-
-        new LongOperation(splashScreenVideo.this, fpath).execute();
-
+        checkPermission();
     }
+
 
     // Check service is running or not
     private boolean isServiceRunning(PendingIntent pd) {
@@ -1580,3 +1701,5 @@ public class splashScreenVideo extends AppCompatActivity {
     }
 
 }
+//public class splashScreenVideo extends AppCompatActivity implements MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener {
+

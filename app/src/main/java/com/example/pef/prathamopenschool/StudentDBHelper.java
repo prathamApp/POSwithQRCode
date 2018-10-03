@@ -50,10 +50,23 @@ public class StudentDBHelper extends DBHelper {
         BackupDatabase.backup(c);
     }
 
+
+    public boolean deleteDeletedGrpsStdRecords(String grpid) {
+        try {
+            database = getWritableDatabase();
+            long resultCount = database.delete(TABLENAME, "GroupID = ?", new String[]{grpid});
+            database.close();
+            return true;
+        } catch (Exception ex) {
+            _PopulateLogValues(ex, "deleteDeletedGrpsStdRecords");
+            return false;
+        }
+    }
+
     public boolean deleteDeletedStdRecords() {
         try {
             database = getWritableDatabase();
-            long resultCount = database.delete(TABLENAME, "CreatedBy = ?", new String[]{"deleted"});
+            long resultCount = database.delete(TABLENAME, "Gender = ?", new String[]{"deleted"});
             database.close();
             return true;
         } catch (Exception ex) {
@@ -61,7 +74,6 @@ public class StudentDBHelper extends DBHelper {
             return false;
         }
     }
-
 
     public int GetStudentCount(String GroupID) {
         try {

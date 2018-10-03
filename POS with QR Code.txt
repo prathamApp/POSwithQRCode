@@ -482,4 +482,12 @@ add new method to attendance db -- done
 
 Oct 1
 v2.1.16 --- done
-delete student when pull data AssignGroups, StudentDBHelper --- done
+delete student when pull data AssignGroups, StudentDBHelper (deleted field in CreatedBy) --- done
+delete student when pull Studentdb helper ( deleted field in Gender ) change query -- done
+
+Oct 3
+delete grp ( deleted field in deviceid ) --- done
+delete std where grp id --- done
+update activated froups --- done
+update status table groups --- done
+runtime permissions --- done

@@ -50,6 +50,44 @@ public class GroupDBHelper extends DBHelper {
         BackupDatabase.backup(c);
     }
 
+
+    public boolean deleteDeletedGrpRecords() {
+        try {
+            database = getWritableDatabase();
+            long resultCount = database.delete(TABLENAME, "DeviceID = ?", new String[]{"deleted"});
+            database.close();
+            return true;
+        } catch (Exception ex) {
+            _PopulateLogValues(ex, "deleteDeletedGrpRecords");
+            return false;
+        }
+    }
+
+    public List<Group> GetAllDeletedGroups() {
+        try {
+            database = getWritableDatabase();
+            Cursor cursor = database.rawQuery("select * from " + TABLENAME + " WHERE DeviceID = 'deleted'", null);
+            return _PopulateListFromCursor(cursor);
+        } catch (Exception ex) {
+            _PopulateLogValues(ex, "GetAll");
+            return null;
+        }
+    }
+
+
+    public int getVillageIDByGroupID(String grpID) {
+        try {
+            database = getWritableDatabase();
+            Cursor cursor = database.rawQuery("select VillageID from Groups where GroupID = ?", new String[]{grpID});
+            cursor.moveToFirst();
+            database.close();
+            return cursor.getInt(0);
+        } catch (Exception ex) {
+            _PopulateLogValues(ex, "getVillageIDByGroupID");
+            return 0;
+        }
+    }
+
     // Populate Groups for RI Case
     public List<GroupList> GetAllRIGroups(List<VillageList> villageId) {
         try {
