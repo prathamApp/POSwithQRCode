@@ -3,6 +3,7 @@ package com.example.pef.prathamopenschool;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
@@ -88,7 +89,7 @@ public class AssignGroups extends AppCompatActivity {
         } else if (MultiPhotoSelectActivity.programID.equals("2")) // RI
         {
             villages_spinner.setVisibility(View.GONE);
-        }else{
+        } else {
             villages_spinner.setVisibility(View.VISIBLE);
         }
 
@@ -249,6 +250,8 @@ public class AssignGroups extends AppCompatActivity {
                                     updateGroupTable();
                                     // Delete Groups where Device ID is deleted & also delete associated students & update status table
                                     deleteGroups();
+                                    // replace all null values in db if exists
+                                    new checkforNulls().execute();
 
 
                                     //  MultiPhotoSelectActivity.dilog.dismissDilog();
@@ -283,6 +286,55 @@ public class AssignGroups extends AppCompatActivity {
 
     }//onCreate
 
+    public class checkforNulls extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            // Runs on UI thread
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            // Runs on the background thread
+
+            try {
+                // todo replace null values with dummy values
+                CrlDBHelper cdb = new CrlDBHelper(AssignGroups.this);
+                AserDBHelper adb = new AserDBHelper(AssignGroups.this);
+                GroupDBHelper gdb = new GroupDBHelper(AssignGroups.this);
+                StudentDBHelper sdb = new StudentDBHelper(AssignGroups.this);
+                VillageDBHelper vdb = new VillageDBHelper(AssignGroups.this);
+                AssessmentScoreDBHelper assdb = new AssessmentScoreDBHelper(AssignGroups.this);
+                AttendanceDBHelper attdb = new AttendanceDBHelper(AssignGroups.this);
+                ScoreDBHelper scrdb = new ScoreDBHelper(AssignGroups.this);
+                StatusDBHelper statdb = new StatusDBHelper(AssignGroups.this);
+                SessionDBHelper sessdb = new SessionDBHelper(AssignGroups.this);
+
+                sessdb.replaceNulls();
+                cdb.replaceNulls();
+                adb.replaceNulls();
+                gdb.replaceNulls();
+                sdb.replaceNulls();
+                vdb.replaceNulls();
+                assdb.replaceNulls();
+                attdb.replaceNulls();
+                scrdb.replaceNulls();
+                statdb.replaceNulls();
+
+                BackupDatabase.backup(AssignGroups.this);
+
+            } catch (Exception e) {
+                e.getMessage();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void res) {
+            // Runs on the UI thread
+        }
+
+    }
 
 
     private void deleteGroups() {
@@ -452,7 +504,6 @@ public class AssignGroups extends AppCompatActivity {
     }
 
 
-
     public boolean checkGroupInDB(String grpID) {
 
         boolean flag = false;
@@ -502,8 +553,7 @@ public class AssignGroups extends AppCompatActivity {
                 } else if (MultiPhotoSelectActivity.programID.equals("2")) // RI
                 {
                     populateRIVillage(selectedBlock);
-                }
-                else {
+                } else {
                     populateVillage(selectedBlock);
                 }
             }

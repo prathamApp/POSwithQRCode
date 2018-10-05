@@ -42,6 +42,16 @@ public class SessionDBHelper extends DBHelper {
         BackupDatabase.backup(c);
     }
 
+    // replace null values with dummy
+    public void replaceNulls() {
+        database = getWritableDatabase();
+        cursor = database.rawQuery("UPDATE Session SET SessionID = IfNull(SessionID,''), StartTime = IfNull(StartTime,''), EndTime = IfNull(EndTime,'')", null);
+        cursor.moveToFirst();
+        cursor.close();
+        database.close();
+    }
+
+
     public boolean DeleteAll() {
         try {
             database = getWritableDatabase();

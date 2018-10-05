@@ -802,7 +802,9 @@ public class splashScreenVideo extends AppCompatActivity {
                 AttendanceDBHelper attdb = new AttendanceDBHelper(splashScreenVideo.this);
                 ScoreDBHelper scrdb = new ScoreDBHelper(splashScreenVideo.this);
                 StatusDBHelper statdb = new StatusDBHelper(splashScreenVideo.this);
+                SessionDBHelper sessdb = new SessionDBHelper(splashScreenVideo.this);
 
+                sessdb.replaceNulls();
                 cdb.replaceNulls();
                 adb.replaceNulls();
                 gdb.replaceNulls();
