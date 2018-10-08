@@ -491,3 +491,28 @@ delete std where grp id --- done
 update activated froups --- done
 update status table groups --- done
 runtime permissions --- done
+
+Oct 4
+Replace String from 0 to " " in replace nulls --- done
+check nulls on assign groups --- done
+create session null checks --- done
+Create App responsive ---  
+
+/**************************************************** v2.1.16 Layout *********************************************/
+
+Oct 08 
+// Layout Info sw600dp Tab Layout (Blue Slot) : Lenovo TB3-710F Essential Android 5.0.1 API 21, Lenovo TB-7304F Android 7.0 API 24  
+// Layout Info Tab Layout : Lenovo TB-7504X Dolby Android 7.0 API 24, iBall Slide Snap_4G2 Android 7.0 API 24 (Gold/ Grey)
+PrathamCode responsive (CrlDashboard, splashscreen, login code dialog xml)--- done
+signin activity responsive (signin xml) --- done
+crldashboard activity responsive (crldashboard xml) --- done
+add layout info in config file assets --- done
+loginmode responsive (loginmode xml) --- done
+activity admin responsive -- done
+groupselect xml responsive -- done
+aks dialog xml responsive --- done
+aksgraph dialog xml responsive --- done
+
+receive usage hotspot creation isssue in latest devices --- 
+Pull data is taking too much time --- asked ganesh sir
+Create App responsive ---  

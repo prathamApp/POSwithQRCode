@@ -15,7 +15,7 @@
         android:paddingLeft="16dp"
         android:text="Aaj Ka Sawal Scoreboard"
         android:textColor="#FFFFFF"
-        android:textSize="28sp"
+        android:textSize="32sp"
         android:textStyle="bold" />
 
 
@@ -41,7 +41,7 @@
             android:layout_weight="1"
             android:text="Name"
             android:textColor="@color/button"
-            android:textSize="18sp"
+            android:textSize="24sp"
             android:textStyle="bold" />
 
         <TextView
@@ -52,7 +52,7 @@
             android:layout_weight="1"
             android:text="Today's Score"
             android:textColor="@color/button"
-            android:textSize="18sp"
+            android:textSize="24sp"
             android:textStyle="bold" />
 
         <TextView
@@ -63,7 +63,7 @@
             android:layout_weight="1"
             android:text="Total Score"
             android:textColor="@color/button"
-            android:textSize="18sp"
+            android:textSize="24sp"
             android:textStyle="bold" />
 
     </LinearLayout>
@@ -91,7 +91,7 @@
             android:layout_weight="1"
             android:hint="name"
             android:textColor="#000000"
-            android:textSize="18sp" />
+            android:textSize="22sp" />
 
         <TextView
             android:id="@+id/tv_todayscore"
@@ -101,7 +101,7 @@
             android:layout_weight="1"
             android:hint="Today's Score"
             android:textColor="#000000"
-            android:textSize="18sp" />
+            android:textSize="22sp" />
 
         <TextView
             android:id="@+id/tv_totalscore"
@@ -111,7 +111,7 @@
             android:layout_weight="1"
             android:hint="Total Score"
             android:textColor="#000000"
-            android:textSize="18sp" />
+            android:textSize="22sp" />
 
     </LinearLayout>
 
@@ -125,7 +125,7 @@
         android:background="@color/button"
         android:text="Back"
         android:textColor="#FFFFFF"
-        android:textSize="18sp"
+        android:textSize="20sp"
         android:textStyle="bold" />
 
 
