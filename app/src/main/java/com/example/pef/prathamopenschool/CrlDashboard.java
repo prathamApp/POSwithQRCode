@@ -11,8 +11,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
@@ -32,6 +34,8 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.pef.prathamopenschool.ftpSettings.hotspot_android.Hotspot;
 
 import org.apache.commons.io.FileUtils;
 import org.greenrobot.eventbus.EventBus;
@@ -141,7 +145,33 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
             wifiManager.setWifiEnabled(true);
         }
 
+        try {
+            checkManageDevicePermission();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
+
+    private void checkManageDevicePermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            if (Settings.System.canWrite(MyApplication.getInstance())) {
+            } else {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                intent.setData(Uri.parse("package:" + MyApplication.getInstance().getPackageName()));
+                MyApplication.getInstance().startActivity(intent);
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) {
+            if (Settings.System.canWrite(MyApplication.getInstance())) {
+            } else {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                intent.setData(Uri.parse("package:" + MyApplication.getInstance().getPackageName()));
+                MyApplication.getInstance().startActivity(intent);
+            }
+        }
+
+    }
+
 
     // login mode
     public void selectLoginMode(View view) {
@@ -360,9 +390,24 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
                 if (ftpConnect.checkServiceRunning()) {
                     ftpConnect.stopServer();
                 }
-                ftpConnect.turnOnOffHotspot(false);
-                WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                wifiManager.setWifiEnabled(false);
+                try {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        new Hotspot(MyApplication.getInstance()).stop();
+                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) {
+                        new Hotspot(MyApplication.getInstance()).stop();
+                    } else {
+                        ftpConnect.turnOnOffHotspot(false);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                    wifiManager.setWifiEnabled(false);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 try {
                     FileUtils.deleteDirectory(new File(Environment.getExternalStorageDirectory() + "/FTPRecieved"));
                 } catch (IOException e) {

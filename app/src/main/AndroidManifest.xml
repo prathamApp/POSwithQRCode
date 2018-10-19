@@ -189,8 +189,7 @@
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".WebViewActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:screenOrientation="sensorLandscape" />
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
         <activity
             android:name=".SimpleTabsActivity"
             android:screenOrientation="sensorLandscape" />

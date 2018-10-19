@@ -185,7 +185,41 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
                     ((Activity) mContext).startActivityForResult(i, 1);
                 }
             });
-        } else if ((myNodetype.equals("Subject")) || (myNodetype.equals("Topic")) || (myNodetype.equals("Lesson")) || (myNodetype.equals("Program"))) {
+        }
+        // url
+        else if ((myNodetype.equals("Resource")) && (resType.equals("url"))) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(mContext, WebViewActivity.class);
+                    i.putExtra("path", resPath);
+                    i.putExtra("resId", resId);
+                    i.putExtra("resName", resName);
+                    i.putExtra("resType", resType);
+                    Runtime rs = Runtime.getRuntime();
+                    rs.freeMemory();
+                    rs.gc();
+                    rs.freeMemory();
+                    ((Activity) mContext).startActivityForResult(i, 1);
+                }
+            });
+            holder.thumbnail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(mContext, WebViewActivity.class);
+                    i.putExtra("path", resPath);
+                    i.putExtra("resId", resId);
+                    i.putExtra("resName", resName);
+                    i.putExtra("resType", resType);
+                    Runtime rs = Runtime.getRuntime();
+                    rs.freeMemory();
+                    rs.gc();
+                    rs.freeMemory();
+                    ((Activity) mContext).startActivityForResult(i, 1);
+                }
+            });
+        }
+        else if ((myNodetype.equals("Subject")) || (myNodetype.equals("Topic")) || (myNodetype.equals("Lesson")) || (myNodetype.equals("Program"))) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

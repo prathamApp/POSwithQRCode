@@ -512,7 +512,14 @@ activity admin responsive -- done
 groupselect xml responsive -- done
 aks dialog xml responsive --- done
 aksgraph dialog xml responsive --- done
+Create App responsive ---  done
 
-receive usage hotspot creation isssue in latest devices --- 
+Oct 09
+new hotspot module --- done
+checkManageDevicePermission crldashboard --- done
+
+Oct 10
+handle hotspot listeners --- done 
+receive usage hotspot creation isssue in latest devices --- done
 Pull data is taking too much time --- asked ganesh sir
-Create App responsive ---  
+

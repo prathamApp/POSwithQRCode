@@ -12,15 +12,15 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
 import com.example.pef.prathamopenschool.ftpSettings.ConnectToHotspot;
 import com.example.pef.prathamopenschool.ftpSettings.CreateWifiAccessPoint;
-import com.example.pef.prathamopenschool.ftpSettings.CreateWifiAccessPointOnHigherAPI;
 import com.example.pef.prathamopenschool.ftpSettings.FsService;
-import com.example.pef.prathamopenschool.ftpSettings.WifiAPController;
 import com.example.pef.prathamopenschool.ftpSettings.WifiApControl;
+import com.example.pef.prathamopenschool.ftpSettings.hotspot_android.Hotspot;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -65,15 +65,32 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
 
     public void createFTPHotspot() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            CreateWifiAccessPointOnHigherAPI createOneHAPI = new CreateWifiAccessPointOnHigherAPI(context);
-            createOneHAPI.execute((Void) null);
+            if (Settings.System.canWrite(MyApplication.getInstance())) {
+                new Hotspot(MyApplication.getInstance(), FTPConnect.this).start();
+            } else {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                intent.setData(Uri.parse("package:" + MyApplication.getInstance().getPackageName()));
+                MyApplication.getInstance().startActivity(intent);
+            }
+
+//            // Higher API OLD Logic
+//            CreateWifiAccessPointOnHigherAPI createOneHAPI = new CreateWifiAccessPointOnHigherAPI(context);
+//            createOneHAPI.execute((Void) null);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) {
-            // Start HotSpot
-            WifiAPController wifiAPController = new WifiAPController();
-            wifiAPController.wifiToggle(MyApplication.networkSSID, ""/*, wifiManager*/, context);
+            if (Settings.System.canWrite(MyApplication.getInstance())) {
+                new Hotspot(MyApplication.getInstance(), FTPConnect.this).start();
+            } else {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                intent.setData(Uri.parse("package:" + MyApplication.getInstance().getPackageName()));
+                MyApplication.getInstance().startActivity(intent);
+            }
+
+//            // Start HotSpot OLD Logic
+//            WifiAPController wifiAPController = new WifiAPController();
+//            wifiAPController.wifiToggle(MyApplication.networkSSID, ""/*, wifiManager*/, context);
         } else {
             // Start HotSpot (Tablet)
-            CreateWifiAccessPoint createOne = new CreateWifiAccessPoint(context, activity,FTPConnect.this);
+            CreateWifiAccessPoint createOne = new CreateWifiAccessPoint(context, activity, FTPConnect.this);
             createOne.execute((Void) null);
         }
     }
@@ -503,7 +520,7 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-                result=false;
+                result = false;
             }
             return result;
         }
@@ -522,11 +539,11 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
             super.onPostExecute(result);
             if (result) {
                 if (typeOfFile.equalsIgnoreCase("TransferUsage")) {
-                    pushPullInterface.onFilesRecievedComplete("","");
-                }else if (typeOfFile.equalsIgnoreCase("TransferProfiles")) {
-                    pushPullInterface.onFilesRecievedComplete("TransferProfiles","");
-                }else {
-                    pushPullInterface.onFilesRecievedComplete("TransferJson","");
+                    pushPullInterface.onFilesRecievedComplete("", "");
+                } else if (typeOfFile.equalsIgnoreCase("TransferProfiles")) {
+                    pushPullInterface.onFilesRecievedComplete("TransferProfiles", "");
+                } else {
+                    pushPullInterface.onFilesRecievedComplete("TransferJson", "");
                 }
             }
         }
