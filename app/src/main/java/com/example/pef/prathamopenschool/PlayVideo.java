@@ -88,7 +88,10 @@ public class PlayVideo extends Activity implements MediaPlayer.OnCompletionListe
         }
         if (CardAdapter.vidFlg) {
             vidDuration = myVideoView.getDuration();
-            res_id = CardAdapter.resId;
+            if (res_id.equalsIgnoreCase(CardAdapter.resId))
+                res_id = CardAdapter.resId;
+            else
+                res_id = res_id + "_" + CardAdapter.resId;
         } else if (assessmentLogin.assessmentFlg) {
             videoStartTime = util.GetCurrentDateTime(false);
             res_id = "Assessment-" + assessmentLogin.crlID;

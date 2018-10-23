@@ -523,3 +523,10 @@ handle hotspot listeners --- done
 receive usage hotspot creation isssue in latest devices --- done
 Pull data is taking too much time --- asked ganesh sir
 
+
+Oct 19
+open links "url" in webview cardview --- done
+open webview in portrait if restype url --- done
+
+Oct 23
+_ issue in score --- resolved (PlayVideo)
