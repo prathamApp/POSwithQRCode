@@ -719,7 +719,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
             setTitle("Pratham Digital - Read India");
         else if (MultiPhotoSelectActivity.programID.equals("3"))
             setTitle("Pratham Digital - Second Chance");
-        else if (MultiPhotoSelectActivity.programID.equals("4"))
+        else if (MultiPhotoSelectActivity.programID.equals("10"))
             setTitle("Pratham Digital - Pratham Institute");
         else if (MultiPhotoSelectActivity.programID.equals("8"))
             setTitle("Pratham Digital - ECE");
@@ -737,7 +737,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                 s.insertInitialData("appName", "Pratham Digital - Read India");
             else if (MultiPhotoSelectActivity.programID.equals("3"))
                 s.insertInitialData("appName", "Pratham Digital - Second Chance");
-            else if (MultiPhotoSelectActivity.programID.equals("4"))
+            else if (MultiPhotoSelectActivity.programID.equals("10"))
                 s.insertInitialData("appName", "Pratham Digital - Pratham Institute");
             else if (MultiPhotoSelectActivity.programID.equals("8"))
                 s.insertInitialData("appName", "Pratham Digital - ECE");
@@ -753,7 +753,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                 s.Update("appName", "Pratham Digital - Read India");
             else if (MultiPhotoSelectActivity.programID.equals("3"))
                 s.Update("appName", "Pratham Digital - Second Chance");
-            else if (MultiPhotoSelectActivity.programID.equals("4"))
+            else if (MultiPhotoSelectActivity.programID.equals("10"))
                 s.Update("appName", "Pratham Digital - Pratham Institute");
             else if (MultiPhotoSelectActivity.programID.equals("8"))
                 s.Update("appName", "Pratham Digital - ECE");
@@ -777,6 +777,9 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
             display3to6Students();
         } else if (ageGrp.contains("8")) {
             display7to14Students();
+        } else if (ageGrp.contains("18")) {
+            // display all
+            displayStudents();
         }
     }
 
@@ -788,7 +791,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
         try {
             programID = new Utility().getProgramId();
 
-            if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
+            if (programID.equals("1") || programID.equals("3") || programID.equals("10")) {
                 tv_title.setText("Select Groups");
             } else if (programID.equals("2")) {
                 tv_title.setText("Select Units");
@@ -796,9 +799,9 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                 tv_title.setText("Select Groups");
             }
 
-//            if (programID.equals("1") || programID.equals("2") || programID.equals("3") || programID.equals("4")) {
+//            if (programID.equals("1") || programID.equals("2") || programID.equals("3") || programID.equals("10")) {
             next = (Button) findViewById(R.id.goNext);
-            if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
+            if (programID.equals("1") || programID.equals("3") || programID.equals("10")) {
                 next.setText("Select Groups");
             } else if (programID.equals("2")) {
                 next.setText("Select Units");
@@ -819,7 +822,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
             next.setClickable(false);
             int groupCount = groupNames.size();
             if (groupNames.isEmpty()) {
-                if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
+                if (programID.equals("1") || programID.equals("3") || programID.equals("10")) {
                     Toast.makeText(this, "Assign Groups First", Toast.LENGTH_LONG).show();
                 } else if (programID.equals("2")) {
                     Toast.makeText(this, "Assign Units First", Toast.LENGTH_LONG).show();
@@ -845,7 +848,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                     rb.setTextSize(16);
 
                     // For HL
-                    if (MultiPhotoSelectActivity.programID.equals("1") || MultiPhotoSelectActivity.programID.equals("3") || MultiPhotoSelectActivity.programID.equals("4")) {
+                    if (MultiPhotoSelectActivity.programID.equals("1") || MultiPhotoSelectActivity.programID.equals("3") || MultiPhotoSelectActivity.programID.equals("10")) {
                         rb.setBackgroundResource(R.drawable.groups);
                     } else if (MultiPhotoSelectActivity.programID.equals("2")) {
                         rb.setBackgroundResource(R.drawable.units);
@@ -866,7 +869,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                             int selectedId = radioGroup.getCheckedRadioButtonId();
 
                             if (selectedId == -1) {
-                                if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
+                                if (programID.equals("1") || programID.equals("3") || programID.equals("10")) {
                                     Toast.makeText(MultiPhotoSelectActivity.this, "Select atleast one group", Toast.LENGTH_SHORT).show();
                                 } else if (programID.equals("2")) {
                                     Toast.makeText(MultiPhotoSelectActivity.this, "Select atleast one unit", Toast.LENGTH_SHORT).show();
@@ -907,7 +910,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
         try {
             programID = new Utility().getProgramId();
 
-            if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
+            if (programID.equals("1") || programID.equals("3") || programID.equals("10")) {
                 tv_title.setText("Select Groups");
             } else if (programID.equals("2")) {
                 tv_title.setText("Select Units");
@@ -915,9 +918,9 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                 tv_title.setText("Select Groups");
             }
 
-//            if (programID.equals("1") || programID.equals("2") || programID.equals("3") || programID.equals("4")) {
+//            if (programID.equals("1") || programID.equals("2") || programID.equals("3") || programID.equals("10")) {
             next = (Button) findViewById(R.id.goNext);
-            if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
+            if (programID.equals("1") || programID.equals("3") || programID.equals("10")) {
                 next.setText("Select Groups");
             } else if (programID.equals("2")) {
                 next.setText("Select Units");
@@ -966,7 +969,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
             next.setClickable(false);
             int groupCount = groupNames.size();
             if (groupNames.isEmpty()) {
-                if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
+                if (programID.equals("1") || programID.equals("3") || programID.equals("10")) {
                     Toast.makeText(this, "Assign Groups First", Toast.LENGTH_LONG).show();
                 } else if (programID.equals("2")) {
                     Toast.makeText(this, "Assign Units First", Toast.LENGTH_LONG).show();
@@ -992,7 +995,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                     rb.setTextSize(16);
 
                     // For HL
-                    if (MultiPhotoSelectActivity.programID.equals("1") || MultiPhotoSelectActivity.programID.equals("3") || MultiPhotoSelectActivity.programID.equals("4")) {
+                    if (MultiPhotoSelectActivity.programID.equals("1") || MultiPhotoSelectActivity.programID.equals("3") || MultiPhotoSelectActivity.programID.equals("10")) {
                         rb.setBackgroundResource(R.drawable.groups);
                     } else if (MultiPhotoSelectActivity.programID.equals("2")) {
                         rb.setBackgroundResource(R.drawable.units);
@@ -1013,7 +1016,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                             int selectedId = radioGroup.getCheckedRadioButtonId();
 
                             if (selectedId == -1) {
-                                if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
+                                if (programID.equals("1") || programID.equals("3") || programID.equals("10")) {
                                     Toast.makeText(MultiPhotoSelectActivity.this, "Select atleast one group", Toast.LENGTH_SHORT).show();
                                 } else if (programID.equals("2")) {
                                     Toast.makeText(MultiPhotoSelectActivity.this, "Select atleast one unit", Toast.LENGTH_SHORT).show();
@@ -1054,7 +1057,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
         try {
             programID = new Utility().getProgramId();
 
-            if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
+            if (programID.equals("1") || programID.equals("3") || programID.equals("10")) {
                 tv_title.setText("Select Groups");
             } else if (programID.equals("2")) {
                 tv_title.setText("Select Units");
@@ -1062,9 +1065,9 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                 tv_title.setText("Select Groups");
             }
 
-//            if (programID.equals("1") || programID.equals("2") || programID.equals("3") || programID.equals("4")) {
+//            if (programID.equals("1") || programID.equals("2") || programID.equals("3") || programID.equals("10")) {
             next = (Button) findViewById(R.id.goNext);
-            if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
+            if (programID.equals("1") || programID.equals("3") || programID.equals("10")) {
                 next.setText("Select Groups");
             } else if (programID.equals("2")) {
                 next.setText("Select Units");
@@ -1113,7 +1116,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
             next.setClickable(false);
             int groupCount = groupNames.size();
             if (groupNames.isEmpty()) {
-                if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
+                if (programID.equals("1") || programID.equals("3") || programID.equals("10")) {
                     Toast.makeText(this, "Assign Groups First", Toast.LENGTH_LONG).show();
                 } else if (programID.equals("2")) {
                     Toast.makeText(this, "Assign Units First", Toast.LENGTH_LONG).show();
@@ -1139,7 +1142,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                     rb.setTextSize(16);
 
                     // For HL
-                    if (MultiPhotoSelectActivity.programID.equals("1") || MultiPhotoSelectActivity.programID.equals("3") || MultiPhotoSelectActivity.programID.equals("4")) {
+                    if (MultiPhotoSelectActivity.programID.equals("1") || MultiPhotoSelectActivity.programID.equals("3") || MultiPhotoSelectActivity.programID.equals("10")) {
                         rb.setBackgroundResource(R.drawable.groups);
                     } else if (MultiPhotoSelectActivity.programID.equals("2")) {
                         rb.setBackgroundResource(R.drawable.units);
@@ -1160,7 +1163,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                             int selectedId = radioGroup.getCheckedRadioButtonId();
 
                             if (selectedId == -1) {
-                                if (programID.equals("1") || programID.equals("3") || programID.equals("4")) {
+                                if (programID.equals("1") || programID.equals("3") || programID.equals("10")) {
                                     Toast.makeText(MultiPhotoSelectActivity.this, "Select atleast one group", Toast.LENGTH_SHORT).show();
                                 } else if (programID.equals("2")) {
                                     Toast.makeText(MultiPhotoSelectActivity.this, "Select atleast one unit", Toast.LENGTH_SHORT).show();

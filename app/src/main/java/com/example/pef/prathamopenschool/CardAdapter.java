@@ -218,8 +218,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
                     ((Activity) mContext).startActivityForResult(i, 1);
                 }
             });
-        }
-        else if ((myNodetype.equals("Subject")) || (myNodetype.equals("Topic")) || (myNodetype.equals("Lesson")) || (myNodetype.equals("Program"))) {
+        } else if ((myNodetype.equals("Subject")) || (myNodetype.equals("Topic")) || (myNodetype.equals("Lesson")) || (myNodetype.equals("Program"))) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -376,6 +375,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
                         intent.putExtra("path", path.toString());
                         intent.putExtra("resId", resId);
                         intent.putExtra("resName", resName);
+                        intent.putExtra("resType", resType);
                         Runtime rs = Runtime.getRuntime();
                         rs.freeMemory();
                         rs.gc();
@@ -401,6 +401,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
                         intent.putExtra("path", path.toString());
                         intent.putExtra("resId", resId);
                         intent.putExtra("resName", resName);
+                        intent.putExtra("resType", resType);
                         Runtime rs = Runtime.getRuntime();
                         rs.freeMemory();
                         rs.gc();

@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
             // Do nothing
         }
         // Aaj Ka Sawaal NOT Played
-        else if (aajKaSawalPlayed != null && aajKaSawalPlayed.equals("0")) {
+        else if (aajKaSawalPlayed != null && aajKaSawalPlayed.equals("0") && !MultiPhotoSelectActivity.programID.equalsIgnoreCase("10")) {
 
             try {
 
@@ -410,6 +410,14 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                         TextView tv_name = aksGraphDialog.findViewById(R.id.tv_name);
                         TextView tv_todayScore = aksGraphDialog.findViewById(R.id.tv_todayscore);
                         TextView tv_totalScore = aksGraphDialog.findViewById(R.id.tv_totalscore);
+                        Button btn_back = aksGraphDialog.findViewById(R.id.btn_back);
+
+                        btn_back.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                aksGraphDialog.dismiss();
+                            }
+                        });
 
                         // todo set AKS Scoreboard
                         ScoreDBHelper scoreDBHelper = new ScoreDBHelper(MainActivity.this);
@@ -935,8 +943,8 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                         }
                     });
                 }
-//                Collections.shuffle(cardList); // shuffle card list
-                Collections.reverse(cardList);
+                Collections.shuffle(cardList); // shuffle card list
+//                Collections.reverse(cardList);
             }
             adapter.notifyDataSetChanged();
         } catch (Exception e) {

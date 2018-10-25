@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -73,6 +74,7 @@ public class SignInActivity extends AppCompatActivity {
     StatusDBHelper s;
     public static String sessionStartTime;
     private String loginMode;
+    ImageButton btn_Regular_5to7, btn_Regular_8to14, btn_Regular_14to18;
 
 
     @Override
@@ -81,6 +83,11 @@ public class SignInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_in);
 
         EventBus.getDefault().register(SignInActivity.this);
+
+        btn_Regular_5to7 = findViewById(R.id.btn_Regular_5to7);
+        btn_Regular_8to14 = findViewById(R.id.btn_Regular_8to14);
+        btn_Regular_14to18 = findViewById(R.id.btn_Regular_14to18);
+
         // Multiphotoselect initialization
         MultiPhotoSelectActivity.dilog = new DilogBoxForProcess();
         MultiPhotoSelectActivity.programID = new Utility().getProgramId();
@@ -325,6 +332,16 @@ public class SignInActivity extends AppCompatActivity {
         s.Update("ProgramID", MultiPhotoSelectActivity.programID);
         BackupDatabase.backup(this);
 
+        if (MultiPhotoSelectActivity.programID.equals("10")) {
+            btn_Regular_5to7.setVisibility(View.GONE);
+            btn_Regular_8to14.setVisibility(View.GONE);
+            btn_Regular_14to18.setVisibility(View.VISIBLE);
+        } else {
+            btn_Regular_5to7.setVisibility(View.VISIBLE);
+            btn_Regular_8to14.setVisibility(View.VISIBLE);
+            btn_Regular_14to18.setVisibility(View.GONE);
+        }
+
     }
 
 
@@ -476,6 +493,19 @@ public class SignInActivity extends AppCompatActivity {
             Intent i = new Intent(this, MultiPhotoSelectActivity.class);
             i.putExtra("ageGroup", "8to14");
             MyApplication.ageGrp = "8";
+            startActivity(i);
+        }
+    }
+
+    public void Login14to18Multiphoto(View view) {
+        MultiPhotoSelectActivity.sessionId = new Utility().GetUniqueID().toString();
+        if (loginMode.contains("QR")) {
+            Intent i = new Intent(this, QRLogin.class);
+            startActivity(i);
+        } else {
+            Intent i = new Intent(this, MultiPhotoSelectActivity.class);
+            i.putExtra("ageGroup", "14to18");
+            MyApplication.ageGrp = "14";
             startActivity(i);
         }
     }

@@ -25,13 +25,14 @@
         android:layout_below="@+id/title"
         android:gravity="center"
         android:orientation="horizontal"
-        android:weightSum="2">
+        android:weightSum="3">
 
         <ImageButton
             android:id="@+id/btn_Regular_5to7"
             android:layout_width="100dp"
             android:layout_height="250dp"
             android:layout_margin="64dp"
+            android:visibility="gone"
             android:layout_weight="1"
             android:background="@drawable/btn_age_5_7"
             android:onClick="Login5to7Multiphoto"
@@ -41,11 +42,24 @@
         <ImageButton
             android:id="@+id/btn_Regular_8to14"
             android:layout_width="100dp"
+            android:visibility="gone"
             android:layout_height="250dp"
             android:layout_margin="64dp"
             android:layout_weight="1"
             android:background="@drawable/btn_age_8_14"
             android:onClick="Login8to14Multiphoto"
+            android:scaleType="fitCenter" />
+
+
+        <ImageButton
+            android:id="@+id/btn_Regular_14to18"
+            android:layout_width="100dp"
+            android:layout_height="250dp"
+            android:visibility="gone"
+            android:layout_margin="64dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_age_14_18"
+            android:onClick="Login14to18Multiphoto"
             android:scaleType="fitCenter" />
 
     </LinearLayout>

@@ -83,7 +83,7 @@ public class AssignGroups extends AppCompatActivity {
         villages_spinner = (Spinner) findViewById(R.id.spinner_selectVillage);
 
         // Hide Village Spinner based on HLearning / RI
-        if (MultiPhotoSelectActivity.programID.equals("1") || MultiPhotoSelectActivity.programID.equals("3") || MultiPhotoSelectActivity.programID.equals("4")) // H Learning
+        if (MultiPhotoSelectActivity.programID.equals("1") || MultiPhotoSelectActivity.programID.equals("3") || MultiPhotoSelectActivity.programID.equals("10")) // H Learning
         {
             villages_spinner.setVisibility(View.VISIBLE);
         } else if (MultiPhotoSelectActivity.programID.equals("2")) // RI
@@ -547,7 +547,7 @@ public class AssignGroups extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedBlock = blocks_spinner.getSelectedItem().toString();
 
-                if (MultiPhotoSelectActivity.programID.equals("1") || MultiPhotoSelectActivity.programID.equals("3") || MultiPhotoSelectActivity.programID.equals("4")) // H Learning
+                if (MultiPhotoSelectActivity.programID.equals("1") || MultiPhotoSelectActivity.programID.equals("3") || MultiPhotoSelectActivity.programID.equals("10")) // H Learning
                 {
                     populateVillage(selectedBlock);
                 } else if (MultiPhotoSelectActivity.programID.equals("2")) // RI

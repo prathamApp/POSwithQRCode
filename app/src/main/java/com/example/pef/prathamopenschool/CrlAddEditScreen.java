@@ -185,7 +185,7 @@ public class CrlAddEditScreen extends AppCompatActivity {
 
             }
 
-        } else if (MultiPhotoSelectActivity.programID.equals("1") || MultiPhotoSelectActivity.programID.equals("3") || MultiPhotoSelectActivity.programID.equals("4")) {
+        } else if (MultiPhotoSelectActivity.programID.equals("1") || MultiPhotoSelectActivity.programID.equals("3") || MultiPhotoSelectActivity.programID.equals("10")) {
 
             tableLayout.setVisibility(View.GONE);
             listOfCreatedGroups.setVisibility(View.GONE);
@@ -217,7 +217,7 @@ public class CrlAddEditScreen extends AppCompatActivity {
         listOfCreatedGroups.setAdapter(createdGrpAdapter);*/
 
 
-        if (MultiPhotoSelectActivity.programID.equals("1") || MultiPhotoSelectActivity.programID.equals("3") || MultiPhotoSelectActivity.programID.equals("4")) {
+        if (MultiPhotoSelectActivity.programID.equals("1") || MultiPhotoSelectActivity.programID.equals("3") || MultiPhotoSelectActivity.programID.equals("10")) {
             btn_AddNewUnit.setVisibility(View.GONE);
             btn_EditUnit.setVisibility(View.GONE);
         } else if (MultiPhotoSelectActivity.programID.equals("2")) {

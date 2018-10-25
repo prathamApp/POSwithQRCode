@@ -346,7 +346,7 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
                 s.insertInitialData("appName", "Pratham Digital - Read India");
             else if (QRLogin.programID.equals("3"))
                 s.insertInitialData("appName", "Pratham Digital - Second Chance");
-            else if (QRLogin.programID.equals("4"))
+            else if (QRLogin.programID.equals("10"))
                 s.insertInitialData("appName", "Pratham Digital - Pratham Institute");
             else if (QRLogin.programID.equals("8"))
                 s.insertInitialData("appName", "Pratham Digital - ECE");
@@ -362,7 +362,7 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
                 s.Update("appName", "Pratham Digital - Read India");
             else if (QRLogin.programID.equals("3"))
                 s.Update("appName", "Pratham Digital - Second Chance");
-            else if (QRLogin.programID.equals("4"))
+            else if (QRLogin.programID.equals("10"))
                 s.Update("appName", "Pratham Digital - Pratham Institute");
             else if (QRLogin.programID.equals("8"))
                 s.Update("appName", "Pratham Digital - ECE");
@@ -403,7 +403,7 @@ public class QRLogin extends AppCompatActivity implements ZXingScannerView.Resul
             setTitle("Pratham Digital - Read India");
         else if (QRLogin.programID.equals("3"))
             setTitle("Pratham Digital - Second Chance");
-        else if (QRLogin.programID.equals("4"))
+        else if (QRLogin.programID.equals("10"))
             setTitle("Pratham Digital - Pratham Institute");
         else
             setTitle("Pratham Digital");

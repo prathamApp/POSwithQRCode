@@ -530,3 +530,13 @@ open webview in portrait if restype url --- done
 
 Oct 23
 _ issue in score --- resolved (PlayVideo)
+
+Oct 25
+v2.1.17 --- done
+backbutton not working aks graph if skipped --- done
+crash for url --- resolved
+change API for PI --- done
+change pull data api for PI --- done
+change PI ProgramID from 4 to 10 --- done
+no aks for PI --- done
+login for PI age 14 to 18 with all content --- done

@@ -268,11 +268,11 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
             //For Second Chance Pull URLs
             Log.d("Json : ", "CRL");
             UpdateJsonOnline(Utility.getProperty("HLpullCrlsURL", PullData.this), "Crl", selectedState, "3");
-        }/* else if (MultiPhotoSelectActivity.programID.equals("4")) {
+        } else if (MultiPhotoSelectActivity.programID.equals("10")) {
             //For PI Pull URLs
             Log.d("Json : ", "CRL");
-            UpdateJsonOnline(Utility.getProperty("PIpullCrlsURL", PullData.this), "Crl", selectedState, "4");
-        }*/ else if (MultiPhotoSelectActivity.programID.equals("8")) {
+            UpdateJsonOnline(Utility.getProperty("PIpullCrlsURL", PullData.this), "Crl", selectedState, "10");
+        } else if (MultiPhotoSelectActivity.programID.equals("8")) {
             //For PI Pull URLs
             Log.d("Json : ", "CRL");
             UpdateJsonOnline(Utility.getProperty("PIpullCrlsURL", PullData.this), "Crl", selectedState, "8");
@@ -497,7 +497,7 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
                             break;
 
 
-                        case "4":
+                        case "10":
                             if (filename.equalsIgnoreCase("CRL")) {
                                 Log.d("Json : ", "Village");
                                 UpdateJsonOnline(Utility.getProperty("PIpullVillagesURL", PullData.this), "Village", selectedState, programid);
