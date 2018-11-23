@@ -500,7 +500,8 @@ public class JSInterface extends Activity {
             if (resId.equals(null) || startTime.equals("undefined")) {
                 SyncActivityLogs syncActivityLogs = new SyncActivityLogs(mContext);
                 if (resId.equals(null))
-                    syncActivityLogs.addLog("addScore-JSInterface", "Error", "resource id is null");
+                    syncActivityLogs.addLog("addScore-" +
+                            "JSInterface", "Error", "resource id is null");
                 else if (startTime.equals("undefined"))
                     syncActivityLogs.addLog("addScore-JSInterface", "Error", "startTime is undefined");
                 BackupDatabase.backup(mContext);
@@ -562,7 +563,23 @@ public class JSInterface extends Activity {
                 score.EndTime = Util.GetCurrentDateTime(false);  //here we get gps time
                 //calculation
                 score.Level = level;
-                _wasSuccessful = scoreDBHelper.Add(score);
+                if (scorefromGame == -1 || totalMarks == -1) {
+                    // -1 handle issue
+                    LogsDBHelper logs = new LogsDBHelper(this);
+                    Logs lObj = new Logs();
+                    lObj.currentDateTime = new Utility().GetCurrentDateTime(false);
+                    lObj.exceptionMessage = CardAdapter.resId;
+                    lObj.exceptionStackTrace = CardAdapter.resId;
+                    lObj.methodName = "AddScore 6 Parameters";
+                    lObj.errorType = "-1 issue";
+                    lObj.groupId = MultiPhotoSelectActivity.selectedGroupId;
+                    lObj.deviceId = deviceId;
+                    lObj.LogDetail = "JSInterface";
+                    logs.replaceData(lObj);
+                    BackupDatabase.backup(this);
+                } else {
+                    _wasSuccessful = scoreDBHelper.Add(score);
+                }
 
                 if (assessmentLogin.assessmentFlg) {
 
@@ -587,7 +604,24 @@ public class JSInterface extends Activity {
                     assessment.EndTime = Util.GetCurrentDateTime(false);
                     assessment.Level = level;
                     assessment.LessonSession = MainActivity.lessonSession;
-                    _wasSuccessful = assessmentDBHelper.Add(assessment);
+
+                    if (scorefromGame == -1 || totalMarks == -1) {
+                        // -1 handle issue
+                        LogsDBHelper logs = new LogsDBHelper(this);
+                        Logs lObj = new Logs();
+                        lObj.currentDateTime = new Utility().GetCurrentDateTime(false);
+                        lObj.exceptionMessage = CardAdapter.resId;
+                        lObj.exceptionStackTrace = CardAdapter.resId;
+                        lObj.methodName = "Assessment AddScore 6 Parameters";
+                        lObj.errorType = "-1 issue";
+                        lObj.groupId = MultiPhotoSelectActivity.selectedGroupId;
+                        lObj.deviceId = deviceId;
+                        lObj.LogDetail = "JSInterface";
+                        logs.replaceData(lObj);
+                        BackupDatabase.backup(this);
+                    } else {
+                        _wasSuccessful = assessmentDBHelper.Add(assessment);
+                    }
                 }
             }
             BackupDatabase.backup(mContext);
@@ -667,8 +701,25 @@ public class JSInterface extends Activity {
             score.DeviceID = deviceId.equals(null) ? "0000" : deviceId;
             score.EndTime = Util.GetCurrentDateTime(false);  //here we get gps time
             score.Level = level;
-            score.Label = piStudId+","+Label;
-            _wasSuccessful = scoreDBHelper.Add(score);
+            score.Label = piStudId + "," + Label;
+
+            if (scorefromGame == -1 || totalMarks == -1) {
+                // -1 handle issue
+                LogsDBHelper logs = new LogsDBHelper(this);
+                Logs lObj = new Logs();
+                lObj.currentDateTime = new Utility().GetCurrentDateTime(false);
+                lObj.exceptionMessage = CardAdapter.resId;
+                lObj.exceptionStackTrace = CardAdapter.resId;
+                lObj.methodName = "AddScore 7 Parameters";
+                lObj.errorType = "-1 issue";
+                lObj.groupId = MultiPhotoSelectActivity.selectedGroupId;
+                lObj.deviceId = deviceId;
+                lObj.LogDetail = "JSInterface";
+                logs.replaceData(lObj);
+                BackupDatabase.backup(this);
+            } else {
+                _wasSuccessful = scoreDBHelper.Add(score);
+            }
 
             if (assessmentLogin.assessmentFlg) {
 
@@ -693,7 +744,24 @@ public class JSInterface extends Activity {
                 assessment.EndTime = Util.GetCurrentDateTime(false);
                 assessment.Level = level;
                 assessment.LessonSession = MainActivity.lessonSession;
-                _wasSuccessful = assessmentDBHelper.Add(assessment);
+                if (scorefromGame == -1 || totalMarks == -1) {
+                    // -1 handle issue
+                    LogsDBHelper logs = new LogsDBHelper(this);
+                    Logs lObj = new Logs();
+                    lObj.currentDateTime = new Utility().GetCurrentDateTime(false);
+                    lObj.exceptionMessage = CardAdapter.resId;
+                    lObj.exceptionStackTrace = CardAdapter.resId;
+                    lObj.methodName = "Assessment AddScore 7 Parameters";
+                    lObj.errorType = "-1 issue";
+                    lObj.groupId = MultiPhotoSelectActivity.selectedGroupId;
+                    lObj.deviceId = deviceId;
+                    lObj.LogDetail = "JSInterface";
+                    logs.replaceData(lObj);
+                    BackupDatabase.backup(this);
+
+                } else {
+                    _wasSuccessful = assessmentDBHelper.Add(assessment);
+                }
             }
             BackupDatabase.backup(mContext);
 

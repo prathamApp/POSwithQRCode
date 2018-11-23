@@ -540,3 +540,12 @@ change pull data api for PI --- done
 change PI ProgramID from 4 to 10 --- done
 no aks for PI --- done
 login for PI age 14 to 18 with all content --- done
+
+
+
+Nov 23
+Resource Monitoring in Logs for -1 entry --- done
+JSinterface Log -1 entry --- done
+PlayVideo Log -1 entry --- done
+PlayVideoOld Log -1 entry --- done
+CardAdapter resid passing --- done

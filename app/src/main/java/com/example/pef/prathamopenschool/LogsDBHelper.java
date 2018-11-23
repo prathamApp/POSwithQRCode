@@ -17,6 +17,27 @@ public class LogsDBHelper extends DBHelper {
         database=getWritableDatabase();
     }
 
+    public void replaceData(Logs obj) {
+
+        try {
+            database = getWritableDatabase();
+
+            contentValues.put("CurrentDateTime", obj.currentDateTime);
+            contentValues.put("ExceptionMsg", obj.exceptionMessage);
+            contentValues.put("ExceptionStackTrace", obj.exceptionStackTrace);
+            contentValues.put("MethodName", obj.methodName);
+            contentValues.put("Type", obj.errorType);
+            contentValues.put("GroupId", obj.groupId);
+            contentValues.put("DeviceId", obj.deviceId);
+            contentValues.put("LogDetail", obj.LogDetail);
+
+            database.replace(TABLENAME, null, contentValues);
+            database.close();
+        } catch (Exception ex) {
+
+        }
+    }
+
     public List<Logs> GetAll() {
         try {
             Cursor cursor = database.rawQuery("select * from " + TABLENAME + "", null);

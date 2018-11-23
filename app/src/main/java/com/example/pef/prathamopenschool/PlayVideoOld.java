@@ -48,6 +48,8 @@ public class PlayVideoOld extends Activity implements MediaPlayer.OnCompletionLi
     String selectedOption = "";
     int selectedBtn;
     private int position = 0;
+    String resId;
+
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -66,6 +68,7 @@ public class PlayVideoOld extends Activity implements MediaPlayer.OnCompletionLi
 
         myVideoView = (VideoView) findViewById(R.id.videoView1);
         String groupId = getIntent().getStringExtra("path");
+        resId = getIntent().getStringExtra("resId");
         myVideoView.setOnPreparedListener(this);
         myVideoView.setKeepScreenOn(true);
         myVideoView.setOnCompletionListener(this);
@@ -97,8 +100,19 @@ public class PlayVideoOld extends Activity implements MediaPlayer.OnCompletionLi
             try {
                 myVideoView.setVideoURI(path);
             } catch (Exception e) {
+                LogsDBHelper logs = new LogsDBHelper(this);
+                Logs lObj = new Logs();
+                lObj.currentDateTime = util.GetCurrentDateTime(false);
+                lObj.exceptionMessage = e.getMessage();
+                lObj.exceptionStackTrace = resId;
+                lObj.methodName = "PlayVideo";
+                lObj.errorType = "Can't play this video !";
+                lObj.groupId = MultiPhotoSelectActivity.selectedGroupId;
+                lObj.deviceId = deviceID;
+                lObj.LogDetail = "PlayVideoOldLogs";
+                logs.replaceData(lObj);
+                BackupDatabase.backup(this);
                 Log.e("Cant Play Video", e.getMessage());
-                e.printStackTrace();
             }
             myVideoView.setMediaController(mediaController);
             myVideoView.requestFocus();
@@ -130,32 +144,49 @@ public class PlayVideoOld extends Activity implements MediaPlayer.OnCompletionLi
         }
 
         try {
-            Boolean _wasSuccessful = null;
-            String endTime = util.GetCurrentDateTime(false);
-
-            Score score = new Score();
-            score.SessionID = MultiPhotoSelectActivity.sessionId;
-            score.ResourceID = res_id;
-            score.QuestionId = 0;
-            score.ScoredMarks = vidDuration;
-            score.TotalMarks = vidDuration;
-            score.StartTime = videoStartTime;
-            String gid = MultiPhotoSelectActivity.selectedGroupsScore;
-            if (gid.contains(","))
-                gid = gid.split(",")[0];
-            score.GroupID = gid;
-            String deviceId = MultiPhotoSelectActivity.deviceID;
-            score.DeviceID = deviceId.equals(null) ? "0000" : deviceId;
-            score.EndTime = endTime;
-            score.Level = 0;
-            _wasSuccessful = scoreDBHelper.Add(score);
-            if (!_wasSuccessful) {
-
-            }
-            if (CardAdapter.vidFlg)
+            if (vidDuration == -1) {
+                // handled -1 error
+                LogsDBHelper logs = new LogsDBHelper(this);
+                Logs lObj = new Logs();
+                lObj.currentDateTime = util.GetCurrentDateTime(false);
+                lObj.exceptionMessage = resId;
+                lObj.exceptionStackTrace = resId;
+                lObj.methodName = "PlayVideo";
+                lObj.errorType = "Can't play this video ! -1 issue";
+                lObj.groupId = MultiPhotoSelectActivity.selectedGroupId;
+                lObj.deviceId = deviceID;
+                lObj.LogDetail = "PlayVideoLogs";
+                logs.replaceData(lObj);
                 BackupDatabase.backup(this);
+            } else {
 
-            CardAdapter.vidFlg = false;
+                Boolean _wasSuccessful = null;
+                String endTime = util.GetCurrentDateTime(false);
+
+                Score score = new Score();
+                score.SessionID = MultiPhotoSelectActivity.sessionId;
+                score.ResourceID = res_id;
+                score.QuestionId = 0;
+                score.ScoredMarks = vidDuration;
+                score.TotalMarks = vidDuration;
+                score.StartTime = videoStartTime;
+                String gid = MultiPhotoSelectActivity.selectedGroupsScore;
+                if (gid.contains(","))
+                    gid = gid.split(",")[0];
+                score.GroupID = gid;
+                String deviceId = MultiPhotoSelectActivity.deviceID;
+                score.DeviceID = deviceId.equals(null) ? "0000" : deviceId;
+                score.EndTime = endTime;
+                score.Level = 0;
+                _wasSuccessful = scoreDBHelper.Add(score);
+                if (!_wasSuccessful) {
+
+                }
+                if (CardAdapter.vidFlg)
+                    BackupDatabase.backup(this);
+
+                CardAdapter.vidFlg = false;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

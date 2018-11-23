@@ -261,6 +261,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
                     if (file.exists()) {
                         Intent intent = new Intent(mContext, PlayVideo.class);
                         intent.putExtra("path", path.toString());
+                        intent.putExtra("resId", resId);
                         intent.putExtra("startTime", myDateTime);
                         intent.putExtra("nodeList", nodeList.toString());
                         Log.d("nodeList :::", "" + nodeList.toString());
@@ -287,6 +288,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
                     if (file.exists()) {
                         Intent intent = new Intent(mContext, PlayVideo.class);
                         intent.putExtra("path", path.toString());
+                        intent.putExtra("resId", resId);
                         intent.putExtra("startTime", myDateTime);
                         intent.putExtra("nodeList", nodeList.toString());
                         Log.d("nodeList Thumbclick :::", "" + nodeList.toString());
