@@ -107,6 +107,9 @@ public class splashScreenVideo extends AppCompatActivity {
         animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.wobble);
         imgLogo.startAnimation(animFadeIn);
 
+        // AppKillService
+        startService(new Intent(this, AppKillService.class));
+
     }
 
     protected void checkPermission() {
@@ -589,6 +592,7 @@ public class splashScreenVideo extends AppCompatActivity {
         boolean loginMode = false;
         boolean DBVersion = false;
         boolean ProgramID = false;
+        boolean appClosedBeforeGPSFix = false;
 
         ProgramID = s.initialDataAvailable("ProgramID");
         DBVersion = s.initialDataAvailable("DBVersion");
@@ -620,6 +624,7 @@ public class splashScreenVideo extends AppCompatActivity {
         SerialIDAvailable = s.initialDataAvailable("SerialID");
         apkVersion = s.initialDataAvailable("apkVersion");
         appName = s.initialDataAvailable("appName");
+        appClosedBeforeGPSFix = s.initialDataAvailable("appClosedBeforeGPSFix");
 
         if (DBVersion == false) {
             s = new StatusDBHelper(this);
@@ -657,6 +662,10 @@ public class splashScreenVideo extends AppCompatActivity {
         if (gpsFixDuration == false) {
             s = new StatusDBHelper(this);
             s.insertInitialData("gpsFixDuration", "");
+        }
+        if (appClosedBeforeGPSFix == false) {
+            s = new StatusDBHelper(this);
+            s.insertInitialData("appClosedBeforeGPSFix", "");
         }
         if (androidIDAvailable == false) {
             s = new StatusDBHelper(this);

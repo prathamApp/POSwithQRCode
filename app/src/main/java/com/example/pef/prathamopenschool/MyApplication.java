@@ -45,6 +45,7 @@ public class MyApplication extends Application implements GpsStatus.Listener, Lo
     private static MyApplication mInstance;
     static int count, gpsFixCount;
     static Timer gpsTimer, gpsFixTimer;
+    static Boolean gpsFixAquired = false;
     public static String networkSSID = "PrathamHotSpot-" + Build.SERIAL;
     public static FTPClient ftpClient;
     private static final int NOT_AVAILABLE = -100000;

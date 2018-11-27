@@ -222,6 +222,7 @@ public class SignInActivity extends AppCompatActivity {
                 gpsTimeDialog.dismiss();
                 MyApplication.getInstance().stopLocationUpdate();
             }
+            MyApplication.gpsFixAquired = true;
             //todo get time and start timer
             DateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.ENGLISH);
             Date gdate = new Date(MyApplication.location.getTime());
