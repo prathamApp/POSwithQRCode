@@ -902,7 +902,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                 String numberOnly = phase.replaceAll("[^0-9]", "");
 
                 // Login Age 8-14 hide khelbadi
-                if (MyApplication.ageGrp.contains("8")) {
+                if (MyApplication.ageGrp.equalsIgnoreCase("8")) {
                     if (card.nodeAge.equalsIgnoreCase("3-6") || card.nodeAge.equalsIgnoreCase("18-30")) {
                     } else if (card.resourcePath == null || card.resourcePath.equalsIgnoreCase("null")) {
                         cardList.add(card);
@@ -913,7 +913,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                         cardList.add(card);
                 }
                 // Login Age 5-7 for showing Khelbadi only
-                else if (MyApplication.ageGrp.contains("5")) {
+                else if (MyApplication.ageGrp.equalsIgnoreCase("5")) {
                     if (card.nodeAge.equalsIgnoreCase("6-10") || card.nodeAge.equalsIgnoreCase("8-14") || card.nodeImage.contains("TCE.png") || card.nodeImage.contains("Games.png") || card.nodeAge.equalsIgnoreCase("18-30")) {
                     } else if (card.resourcePath == null || card.resourcePath.equalsIgnoreCase("null")) {
                         cardList.add(card);
@@ -923,7 +923,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                         cardList.add(card);
                 }
                 // Login Age 14-18 for showing Everything i.e PI
-                else if (MyApplication.ageGrp.contains("15")) {
+                else if (MyApplication.ageGrp.equalsIgnoreCase("15")) {
                     // hide vocational content but rest show all
                     if (card.nodeAge.equalsIgnoreCase("18-30")) {
                         // skip vocational data
@@ -932,7 +932,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                     }
                 }
                 // Login Vocational for showing vocational Data i.e PI
-                else if (MyApplication.ageGrp.contains("25")) {
+                else if (MyApplication.ageGrp.equalsIgnoreCase("25")) {
                     //show only vocational data
                     if (card.nodeAge.equalsIgnoreCase("18-30"))
                         cardList.add(card);
