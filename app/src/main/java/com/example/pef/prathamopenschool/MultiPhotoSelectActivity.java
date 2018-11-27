@@ -666,33 +666,11 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
         if (grpSelectFlag) {
             super.onBackPressed();
         } else {
-//            finish();
-//            startActivity(getIntent());
             setContentView(R.layout.group_select);
             onResume();
 
         }
     }
-    /*@Override
-    public void onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
-            super.onBackPressed();
-            return;
-        }
-
-        this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
-
-        new Handler().postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                finish();
-                doubleBackToExitPressedOnce=false;
-            }
-        }, 2000);
-    }*/
-
 
     @Override
     protected void onResume() {
@@ -777,8 +755,13 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
             display3to6Students();
         } else if (ageGrp.contains("8")) {
             display7to14Students();
-        } else if (ageGrp.contains("18")) {
-            // display all
+        } else if (ageGrp.contains("15")) {
+            // display all Stds for PI
+            displayStudents();
+        } else if (ageGrp.contains("25")) {
+            // display vocational stds for PI
+            displayVocationalStudents();
+        } else {
             displayStudents();
         }
     }
@@ -1088,7 +1071,7 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
                         // get age of each std & then add grp if student age is less than 8
                         for (int j = 0; j < lstStudent.size(); j++) {
                             int age = lstStudent.get(j).Age;
-                            if (age > 6) {
+                            if (age > 6 && age < 15) {
                                 stdCount++;
                             } else {
                                 wrongStdCount++;
@@ -1196,22 +1179,151 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
         }
     }
 
+    public void displayVocationalStudents() {
+        String assignedGroupIDs[];
+        students = new ArrayList<JSONArray>();
+        groupNames = new ArrayList<String>();
+        assignedIds = new ArrayList<String>();
+        try {
+            programID = new Utility().getProgramId();
+
+            if (programID.equals("1") || programID.equals("3") || programID.equals("10")) {
+                tv_title.setText("Select Groups");
+            } else if (programID.equals("2")) {
+                tv_title.setText("Select Units");
+            } else
+                tv_title.setText("Select Groups");
+
+//            if (programID.equals("1") || programID.equals("2") || programID.equals("3") || programID.equals("10")) {
+            next = (Button) findViewById(R.id.goNext);
+            if (programID.equals("1") || programID.equals("3") || programID.equals("10")) {
+                next.setText("Select Groups");
+            } else if (programID.equals("2")) {
+                next.setText("Select Units");
+            } else
+                next.setText("Select Groups");
+
+            assignedGroupIDs = statusDBHelper.getGroupIDs();
+            if (!assignedGroupIDs[0].equals("")) {
+                for (int i = 0; i < assignedGroupIDs.length; i++) {
+                    if (!assignedGroupIDs[i].equals("0")) {
+                        // check students age & add accordingly
+                        // Get Std count by group id
+                        StudentDBHelper stdDBHelper = new StudentDBHelper(this);
+                        List<Student> lstStudent = stdDBHelper.getStudentsByGroup(assignedGroupIDs[i]);
+                        int stdCount = 0;
+                        int wrongStdCount = 0;
+                        // get age of each std & then add grp if student age is less than 8
+                        for (int j = 0; j < lstStudent.size(); j++) {
+                            int age = lstStudent.get(j).Age;
+                            if (age > 17 && age < 30) {
+                                stdCount++;
+                            } else {
+                                wrongStdCount++;
+                            }
+                        }
+                        // if all student age criteria satisfied
+                        if (stdCount == lstStudent.size()) {
+                            assignedIds.add(assignedGroupIDs[i]);
+                            groupNames.add(groupDBHelper.getGroupById(assignedGroupIDs[i]));
+                            students.add(studentDBHelper.getStudentsList(assignedGroupIDs[i]));
+                        }
+                        // if all student age criteria not satisfied
+                        else if (wrongStdCount == lstStudent.size()) {
+
+                        }
+                        // few std fullfills criteria then add whole grp
+                        else if (stdCount > 0 && wrongStdCount > 0 && lstStudent.size() > 0) {
+                            students.add(studentDBHelper.getStudentsList(assignedGroupIDs[i]));
+                            groupNames.add(groupDBHelper.getGroupById(assignedGroupIDs[i]));
+                            assignedIds.add(assignedGroupIDs[i]);
+                        }
+                    }
+                }
+            }
+            next.setClickable(false);
+            int groupCount = groupNames.size();
+            if (groupNames.isEmpty()) {
+                if (programID.equals("1") || programID.equals("3") || programID.equals("10")) {
+                    Toast.makeText(this, "Assign Groups First", Toast.LENGTH_LONG).show();
+                } else if (programID.equals("2")) {
+                    Toast.makeText(this, "Assign Units First", Toast.LENGTH_LONG).show();
+                } else
+                    Toast.makeText(this, "Assign Groups First", Toast.LENGTH_LONG).show();
+
+            } else {
+                next.setClickable(false);
+                radioGroup.setPadding(0, 50, 0, 0);
+                RadioButton rb;
+                for (int i = 0; i < groupCount; i++) {
+                    rb = new RadioButton(this);
+
+                    RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(
+                            RadioGroup.LayoutParams.WRAP_CONTENT,
+                            RadioGroup.LayoutParams.WRAP_CONTENT
+                    );
+                    params.setMargins(8, 0, 0, 0);
+                    rb.setLayoutParams(params);
+
+                    rb.setHeight(160);
+                    rb.setWidth(135);
+                    rb.setTextSize(16);
+
+                    // For HL
+                    if (MultiPhotoSelectActivity.programID.equals("1") || MultiPhotoSelectActivity.programID.equals("3") || MultiPhotoSelectActivity.programID.equals("10")) {
+                        rb.setBackgroundResource(R.drawable.groups);
+                    } else if (MultiPhotoSelectActivity.programID.equals("2")) {
+                        rb.setBackgroundResource(R.drawable.units);
+                    } else
+                        rb.setBackgroundResource(R.drawable.groups);
+
+                    rb.setPadding(0, 0, 2, 0);
+                    rb.setId(i);
+                    rb.setText(groupNames.get(i));
+                    radioGroup.addView(rb);
+                }
+                next.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            // get selected radio button from radioGroup
+                            int selectedId = radioGroup.getCheckedRadioButtonId();
+
+                            if (selectedId == -1) {
+                                if (programID.equals("1") || programID.equals("3") || programID.equals("10")) {
+                                    Toast.makeText(MultiPhotoSelectActivity.this, "Select atleast one group", Toast.LENGTH_SHORT).show();
+                                } else if (programID.equals("2")) {
+                                    Toast.makeText(MultiPhotoSelectActivity.this, "Select atleast one unit", Toast.LENGTH_SHORT).show();
+                                } else
+                                    Toast.makeText(MultiPhotoSelectActivity.this, "Select atleast one group", Toast.LENGTH_SHORT).show();
+
+                            } else {
+                                // find the radiobutton by returned id
+                                radioButton = (RadioButton) findViewById(selectedId);
+                                radioButton.setBackgroundColor(getResources().getColor(R.color.selected));
+                                selectedGroupId = assignedIds.get(selectedId);
+                                selectedGroupName = (String) radioButton.getText();
+                                if (selectedGroupName.equals(null)) {
+                                    Toast.makeText(MultiPhotoSelectActivity.this, "Assign Groups First", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    setSelectedStudents(selectedGroupName);
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     protected void onDestroy() {
-
         Log.d("destroyed", "------------- Multi Photo --------------- in Destroy");
-
-/*        if (!CardAdapter.vidFlg) {
-            scoreDBHelper = new ScoreDBHelper(sessionContex);
-            playVideo.calculateEndTime(scoreDBHelper);
-            BackupDatabase.backup(sessionContex);
-            try {
-                finishAffinity();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }*/
         super.onDestroy();
     }
 
@@ -1247,44 +1359,5 @@ public class MultiPhotoSelectActivity extends AppCompatActivity {
             }
         }.start();
     }
-
-
-//    // To Select only one radio button from Radio Group
-//    public void oneRadioButtonClicked(View view) {
-//
-//        // Is the button now checked?
-//        boolean checked = ((RadioButton) view).isChecked();
-//        RadioGroup rg = (RadioGroup) findViewById(R.id.rg_options);
-//
-//        switch (view.getId()) {
-//
-//
-//            case R.id.rb_O1: {
-//                rg.clearCheck();
-//                rg.check(view.getId());
-//                break;
-//            }
-//
-//            case R.id.rb_O2: {
-//                rg.clearCheck();
-//                rg.check(view.getId());
-//                break;
-//            }
-//
-//            case R.id.rb_O3: {
-//                rg.clearCheck();
-//                rg.check(view.getId());
-//                break;
-//            }
-//
-//            case R.id.rb_O4: {
-//                rg.clearCheck();
-//                rg.check(view.getId());
-//                break;
-//            }
-//
-//        }
-//    }
-
 
 }

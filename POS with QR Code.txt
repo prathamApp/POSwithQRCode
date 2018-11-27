@@ -549,3 +549,30 @@ JSinterface Log -1 entry --- done
 PlayVideo Log -1 entry --- done
 PlayVideoOld Log -1 entry --- done
 CardAdapter resid passing --- done
+
+
+
+Nov 27
+calculate time from app start to gps fix & make entry if user kills before gpsfix (appClosedBeforeGPSFix) --- done 
+Nov 27
+make necessary changes for program id 13 Hamara Gaon PullData, signin, multiphoto, config, pushsyncclient --- done
+add vocational (age 18-30) training in PI program id 10 --- done
+change sign in activity ui --- done
+change sign in java --- done
+change display 7 14 age condition from age > 6 to && age <15 --- done
+new vocational training image --- done
+appname on signing activity --- done
+multiphoto select --- display std by age grp (age 18-30)  i.e filter attendance --- done
+mainactivity --- display content fullcontent & vocational (age 18-30) --- done
+
+
+
+/************************************************************ v2.1.18 ******************************************************/
+v2.1.18 (now on this app will be used for Pratham's Read India (Hamara Gaon) program so villages will be there)
+
+Nov 28
+Aser entries for HL in add student --- 
+Aser entries for HL in Edit student --- 
+New UI Add Student ---
+New UI Edit Student --- 
+aaj ka sawal ----

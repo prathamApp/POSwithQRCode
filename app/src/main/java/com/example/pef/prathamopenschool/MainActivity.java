@@ -903,7 +903,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
 
                 // Login Age 8-14 hide khelbadi
                 if (MyApplication.ageGrp.contains("8")) {
-                    if (card.nodeAge.equalsIgnoreCase("3-6")) {
+                    if (card.nodeAge.equalsIgnoreCase("3-6") || card.nodeAge.equalsIgnoreCase("18-30")) {
                     } else if (card.resourcePath == null || card.resourcePath.equalsIgnoreCase("null")) {
                         cardList.add(card);
                     } else if (card.resourcePath != null && card.resourcePath.contains("KhelPuri") || card.resourceType.contains("video") ||
@@ -912,10 +912,9 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                     else
                         cardList.add(card);
                 }
-
                 // Login Age 5-7 for showing Khelbadi only
                 else if (MyApplication.ageGrp.contains("5")) {
-                    if (card.nodeAge.equalsIgnoreCase("6-10") || card.nodeAge.equalsIgnoreCase("8-14") || card.nodeImage.contains("TCE.png") || card.nodeImage.contains("Games.png")) {
+                    if (card.nodeAge.equalsIgnoreCase("6-10") || card.nodeAge.equalsIgnoreCase("8-14") || card.nodeImage.contains("TCE.png") || card.nodeImage.contains("Games.png") || card.nodeAge.equalsIgnoreCase("18-30")) {
                     } else if (card.resourcePath == null || card.resourcePath.equalsIgnoreCase("null")) {
                         cardList.add(card);
                     } else if (card.resourcePath != null && card.resourcePath.contains("KhelBadi"))
@@ -923,10 +922,26 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                     else
                         cardList.add(card);
                 }
-                // QRCode
+                // Login Age 14-18 for showing Everything i.e PI
+                else if (MyApplication.ageGrp.contains("15")) {
+                    // hide vocational content but rest show all
+                    if (card.nodeAge.equalsIgnoreCase("18-30")) {
+                        // skip vocational data
+                    } else {
+                        cardList.add(card);
+                    }
+                }
+                // Login Vocational for showing vocational Data i.e PI
+                else if (MyApplication.ageGrp.contains("25")) {
+                    //show only vocational data
+                    if (card.nodeAge.equalsIgnoreCase("18-30"))
+                        cardList.add(card);
+                }
+                // QRCode or Default
                 else {
                     cardList.add(card);
                 }
+
 
                 if (myNodeType.equals("Resource") && assessmentLogin.assessmentFlg) {
                     loadFlg = true;

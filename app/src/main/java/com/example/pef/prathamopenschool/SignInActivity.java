@@ -74,7 +74,7 @@ public class SignInActivity extends AppCompatActivity {
     StatusDBHelper s;
     public static String sessionStartTime;
     private String loginMode;
-    ImageButton btn_Regular_5to7, btn_Regular_8to14, btn_Regular_14to18;
+    ImageButton btn_Regular_5to7, btn_Regular_8to14, btn_Regular_14to18, btn_vocational;
 
 
     @Override
@@ -87,6 +87,7 @@ public class SignInActivity extends AppCompatActivity {
         btn_Regular_5to7 = findViewById(R.id.btn_Regular_5to7);
         btn_Regular_8to14 = findViewById(R.id.btn_Regular_8to14);
         btn_Regular_14to18 = findViewById(R.id.btn_Regular_14to18);
+        btn_vocational = findViewById(R.id.btn_vocational);
 
         // Multiphotoselect initialization
         MultiPhotoSelectActivity.dilog = new DilogBoxForProcess();
@@ -139,6 +140,23 @@ public class SignInActivity extends AppCompatActivity {
             else
                 s.Update("appName", "Pratham Digital");
         }
+
+        // set Title according to program
+        if (MultiPhotoSelectActivity.programID.equals("1"))
+            setTitle("Pratham Digital - H Learning");
+        else if (MultiPhotoSelectActivity.programID.equals("2"))
+            setTitle("Pratham Digital - Read India");
+        else if (MultiPhotoSelectActivity.programID.equals("3"))
+            setTitle("Pratham Digital - Second Chance");
+        else if (MultiPhotoSelectActivity.programID.equals("10"))
+            setTitle("Pratham Digital - Pratham Institute");
+        else if (MultiPhotoSelectActivity.programID.equals("8"))
+            setTitle("Pratham Digital - ECE");
+        else if (MultiPhotoSelectActivity.programID.equals("13"))
+            setTitle("Pratham Digital - Hamara Gaon");
+        else
+            setTitle("Pratham Digital");
+
 
         String deviceID = "";
         deviceID = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -505,11 +523,25 @@ public class SignInActivity extends AppCompatActivity {
             startActivity(i);
         } else {
             Intent i = new Intent(this, MultiPhotoSelectActivity.class);
-            i.putExtra("ageGroup", "14to18");
-            MyApplication.ageGrp = "14";
+            i.putExtra("ageGroup", "15to18");
+            MyApplication.ageGrp = "15";
             startActivity(i);
         }
     }
+
+    public void LoginVocationalMultiphoto(View view) {
+        MultiPhotoSelectActivity.sessionId = new Utility().GetUniqueID().toString();
+        if (loginMode.contains("QR")) {
+            Intent i = new Intent(this, QRLogin.class);
+            startActivity(i);
+        } else {
+            Intent i = new Intent(this, MultiPhotoSelectActivity.class);
+            i.putExtra("ageGroup", "25");
+            MyApplication.ageGrp = "25";
+            startActivity(i);
+        }
+    }
+
 
     @Override
     public void onBackPressed() {
