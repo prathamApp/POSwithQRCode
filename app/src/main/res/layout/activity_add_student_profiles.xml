@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="#FFFFFF"
+        android:orientation="vertical"
         tools:context="com.example.pef.prathamopenschool.AddStudentProfiles">
 
+        <!--Title-->
         <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
@@ -25,202 +26,373 @@
             android:textSize="32sp"
             android:textStyle="bold" />
 
-        <!--Select State Drop Down List-->
-        <Spinner
-            android:id="@+id/spinner_SelectState"
+        <!--Spinners-->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/title"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="32dp"
-            android:textAlignment="center" />
+            android:layout_margin="16dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
 
-        <!--Select Block Drop Down List-->
-        <Spinner
-            android:id="@+id/spinner_SelectBlock"
+            <!--Select State Drop Down List-->
+            <Spinner
+                android:id="@+id/spinner_SelectState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_weight="1"
+                android:textAlignment="center" />
+
+            <!--Select Block Drop Down List-->
+            <Spinner
+                android:id="@+id/spinner_SelectBlock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/spinner_SelectState"
+                android:layout_centerHorizontal="true"
+                android:layout_weight="1"
+                android:textAlignment="center" />
+
+        </LinearLayout>
+
+        <!--Spinners-->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/spinner_SelectState"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="32dp"
-            android:textAlignment="center" />
+            android:layout_margin="8dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+            <!--Village Drop Down List-->
+            <Spinner
+                android:id="@+id/spinner_selectVillage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/spinner_SelectBlock"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="8dp"
+                android:layout_weight="1"
+                android:textAlignment="center" />
 
-        <!--Village Drop Down List-->
-        <Spinner
-            android:id="@+id/spinner_selectVillage"
+            <!--Select Groups-->
+            <Spinner
+                android:id="@+id/spinner_SelectGroups"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/spinner_selectVillage"
+                android:layout_centerHorizontal="true"
+                android:layout_weight="1"
+                android:textAlignment="center" />
+        </LinearLayout>
+
+        <!--Name-->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/spinner_SelectBlock"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="32dp"
-            android:textAlignment="center" />
+            android:layout_margin="16dp"
+            android:orientation="horizontal"
+            android:weightSum="3">
 
+            <EditText
+                android:id="@+id/edt_FirstName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Enter First Name"
+                android:inputType="textCapWords"
+                android:singleLine="true"
+                android:textColor="#000000"
+                android:textColorHint="@color/text_hint"
+                android:textSize="16sp" />
 
-        <!--Select Groups-->
-        <Spinner
-            android:id="@+id/spinner_SelectGroups"
+            <EditText
+                android:id="@+id/edt_MiddleName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_weight="1"
+                android:hint="Enter Middle Name"
+                android:inputType="textCapWords"
+                android:singleLine="true"
+                android:textColor="#000000"
+                android:textColorHint="@color/text_hint"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/edt_LastName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_weight="1"
+                android:hint="Enter Last Name"
+                android:inputType="textCapWords"
+                android:singleLine="true"
+                android:textColor="#000000"
+                android:textColorHint="@color/text_hint"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <!--Age, Class, Gender-->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/spinner_selectVillage"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="32dp"
-            android:textAlignment="center" />
+            android:layout_margin="8dp"
+            android:orientation="horizontal"
+            android:weightSum="5">
 
-        <EditText
-            android:id="@+id/edt_FirstName"
+            <EditText
+                android:id="@+id/edt_Age"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_weight="2"
+                android:digits="0123456789"
+                android:hint="Enter Age"
+                android:inputType="number"
+                android:maxLength="2"
+                android:singleLine="true"
+                android:textColor="#000000"
+                android:textColorHint="@color/text_hint"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/edt_Class"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:digits="0123456789"
+                android:hint="Enter Class"
+                android:inputType="number"
+                android:maxLength="2"
+                android:singleLine="true"
+                android:textColor="#000000"
+                android:textColorHint="@color/text_hint"
+                android:textSize="16sp" />
+
+
+            <!--Radio Button to Select Gender-->
+            <RadioGroup
+                android:id="@+id/rg_Gender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:layout_weight="1"
+                    android:text="Select Gender"
+                    android:textColor="@color/button"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <RadioButton
+                    android:id="@+id/rb_Male"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:text="Male"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <RadioButton
+                    android:id="@+id/rb_Female"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:layout_weight="1"
+                    android:text="Female"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </RadioGroup>
+
+        </LinearLayout>
+
+        <!--Aser-->
+        <LinearLayout
+            android:id="@+id/AserForm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/spinner_SelectGroups"
-            android:layout_margin="32dp"
-            android:hint="Enter First Name"
-            android:inputType="textCapWords"
-            android:singleLine="true"
-            android:textColor="#000000"
-            android:textColorHint="@color/text_hint"
-            android:textSize="16sp" />
+            android:layout_margin="16dp"
+            android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/edt_MiddleName"
+            <!--Baseline, AserDate, Lang, Number Reco-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="4">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:text="Baseline Information -->"
+                    android:textColor="@color/button"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <!--Aser Date-->
+                <Button
+                    android:id="@+id/btn_DatePicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/button"
+                    android:drawableLeft="@android:drawable/ic_menu_my_calendar"
+                    android:drawablePadding="4dp"
+                    android:text="Aser Date"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+
+                <!--Baseline Lang-->
+                <Spinner
+                    android:id="@+id/spinner_BaselineLang"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_weight="1" />
+
+                <!--Number Reco-->
+                <Spinner
+                    android:id="@+id/spinner_NumberReco"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+            <!--Endline-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                android:weightSum="4">
+
+                <Button
+                    android:id="@+id/btn_Endline1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/button"
+                    android:text="  Endline 1  "
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/btn_Endline2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_weight="1"
+                    android:background="@color/button"
+                    android:text="  Endline 2  "
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/btn_Endline3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_weight="1"
+                    android:background="@color/button"
+                    android:text="  Endline 3  "
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/btn_Endline4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_weight="1"
+                    android:background="@color/button"
+                    android:text="  Endline 4  "
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!--Photo-->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/edt_FirstName"
-            android:layout_margin="32dp"
-            android:hint="Enter Middle Name"
-            android:inputType="textCapWords"
-            android:singleLine="true"
-            android:textColor="#000000"
-            android:textColorHint="@color/text_hint"
-            android:textSize="16sp" />
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="3">
 
-        <EditText
-            android:id="@+id/edt_LastName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/edt_MiddleName"
-            android:layout_margin="32dp"
-            android:hint="Enter Last Name"
-            android:inputType="textCapWords"
-            android:singleLine="true"
-            android:textColor="#000000"
-            android:textColorHint="@color/text_hint"
-            android:textSize="16sp" />
-
-
-        <EditText
-            android:id="@+id/edt_Age"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/edt_LastName"
-            android:layout_margin="32dp"
-            android:digits="0123456789"
-            android:hint="Enter Age"
-            android:inputType="number"
-            android:maxLength="2"
-            android:singleLine="true"
-            android:textColor="#000000"
-            android:textColorHint="@color/text_hint"
-            android:textSize="16sp" />
-
-        <EditText
-            android:id="@+id/edt_Class"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/edt_Age"
-            android:layout_margin="32dp"
-            android:digits="0123456789"
-            android:hint="Enter Class"
-            android:inputType="number"
-            android:maxLength="2"
-            android:singleLine="true"
-            android:textColor="#000000"
-            android:textColorHint="@color/text_hint"
-            android:textSize="16sp" />
-
-
-        <!--Radio Button to Select Gender-->
-        <RadioGroup
-            android:id="@+id/rg_Gender"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/edt_Class"
-            android:layout_margin="16dp">
-
-            <TextView
+            <Button
+                android:id="@+id/btn_Capture"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="Select Gender"
-                android:textColor="@color/button"
+                android:layout_marginLeft="16dp"
+                android:layout_weight="1"
+                android:background="@color/button"
+                android:text="Take Photo"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="150dp"
+                android:layout_height="100dp"
+                android:layout_below="@+id/btn_Capture"
+                android:layout_weight="2"
+                android:src="@drawable/avatar" />
+
+        </LinearLayout>
+
+        <!--Submit, Clear-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <Button
+                android:id="@+id/btn_Submit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/album_title"
+                android:text="Submit"
+                android:textColor="#FFFFFF"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <RadioButton
-                android:id="@+id/rb_Male"
-                android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/btn_Clear"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:checked="true"
-                android:text="Male"
-                android:textSize="16sp"
+                android:layout_marginLeft="16dp"
+                android:layout_weight="2"
+                android:background="@color/album_title"
+                android:text="Clear"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <RadioButton
-                android:id="@+id/rb_Female"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="Female"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+        </LinearLayout>
 
-        </RadioGroup>
+    </LinearLayout>
 
-        <Button
-            android:id="@+id/btn_Capture"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/rg_Gender"
-            android:layout_margin="16dp"
-            android:background="@color/button"
-            android:text="Take Photo"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/btn_Capture"
-            android:layout_centerHorizontal="true" />
-
-        <Button
-            android:id="@+id/btn_Submit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/imageView"
-            android:layout_margin="16dp"
-            android:background="@color/button"
-            android:text="Submit"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-
-        <Button
-            android:id="@+id/btn_Clear"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/btn_Submit"
-            android:layout_margin="16dp"
-            android:background="@color/button"
-            android:text="Clear"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-
-    </RelativeLayout>
 
 </ScrollView>
