@@ -104,8 +104,6 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
 
                 if (SpinnerValue > 0) {
 
-                    // Toast.makeText(context, selectedState + " is Selected !!!", Toast.LENGTH_SHORT).show();
-
                     checkConnection();
 
                     if (isConnected) {
@@ -122,55 +120,6 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
 
                         // Flag is set to true for executing code on onBackPressed
                         flag = true;
-
-
-                        /*UpdateJsonOnline("http://www.api.prathamcms.org/api/crl/get", "Crl", selectedState, "1");
-                        UpdateJsonOnline("http://www.api.prathamcms.org/api/village/get", "Village", selectedState, "1");
-                        UpdateJsonOnline("http://www.api.prathamcms.org/api/group/get", "Group", selectedState, "1");
-                        UpdateJsonOnline("http://www.api.prathamcms.org/api/student/get", "Student", selectedState, "1");*/
-
-                        /*try {
-                            MultiPhotoSelectActivity.dilog.showDilog(PullData.this, "Pulling Data Online !!!");
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-*/
-                        /*Thread mThread = new Thread() {
-                            @Override
-                            public void run() {
-
-
-                                if (MultiPhotoSelectActivity.programID.equals("1")) {
-                                    //For HLearning Pull URLs
-                                    UpdateJsonOnline(Utility.getProperty("HLpullCrlsURL", context), "Crl", selectedState, "1");
-                                    UpdateJsonOnline(Utility.getProperty("HLpullVillagesURL", context), "Village", selectedState, "1");
-                                    UpdateJsonOnline(Utility.getProperty("HLpullGroupsURL", context), "Group", selectedState, "1");
-                                    UpdateJsonOnline(Utility.getProperty("HLpullStudentsURL", context), "Student", selectedState, "1");
-                                } else if (MultiPhotoSelectActivity.programID.equals("3")) {
-                                    //For Second Chance Pull URLs
-                                    UpdateJsonOnline(Utility.getProperty("HLpullCrlsURL", context), "Crl", selectedState, "3");
-                                    UpdateJsonOnline(Utility.getProperty("HLpullVillagesURL", context), "Village", selectedState, "3");
-                                    UpdateJsonOnline(Utility.getProperty("HLpullGroupsURL", context), "Group", selectedState, "3");
-                                    UpdateJsonOnline(Utility.getProperty("HLpullStudentsURL", context), "Student", selectedState, "3");
-                                } else if (MultiPhotoSelectActivity.programID.equals("4")) {
-                                    //For PI Pull URLs
-                                    UpdateJsonOnline(Utility.getProperty("PIpullCrlsURL", context), "Crl", selectedState, "3");
-                                    UpdateJsonOnline(Utility.getProperty("PIpullVillagesURL", context), "Village", selectedState, "3");
-                                    UpdateJsonOnline(Utility.getProperty("PIpullGroupsURL", context), "Group", selectedState, "3");
-                                    UpdateJsonOnline(Utility.getProperty("PIpullStudentsURL", context), "Student", selectedState, "3");
-                                } else {
-                                    //For RI pull URLS
-                                    UpdateJsonOnline(Utility.getProperty("RIpullCrlsURL", context), "Crl", selectedState, "2");
-                                    UpdateJsonOnline(Utility.getProperty("RIpullVillagesURL", context), "Village", selectedState, "2");
-                                    UpdateJsonOnline(Utility.getProperty("RIpullGroupsURL", context), "Group", selectedState, "2");
-                                    UpdateJsonOnline(Utility.getProperty("RIpullStudentsURL", context), "Student", selectedState, "2");
-                                }
-
-                                MultiPhotoSelectActivity.dilog.dismissDilog();
-
-                            }
-                        };
-                        mThread.start();*/
 
                     } else if (isConnected == false) {
 
@@ -276,6 +225,10 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
             //For PI Pull URLs
             Log.d("Json : ", "CRL");
             UpdateJsonOnline(Utility.getProperty("PIpullCrlsURL", PullData.this), "Crl", selectedState, "8");
+        } else if (MultiPhotoSelectActivity.programID.equals("13")) {
+            //For PI Pull URLs
+            Log.d("Json : ", "CRL");
+            UpdateJsonOnline(Utility.getProperty("HGpullCrlsURL", PullData.this), "Crl", selectedState, "13");
         } else {
             String programID = new Utility().getProgramId();
             UpdateJsonOnline(Utility.getProperty("HLpullCrlsURL", PullData.this), "Crl", selectedState, programID);
@@ -384,6 +337,19 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
 //    }
 
     private void UpdateJsonOnline(String baseurl, final String filename, String state, final String programid) {
+
+        //if program id = 13 then create Aser.json if not exists
+        if (MultiPhotoSelectActivity.programID.equalsIgnoreCase("13")) {
+            // check Aser.json exists & create empty if not found
+            File Aser = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/Aser.json");
+            if (!Aser.exists()) {
+                try {
+                    Aser.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
         OkHttpClient client = new OkHttpClient();
 
@@ -520,6 +486,34 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
                                 });
                             }
                             break;
+
+                        case "13":
+                            if (filename.equalsIgnoreCase("CRL")) {
+                                Log.d("Json : ", "Village");
+                                UpdateJsonOnline(Utility.getProperty("HGpullVillagesURL", PullData.this), "Village", selectedState, programid);
+                            } else if (filename.equalsIgnoreCase("Village")) {
+                                Log.d("Json : ", "Group");
+                                UpdateJsonOnline(Utility.getProperty("HGpullGroupsURL", PullData.this), "Group", selectedState, programid);
+                            } else if (filename.equalsIgnoreCase("Group")) {
+                                Log.d("Json : ", "Student");
+                                UpdateJsonOnline(Utility.getProperty("HGpullStudentsURL", PullData.this), "Student", selectedState, programid);
+                            } else if (filename.equalsIgnoreCase("Student")) {
+                                Log.d("Json : ", "Aser");
+                                UpdateJsonOnline(Utility.getProperty("HGpullAserURL", PullData.this), "Aser", selectedState, programid);
+                            } else {
+                                Log.d("Json : ", "DONE");
+                                if (pd != null && pd.isShowing())
+                                    pd.dismiss();
+                                btnPressed = 1;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(PullData.this, "Data Successfully Pulled from Server !!! ", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                            break;
+
 
                         default:
                             if (filename.equalsIgnoreCase("CRL")) {

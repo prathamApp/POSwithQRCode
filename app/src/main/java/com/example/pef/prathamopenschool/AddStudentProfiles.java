@@ -202,6 +202,8 @@ public class AddStudentProfiles extends AppCompatActivity {
                             WA = WordAdd.isChecked() ? 1 : 0;
                             WS = WordSub.isChecked() ? 1 : 0;
 
+                            Toast.makeText(AddStudentProfiles.this, "Endline 1 is filled.", Toast.LENGTH_SHORT).show();
+
                             if (endlineDialog.isShowing())
                                 endlineDialog.dismiss();
                         } else {
@@ -313,6 +315,8 @@ public class AddStudentProfiles extends AppCompatActivity {
                             OD = OprDiv.isChecked() ? 1 : 0;
                             WA = WordAdd.isChecked() ? 1 : 0;
                             WS = WordSub.isChecked() ? 1 : 0;
+
+                            Toast.makeText(AddStudentProfiles.this, "Endline 2 is filled.", Toast.LENGTH_SHORT).show();
 
                             if (endlineDialog.isShowing())
                                 endlineDialog.dismiss();
@@ -426,6 +430,8 @@ public class AddStudentProfiles extends AppCompatActivity {
                             WA = WordAdd.isChecked() ? 1 : 0;
                             WS = WordSub.isChecked() ? 1 : 0;
 
+                            Toast.makeText(AddStudentProfiles.this, "Endline 3 is filled.", Toast.LENGTH_SHORT).show();
+
                             if (endlineDialog.isShowing())
                                 endlineDialog.dismiss();
                         } else {
@@ -537,6 +543,8 @@ public class AddStudentProfiles extends AppCompatActivity {
                             OD = OprDiv.isChecked() ? 1 : 0;
                             WA = WordAdd.isChecked() ? 1 : 0;
                             WS = WordSub.isChecked() ? 1 : 0;
+
+                            Toast.makeText(AddStudentProfiles.this, "Endline 4 is filled.", Toast.LENGTH_SHORT).show();
 
                             if (endlineDialog.isShowing())
                                 endlineDialog.dismiss();
@@ -770,7 +778,6 @@ public class AddStudentProfiles extends AppCompatActivity {
             AserForm.setVisibility(View.VISIBLE);
         else
             AserForm.setVisibility(View.GONE);
-
     }
 
     private void initializeAserDate() {

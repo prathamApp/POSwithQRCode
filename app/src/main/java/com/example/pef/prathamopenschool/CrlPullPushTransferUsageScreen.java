@@ -642,7 +642,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
                         List<Session> sessionList = sessionDBHelper.GetAll();
                         JSONObject sessionObj;
                         if (sessionData != null) {
-                            for (int i = 0; i < aserList.size(); i++) {
+                            for (int i = 0; i < sessionList.size(); i++) {
                                 sessionObj = new JSONObject();
                                 sessionObj.put("SessionID", sessionList.get(i).SessionID);
                                 sessionObj.put("StartTime", sessionList.get(i).StartTime);

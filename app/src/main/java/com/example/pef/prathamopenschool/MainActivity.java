@@ -958,8 +958,8 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                         }
                     });
                 }
-                Collections.shuffle(cardList); // shuffle card list
-//                Collections.reverse(cardList);
+//                Collections.shuffle(cardList); // shuffle card list
+                Collections.reverse(cardList);
             }
             adapter.notifyDataSetChanged();
         } catch (Exception e) {

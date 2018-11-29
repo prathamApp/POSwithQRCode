@@ -554,7 +554,6 @@ CardAdapter resid passing --- done
 
 Nov 27
 calculate time from app start to gps fix & make entry if user kills before gpsfix (appClosedBeforeGPSFix) --- done 
-Nov 27
 make necessary changes for program id 13 Hamara Gaon PullData, signin, multiphoto, config, pushsyncclient --- done
 add vocational (age 18-30) training in PI program id 10 --- done
 change sign in activity ui --- done
@@ -571,8 +570,20 @@ mainactivity --- display content fullcontent & vocational (age 18-30) --- done
 v2.1.18 (now on this app will be used for Pratham's Read India (Hamara Gaon) program so villages will be there)
 
 Nov 28
-Aser entries for HL in add student --- 
-Aser entries for HL in Edit student --- 
-New UI Add Student ---
-New UI Edit Student --- 
+Aser entries for HL in add student --- done
+New UI Add Student --- done
+
+Nov 29
+push self data crash --- resolved
+push crltransfer data --- resolved
+Aser Entry in Add student endline only issue --- resolved
+Aser entries for HL in Edit student --- done
+New UI Edit Student --- done
+Pull aser table ---- done
+edit student not reflection if on resume called --- done
+
 aaj ka sawal ----
+
+
+
+
