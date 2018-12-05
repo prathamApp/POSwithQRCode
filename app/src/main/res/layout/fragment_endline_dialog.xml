@@ -36,13 +36,15 @@
             android:id="@+id/spinner_BaselineLang"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp" />
+            android:layout_margin="8dp"
+            android:background="@drawable/custom_border" />
 
         <Spinner
             android:id="@+id/spinner_NumberReco"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp" />
+            android:layout_margin="8dp"
+            android:background="@drawable/custom_border" />
 
         <Switch
             android:id="@+id/switch_isSelected"

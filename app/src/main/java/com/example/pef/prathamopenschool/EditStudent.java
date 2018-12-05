@@ -78,6 +78,7 @@ public class EditStudent extends AppCompatActivity {
 
     List<Aser> AserData;
     AserDBHelper adb;
+    private boolean captureButtonPressed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1046,44 +1047,58 @@ public class EditStudent extends AppCompatActivity {
                 int GroupsSpinnerValue = groups_spinner.getSelectedItemPosition();
                 int ExistingSpinnerValue = existingStudent_Spinner.getSelectedItemPosition();
 
+
                 if (StatesSpinnerValue > 0 && BlocksSpinnerValue > 0 && VillagesSpinnerValue > 0 && GroupsSpinnerValue > 0 && ExistingSpinnerValue > 0) {
-                    Toast.makeText(EditStudent.this, "Photo Inserted Successfully !!!", Toast.LENGTH_SHORT).show();
+                    // Photo updated validation
+                    if (captureButtonPressed)
+                        Toast.makeText(EditStudent.this, "Photo Inserted Successfully !!!", Toast.LENGTH_SHORT).show();
 
-                    if (MultiPhotoSelectActivity.programID.equalsIgnoreCase("13") && !EndlineButtonClicked) {
-                        // insert or update baseline in db
-                        boolean result;
-                        result = adb.CheckDataExists(StudentUniqID, testT);
-                        if (result) {
-                            //update
-                            adb.UpdateAserData("", AserTestDate, langSpin, numSpin, OA, OS, OM, OD, WA, WS, statdb.getValue("CRL"), Util.GetCurrentDate(), IC, StudentUniqID, testT);
+                    if (MultiPhotoSelectActivity.programID.equalsIgnoreCase("13")) {
+
+                        testT = 0;
+                        langSpin = sp_BaselineLang.getSelectedItemPosition();
+                        numSpin = sp_NumberReco.getSelectedItemPosition();
+
+                        if (langSpin > 0 && numSpin > 0) {
+                            // insert or update baseline in db
+                            boolean result;
+                            result = adb.CheckDataExists(StudentUniqID, testT);
+                            if (result) {
+                                //update
+                                adb.UpdateAserData("", AserTestDate, langSpin, numSpin, OA, OS, OM, OD, WA, WS, statdb.getValue("CRL"), Util.GetCurrentDate(), IC, StudentUniqID, testT);
+                            } else {
+                                // new entry
+                                Aser asr = new Aser();
+                                asr.StudentId = StudentUniqID;
+                                asr.GroupID = GrpID;
+                                asr.ChildID = "";
+                                asr.TestType = testT;
+                                asr.TestDate = AserTestDate;
+                                asr.Lang = langSpin;
+                                asr.Num = numSpin;
+                                asr.CreatedBy = statdb.getValue("CRL");
+                                asr.CreatedDate = new Utility().GetCurrentDate();
+                                asr.DeviceId = Util.getDeviceID();
+                                asr.FLAG = IC;
+                                asr.OAdd = OA;
+                                asr.OSub = OS;
+                                asr.OMul = OM;
+                                asr.ODiv = OD;
+                                asr.WAdd = WA;
+                                asr.WSub = WS;
+                                asr.CreatedOn = new Utility().GetCurrentDateTime(false);
+                                adb.insertData(asr);
+                            }
+                            BackupDatabase.backup(EditStudent.this);
+                            resetFormPartially();
+                            Toast.makeText(EditStudent.this, "Baseline Updated !", Toast.LENGTH_SHORT).show();
                         } else {
-                            // new entry
-                            Aser asr = new Aser();
-                            asr.StudentId = StudentUniqID;
-                            asr.GroupID = GrpID;
-                            asr.ChildID = "";
-                            asr.TestType = testT;
-                            asr.TestDate = AserTestDate;
-                            asr.Lang = langSpin;
-                            asr.Num = numSpin;
-                            asr.CreatedBy = statdb.getValue("CRL");
-                            asr.CreatedDate = new Utility().GetCurrentDate();
-                            asr.DeviceId = Util.getDeviceID();
-                            asr.FLAG = IC;
-                            asr.OAdd = OA;
-                            asr.OSub = OS;
-                            asr.OMul = OM;
-                            asr.ODiv = OD;
-                            asr.WAdd = WA;
-                            asr.WSub = WS;
-                            asr.CreatedOn = new Utility().GetCurrentDateTime(false);
-                            adb.insertData(asr);
+                            Toast.makeText(EditStudent.this, "Please fill all Baseline fields !", Toast.LENGTH_SHORT).show();
                         }
-                        BackupDatabase.backup(EditStudent.this);
-                        Toast.makeText(EditStudent.this, "Baseline Updated !", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // default action for other programs after photo updated
+                        resetFormPartially();
                     }
-
-                    resetFormPartially();
                 } else {
                     Toast.makeText(EditStudent.this, "Please Select Fill all fields !!!", Toast.LENGTH_SHORT).show();
                 }
@@ -1142,6 +1157,7 @@ public class EditStudent extends AppCompatActivity {
                 String selectedState = states_spinner.getSelectedItem().toString();
                 populateBlock(selectedState);
                 btn_Capture.setVisibility(View.GONE);
+                groups_spinner.setSelection(0);
                 resetFormPartially();
             }
 
@@ -1201,6 +1217,7 @@ public class EditStudent extends AppCompatActivity {
                 populateVillage(selectedBlock);
                 btn_Capture.setVisibility(View.GONE);
                 resetFormPartially();
+                groups_spinner.setSelection(0);
             }
 
             @Override
@@ -1225,6 +1242,7 @@ public class EditStudent extends AppCompatActivity {
                 vilID = village.getVillageId();
                 populateGroups(vilID);
                 btn_Capture.setVisibility(View.GONE);
+                groups_spinner.setSelection(0);
                 resetFormPartially();
             }
 
@@ -1350,12 +1368,12 @@ public class EditStudent extends AppCompatActivity {
             else
                 AserForm.setVisibility(View.GONE);
 
-            edt_Fname.setText(FirstName);
-            edt_Mname.setText(MiddleName);
-            edt_Lname.setText(LastName);
-            edt_Age.setText(String.valueOf(Age));
-            edt_Class.setText(String.valueOf(Class));
-            tv_Gender.setText(Gender);
+            edt_Fname.setText("First Name : " + FirstName);
+            edt_Mname.setText("Middle Name : " + MiddleName);
+            edt_Lname.setText("Last Name : " + LastName);
+            edt_Age.setText("Age : " + String.valueOf(Age));
+            edt_Class.setText("Class : " + String.valueOf(Class));
+            tv_Gender.setText("Gender : " + Gender);
             btn_Capture.setVisibility(View.VISIBLE);
             btn_Capture.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1417,7 +1435,6 @@ public class EditStudent extends AppCompatActivity {
 
     private void resetFormPartially() {
         existingStudent_Spinner.setSelection(0);
-        groups_spinner.setSelection(0);
         edt_Fname.setText("");
         edt_Mname.setText("");
         edt_Lname.setText("");
@@ -1455,7 +1472,7 @@ public class EditStudent extends AppCompatActivity {
                     Bitmap thumbnail1 = data.getParcelableExtra("data");
                     imgView.setImageBitmap(thumbnail1);
                     try {
-
+                        captureButtonPressed = true;
                         Context cnt;
                         cnt = this;
                         File folder = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/StudentProfiles/");

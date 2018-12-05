@@ -582,7 +582,21 @@ New UI Edit Student --- done
 Pull aser table ---- done
 edit student not reflection if on resume called --- done
 
+05 Dec 2018
+Rename Edit Student to Edit Data --- done
+persist groups in edit data --- done
+show legends in edit data --- done
+baseline not updating in edit data --- done
+baseline validations in edit data --- done
+photo updated validation -- done
+focus add student --- done
+Imrpove UI of Edit Data --- done
+
+Later ... in Late December 
 aaj ka sawal ----
+
+
+
 
 
 

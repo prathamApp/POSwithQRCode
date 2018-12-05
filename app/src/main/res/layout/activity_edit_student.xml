@@ -42,6 +42,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="8dp"
                 android:layout_weight="1"
+                android:background="@drawable/custom_border"
                 android:textAlignment="center" />
 
             <!--Select Block Drop Down List-->
@@ -51,7 +52,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/spinner_SelectState"
                 android:layout_centerHorizontal="true"
+                android:layout_marginLeft="16dp"
                 android:layout_weight="1"
+                android:background="@drawable/custom_border"
                 android:textAlignment="center" />
 
             <!--Village Drop Down List-->
@@ -61,7 +64,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/spinner_SelectBlock"
                 android:layout_centerHorizontal="true"
+                android:layout_marginLeft="16dp"
                 android:layout_weight="1"
+                android:background="@drawable/custom_border"
                 android:textAlignment="center" />
 
         </LinearLayout>
@@ -83,6 +88,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="8dp"
                 android:layout_weight="1"
+                android:background="@drawable/custom_border"
                 android:textAlignment="center" />
 
             <!--For Editing Existing Student-->
@@ -92,120 +98,152 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/spinner_SelectGroups"
                 android:layout_centerHorizontal="true"
+                android:layout_marginLeft="16dp"
+                android:layout_weight="1"
+                android:background="@drawable/custom_border"
                 android:textAlignment="center" />
 
         </LinearLayout>
 
-        <!--Name-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:orientation="horizontal"
-            android:weightSum="3">
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/custom_border"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/edt_FirstName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_weight="1"
-                android:hint="First Name"
-                android:inputType="textCapWords"
-                android:singleLine="true"
-                android:textColor="@color/text_hint"
-                android:textColorHint="@color/text_hint"
-                android:textSize="16sp" />
+                android:layout_margin="4dp"
+                android:gravity="center_horizontal"
+                android:text="Student Details"
+                android:textAllCaps="true"
+                android:textColor="@color/button"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/edt_MiddleName"
+            <!--Name-->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_weight="1"
-                android:hint="Middle Name"
-                android:inputType="textCapWords"
-                android:singleLine="true"
-                android:textColor="@color/text_hint"
-                android:textColorHint="@color/text_hint"
-                android:textSize="16sp" />
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal"
+                android:weightSum="3">
 
-            <TextView
-                android:id="@+id/edt_LastName"
+                <TextView
+                    android:id="@+id/edt_FirstName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_weight="1"
+                    android:hint="First Name"
+                    android:inputType="textCapWords"
+                    android:singleLine="true"
+                    android:textColor="@color/text_hint"
+                    android:textColorHint="@color/text_hint"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/edt_MiddleName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_weight="1"
+                    android:hint="Middle Name"
+                    android:inputType="textCapWords"
+                    android:singleLine="true"
+                    android:textColor="@color/text_hint"
+                    android:textColorHint="@color/text_hint"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/edt_LastName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_weight="1"
+                    android:hint="Last Name"
+                    android:inputType="textCapWords"
+                    android:singleLine="true"
+                    android:textColor="@color/text_hint"
+                    android:textColorHint="@color/text_hint"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <!--Age, Class, Gender-->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_weight="1"
-                android:hint="Last Name"
-                android:inputType="textCapWords"
-                android:singleLine="true"
-                android:textColor="@color/text_hint"
-                android:textColorHint="@color/text_hint"
-                android:textSize="16sp" />
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <TextView
+                    android:id="@+id/edt_Age"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_weight="1"
+                    android:digits="0123456789"
+                    android:hint="Age"
+                    android:inputType="number"
+                    android:singleLine="true"
+                    android:textColor="@color/text_hint"
+                    android:textColorHint="@color/text_hint"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/edt_Class"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_weight="1"
+                    android:digits="0123456789"
+                    android:hint="Class"
+                    android:inputType="number"
+                    android:singleLine="true"
+                    android:textColor="@color/text_hint"
+                    android:textColorHint="@color/text_hint"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_Gender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_weight="1"
+                    android:digits="0123456789"
+                    android:hint="Gender"
+                    android:inputType="number"
+                    android:singleLine="true"
+                    android:textColor="@color/text_hint"
+                    android:textColorHint="@color/text_hint"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-        <!--Age, Class, Gender-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:orientation="horizontal"
-            android:weightSum="3">
-
-            <TextView
-                android:id="@+id/edt_Age"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_weight="1"
-                android:digits="0123456789"
-                android:hint="Age"
-                android:inputType="number"
-                android:maxLength="2"
-                android:singleLine="true"
-                android:textColor="@color/text_hint"
-                android:textColorHint="@color/text_hint"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/edt_Class"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_weight="1"
-                android:digits="0123456789"
-                android:hint="Class"
-                android:inputType="number"
-                android:maxLength="2"
-                android:singleLine="true"
-                android:textColor="@color/text_hint"
-                android:textColorHint="@color/text_hint"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/tv_Gender"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_weight="1"
-                android:digits="0123456789"
-                android:hint="Gender"
-                android:inputType="number"
-                android:maxLength="2"
-                android:singleLine="true"
-                android:textColor="@color/text_hint"
-                android:textColorHint="@color/text_hint"
-                android:textSize="16sp" />
-
-        </LinearLayout>
 
         <!--Aser-->
         <LinearLayout
             android:id="@+id/AserForm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/custom_border"
             android:orientation="vertical">
 
             <!--Baseline, AserDate, Lang, Number Reco-->
@@ -249,7 +287,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_border" />
 
                 <!--Number Reco-->
                 <Spinner
@@ -257,7 +296,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
-                    android:layout_weight="1" />
+                    android:layout_marginRight="16dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_border" />
 
             </LinearLayout>
 
@@ -265,8 +306,10 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
+                android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp"
                 android:orientation="horizontal"
                 android:weightSum="4">
 

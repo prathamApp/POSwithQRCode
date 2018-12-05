@@ -692,7 +692,6 @@ public class AddStudentProfiles extends AppCompatActivity {
     }
 
     private void resetFormPartially() {
-        groups_spinner.setSelection(0);
         edt_Fname.getText().clear();
         edt_Mname.getText().clear();
         edt_Lname.getText().clear();
@@ -748,6 +747,12 @@ public class AddStudentProfiles extends AppCompatActivity {
 
     private void initializeVariables() {
         MainActivity.sessionFlg = false;
+        sp_NumberReco = findViewById(R.id.spinner_NumberReco);
+        sp_BaselineLang = findViewById(R.id.spinner_BaselineLang);
+        states_spinner = (Spinner) findViewById(R.id.spinner_SelectState);
+        blocks_spinner = (Spinner) findViewById(R.id.spinner_SelectBlock);
+        villages_spinner = (Spinner) findViewById(R.id.spinner_selectVillage);
+        groups_spinner = (Spinner) findViewById(R.id.spinner_SelectGroups);
         playVideo = new PlayVideo();
         statdb = new StatusDBHelper(this);
         rb_Male = (RadioButton) findViewById(R.id.rb_Male);
@@ -795,7 +800,6 @@ public class AddStudentProfiles extends AppCompatActivity {
     }
 
     private void initializeNumberRecoSpinner() {
-        sp_NumberReco = findViewById(R.id.spinner_NumberReco);
         String[] NumberRecoAdapter = {"Baseline (Number Recognition)", "Beg", "0-9", "10-99", "100-999"};
         ArrayAdapter<String> recoAdapter = new ArrayAdapter<String>(this, R.layout.custom_spinner, NumberRecoAdapter);
         //sp_NumberReco.setPrompt("Number Reco Level");
@@ -803,7 +807,6 @@ public class AddStudentProfiles extends AppCompatActivity {
     }
 
     private void initializeBaselineSpinner() {
-        sp_BaselineLang = findViewById(R.id.spinner_BaselineLang);
         //sp_BaselineLang.setPrompt("Baseline Level");
         String[] baselineLangAdapter = {"Baseline (Lang)", "Beg", "Letter", "Word", "Para", "Story"};
         ArrayAdapter<String> baselineAdapter = new ArrayAdapter<String>(this, R.layout.custom_spinner, baselineLangAdapter);
@@ -811,7 +814,6 @@ public class AddStudentProfiles extends AppCompatActivity {
     }
 
     private void initializeStatesSpinner() {
-        states_spinner = (Spinner) findViewById(R.id.spinner_SelectState);
         //Get Villages Data for States AllSpinners
         List<String> States = database.GetState();
         //Creating the ArrayAdapter instance having the Villages list
@@ -825,6 +827,7 @@ public class AddStudentProfiles extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedState = states_spinner.getSelectedItem().toString();
                 populateBlock(selectedState);
+                groups_spinner.setSelection(0);
             }
 
             @Override
@@ -835,7 +838,6 @@ public class AddStudentProfiles extends AppCompatActivity {
     }
 
     public void populateBlock(String selectedState) {
-        blocks_spinner = (Spinner) findViewById(R.id.spinner_SelectBlock);
         //Get Villages Data for Blocks AllSpinners
         Blocks = database.GetStatewiseBlock(selectedState);
         //Creating the ArrayAdapter instance having the Villages list
@@ -849,6 +851,7 @@ public class AddStudentProfiles extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedBlock = blocks_spinner.getSelectedItem().toString();
                 populateVillage(selectedBlock);
+                groups_spinner.setSelection(0);
             }
 
             @Override
@@ -860,7 +863,6 @@ public class AddStudentProfiles extends AppCompatActivity {
     }
 
     public void populateVillage(String selectedBlock) {
-        villages_spinner = (Spinner) findViewById(R.id.spinner_selectVillage);
         //Get Villages Data for Villages filtered by block for Spinners
         List<VillageList> BlocksVillages = database.GetVillages(selectedBlock);
         //Creating the ArrayAdapter instance having the Villages list
@@ -874,6 +876,7 @@ public class AddStudentProfiles extends AppCompatActivity {
                 VillageList village = (VillageList) parent.getItemAtPosition(position);
                 vilID = village.getVillageId();
                 populateGroups(vilID);
+                groups_spinner.setSelection(0);
             }
 
             @Override
@@ -884,7 +887,6 @@ public class AddStudentProfiles extends AppCompatActivity {
     }
 
     public void populateGroups(int villageID) {
-        groups_spinner = (Spinner) findViewById(R.id.spinner_SelectGroups);
         //Get Groups Data for Villages filtered by Villages for Spinners
         gdb = new GroupDBHelper(this);
         final List<GroupList> GroupsVillages = gdb.GetGroups(villageID);

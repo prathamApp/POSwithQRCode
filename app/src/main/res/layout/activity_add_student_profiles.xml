@@ -41,6 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_weight="1"
+                android:background="@drawable/custom_border"
                 android:textAlignment="center" />
 
             <!--Select Block Drop Down List-->
@@ -50,7 +51,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/spinner_SelectState"
                 android:layout_centerHorizontal="true"
+                android:layout_marginLeft="16dp"
                 android:layout_weight="1"
+                android:background="@drawable/custom_border"
                 android:textAlignment="center" />
 
         </LinearLayout>
@@ -71,6 +74,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="8dp"
                 android:layout_weight="1"
+                android:background="@drawable/custom_border"
                 android:textAlignment="center" />
 
             <!--Select Groups-->
@@ -80,7 +84,10 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/spinner_selectVillage"
                 android:layout_centerHorizontal="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="8dp"
                 android:layout_weight="1"
+                android:background="@drawable/custom_border"
                 android:textAlignment="center" />
         </LinearLayout>
 
@@ -98,7 +105,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="Enter First Name"
+                android:imeOptions="actionNext"
                 android:inputType="textCapWords"
+                android:nextFocusDown="@+id/edt_MiddleName"
+                android:nextFocusForward="@+id/edt_MiddleName"
                 android:singleLine="true"
                 android:textColor="#000000"
                 android:textColorHint="@color/text_hint"
@@ -111,7 +121,10 @@
                 android:layout_marginLeft="16dp"
                 android:layout_weight="1"
                 android:hint="Enter Middle Name"
+                android:imeOptions="actionNext"
                 android:inputType="textCapWords"
+                android:nextFocusDown="@+id/edt_LastName"
+                android:nextFocusForward="@+id/edt_LastName"
                 android:singleLine="true"
                 android:textColor="#000000"
                 android:textColorHint="@color/text_hint"
@@ -124,7 +137,10 @@
                 android:layout_marginLeft="16dp"
                 android:layout_weight="1"
                 android:hint="Enter Last Name"
+                android:imeOptions="actionNext"
                 android:inputType="textCapWords"
+                android:nextFocusDown="@+id/edt_Age"
+                android:nextFocusForward="@+id/edt_Age"
                 android:singleLine="true"
                 android:textColor="#000000"
                 android:textColorHint="@color/text_hint"
@@ -148,8 +164,11 @@
                 android:layout_weight="2"
                 android:digits="0123456789"
                 android:hint="Enter Age"
+                android:imeOptions="actionNext"
                 android:inputType="number"
                 android:maxLength="2"
+                android:nextFocusDown="@+id/edt_Class"
+                android:nextFocusForward="@+id/edt_Class"
                 android:singleLine="true"
                 android:textColor="#000000"
                 android:textColorHint="@color/text_hint"
@@ -262,7 +281,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_border" />
 
                 <!--Number Reco-->
                 <Spinner
@@ -270,7 +290,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_border" />
 
             </LinearLayout>
 

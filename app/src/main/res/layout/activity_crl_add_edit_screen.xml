@@ -60,7 +60,7 @@
             android:layout_margin="16dp"
             android:background="@color/button"
             android:onClick="goToEditStudent"
-            android:text="  Edit Student  "
+            android:text="  Edit Data  "
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
             android:textSize="18sp" />
