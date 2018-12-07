@@ -198,19 +198,8 @@ public class PushData extends AppCompatActivity {
 
     public void startPushing(String jasonDataToPush) throws Exception {
         ArrayList<String> arrayListToTransfer = new ArrayList<String>();
-
-        /*// Creating Metadata as object
-        JSONObject metadataObj = new JSONObject();
-        metadataObj.put("CRLID", CrlDashboard.CreatedBy.equals(null) ? "CreatedBy" : CrlDashboard.CreatedBy);
-        metadataObj.put("TransId", new Utility().GetUniqueID());
-        metadataObj.put("DeviceId", deviceId.equals(null) ? "0000" : deviceId);
-        String metadata = "{" + metadataObj + "}";
-
-        // sending data as object
-        arrayListToTransfer.add(metadata);*/
         arrayListToTransfer.add(jasonDataToPush);
 
-        //Log.d("metadata :::", metadata);
         Log.d("pushedJson :::", jasonDataToPush);
 
 
@@ -312,49 +301,21 @@ public class PushData extends AppCompatActivity {
 
     }
 
-//    // Transfer Data Over Bluetooth
-//    public void transferData(View v) {
-//
-//        createJsonforTransfer();
-////************************** integrate push data code here********************/
-//
-//        String fileName = "";
-//
-//        ArrayList<String> arrayList = new ArrayList<String>();
-//        _array = new JSONArray();
-//
-//        //  test();
-//        //test function is used only for reading database file from assets
-//        //Used when we want to push data from our side.
-//
-//        //enableBlu();
-//        progress = new ProgressDialog(PushData.this);
-//        progress.setMessage("Please Wait...");
-//        progress.setCanceledOnTouchOutside(false);
-//        progress.show();
-//
-//        TreansferFile("pushNewDataToServer-");
-//
-//    }
-
     public void createJsonforTransfer() {
         //we will push logs and scores directly to the server
 
         ScoreDBHelper scoreDBHelper = new ScoreDBHelper(this);
-        List<Score> scores = scoreDBHelper.GetAll();
+        List<Score> scores = new ArrayList<>();
+        scores = scoreDBHelper.GetAll();
 
         if (scores == null) {
-        } else if (scores.size() == 0) {
-            // No Score No Transfer
         } else {
             try {
-
                 JSONArray scoreData = new JSONArray(), logsData = new JSONArray(), attendanceData = new JSONArray(), studentData = new JSONArray(), crlData = new JSONArray(), grpData = new JSONArray(), aserData = new JSONArray(), sessionData = new JSONArray();
 
                 for (int i = 0; i < scores.size(); i++) {
                     JSONObject _obj = new JSONObject();
                     Score _score = scores.get(i);
-
                     try {
                         _obj.put("SessionID", _score.SessionID);
                         // _obj.put("PlayerID",_score.PlayerID);
@@ -373,7 +334,6 @@ public class PushData extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
-
 
                 {
                     try {
@@ -436,23 +396,6 @@ public class PushData extends AppCompatActivity {
                             attendanceData.put(attendanceObject);
                         }
 
-                        //OLD LOGIC
-                        /*for (int i = 0; i < attendanceData.length(); i++) {
-                            JSONObject jsonObject = attendanceData.getJSONObject(i);
-
-                            String ids[] = jsonObject.getString("PresentStudentIds").split(",");
-                            JSONArray presentStudents = new JSONArray();
-                            for (int j = 0; j < ids.length; j++) {
-                                JSONObject id = new JSONObject();
-                                id.put("id", ids[j]);
-
-                                presentStudents.put(id);
-                            }
-                            jsonObject.remove("PresentStudentIds");
-                            jsonObject.put("PresentStudentIds", presentStudents);
-                        }*/
-
-                        //pravin
                         //For New Students data
                         List<Student> studentsList = sdb.GetAllNewStudents();
                         Log.d("student_list_size::", String.valueOf(sdb.GetAllNewStudents().size()));
@@ -640,7 +583,12 @@ public class PushData extends AppCompatActivity {
                                 + ", \"AserTableData\": " + aserData
                                 + ", \"SessionTableData\": " + sessionData
                                 + "}";//Ketan
-                        WriteSettings(c, requestString, "pushNewDataToServer-" + (deviceId.equals(null) ? "0000" : deviceId));
+
+                        if (scoreData.length() == 0 && logsData.length() == 0 && attendanceData.length() == 0 && studentData.length() == 0
+                                && crlData.length() == 0 && grpData.length() == 0 && aserData.length() == 0 && sessionData.length() == 0)
+                            Toast.makeText(this, "There is no data to Push !!!", Toast.LENGTH_SHORT).show();
+                        else
+                            WriteSettings(c, requestString, "pushNewDataToServer-" + (deviceId.equals(null) ? "0000" : deviceId));
                     }
                 }
             } catch (JSONException e) {

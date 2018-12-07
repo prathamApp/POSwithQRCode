@@ -21,25 +21,33 @@
         android:textStyle="bold" />
 
     <LinearLayout
-        android:id="@+id/Line1"
+        android:id="@+id/action"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="8dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 
-
         <Button
-            android:layout_width="200dp"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:background="@color/button"
             android:onClick="goToShareProfiles"
             android:padding="8dp"
             android:text="  Share Profiles  "
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" />
+
+        <Button
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@color/button"
+            android:onClick="goToShareOff"
+            android:padding="8dp"
+            android:text="  Share Off Json  "
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
@@ -63,28 +71,40 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/Line2"
+        android:id="@+id/action2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/Line1"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="8dp"
+        android:layout_below="@+id/action"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 
-
         <Button
-            android:layout_width="200dp"
+            android:id="@+id/btn_updateMedia"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:background="@color/button"
-            android:onClick="goToShareOff"
             android:padding="8dp"
-            android:text="  Share Off Json  "
+            android:text="  Update Media Content  "
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:visibility="visible" />
+
+
+        <Button
+            android:id="@+id/btn_ShareContent"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:onClick="shareContent"
+            android:background="@color/button"
+            android:padding="8dp"
+            android:text="  Share Content  "
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:visibility="visible" />
 
         <Button
             android:layout_width="200dp"
@@ -100,72 +120,54 @@
             android:textSize="20sp"
             android:visibility="gone" />
 
-
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/Line3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/Line2"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:visibility="visible">
-
-
-        <Button
-            android:id="@+id/btn_updateMedia"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:background="@color/button"
-            android:padding="8dp"
-            android:text="  Update Media Content  "
-            android:textAllCaps="false"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:visibility="visible" />
-
-    </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/Line4"
+        android:id="@+id/status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/Line3"
-        android:orientation="vertical">
+        android:layout_below="@+id/action2"
+        android:layout_margin="16dp"
+        android:background="@drawable/custom_border"
+        android:orientation="horizontal"
+        android:weightSum="3">
 
         <TextView
             android:id="@+id/tv_studentsShared"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
+            android:layout_weight="1"
             android:gravity="center_horizontal"
             android:text="Students Received"
             android:textColor="@color/button"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_crlsShared"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
+            android:layout_weight="1"
             android:gravity="center_horizontal"
             android:text="CRLs Received"
             android:textColor="@color/button"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_groupssShared"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
+            android:layout_weight="1"
             android:gravity="center_horizontal"
             android:text="Groups Received"
             android:textColor="@color/button"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

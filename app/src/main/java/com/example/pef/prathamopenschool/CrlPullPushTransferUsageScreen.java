@@ -146,114 +146,6 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
         isConnected = ConnectivityReceiver.isConnected();
     }
 
-    /*
-
-    // Receiver for checking connection
-    private void checkConnection() {
-        isConnected = ConnectivityReceiver.isConnected();
-    }
-
-    // Push Data
-    public void pushToServer(View v) throws IOException, ExecutionException, InterruptedException {
-
-        // Checking Internet Connection
-        checkConnection();
-
-        if (isConnected) {
-
-            Toast.makeText(CrlPullPushTransferUsageScreen.this, "Connected to the Internet !!!", Toast.LENGTH_SHORT).show();
-
-            int cnt = 0;
-            //Moving to Receive usage
-            String path = Environment.getExternalStorageDirectory().toString() + "/Bluetooth";
-            File blueToothDir = new File(path);
-            String destFolder = Environment.getExternalStorageDirectory() + "/.POSinternal/receivedUsage";
-            if (!blueToothDir.exists()) {
-                Toast.makeText(this, "Bluetooth folder does not exist", Toast.LENGTH_SHORT).show();
-            } else {
-
-                progress = new ProgressDialog(CrlPullPushTransferUsageScreen.this);
-                progress.setMessage("Please Wait...");
-                progress.setCanceledOnTouchOutside(false);
-                progress.show();
-
-                File[] files = blueToothDir.listFiles();
-                Toast.makeText(this, "Pushing data to server Please wait...", Toast.LENGTH_SHORT).show();
-                for (int i = 0; i < files.length; i++) {
-                    if (files[i].getName().contains("pushNewDataToServer")) {
-                        cnt++;
-                        startPushing(convertToString(files[i]));
-                        if (sentFlag) {
-
-                            fileCutPaste(files[i], destFolder);
-                        }
-                    }
-                }
-                if (cnt == 0) {
-                    progress.dismiss();
-                    Toast.makeText(this, "No files available !!!\nPlease collect data and then transfer !!!", Toast.LENGTH_LONG).show();
-                } else if (sentFlag) {
-                    progress.dismiss();
-                    Toast.makeText(this, "Data succesfully pushed to the server !!!", Toast.LENGTH_LONG).show();
-                    Toast.makeText(this, "Files moved in received usage !!!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        } else if (isConnected == false) {
-            Toast.makeText(CrlPullPushTransferUsageScreen.this, "Please Connect to the Internet !!!", Toast.LENGTH_SHORT).show();
-        }
-
-
-    }
-
-    public String convertToString(File file) throws IOException {
-        int length = (int) file.length();
-        FileInputStream in = null;
-        byte[] bytes = new byte[length];
-        try {
-            in = new FileInputStream(file);
-            in.read(bytes);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            in.close();
-        }
-        String contents = new String(bytes);
-        return contents;
-    }
-
-    public void startPushing(String jasonDataToPush) throws ExecutionException, InterruptedException {
-        ArrayList<String> arrayListToTransfer = new ArrayList<String>();
-        arrayListToTransfer.add(jasonDataToPush);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-            new PushSyncClient(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayListToTransfer).get();
-        else
-            new PushSyncClient(this).execute(arrayListToTransfer).get();
-    }
-
-    public void fileCutPaste(File toMove, String destFolder) {
-        try {
-            File destinationFolder = new File(destFolder);
-            File destinationFile = new File(destFolder + "/" + toMove.getName());
-            if (!destinationFolder.exists()) {
-                destinationFolder.mkdir();
-            }
-            FileInputStream fileInputStream = new FileInputStream(toMove);
-            FileOutputStream fileOutputStream = new FileOutputStream(destinationFile);
-
-            int bufferSize;
-            byte[] bufffer = new byte[512];
-            while ((bufferSize = fileInputStream.read(bufffer)) > 0) {
-                fileOutputStream.write(bufffer, 0, bufferSize);
-            }
-            toMove.delete();
-            fileInputStream.close();
-            fileOutputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
-
-
     // Transfer Usage
     /* ***************************  TRANSFER DATA ********************************************************************/
 
@@ -349,43 +241,6 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
                 }
             });
 
-//        for (int i = 0; i < f.size(); i++) {
-//            if ((f.get(i)).equalsIgnoreCase("PrathamHotspot"))
-//        }
-//        ftpConnect.connectToPrathamHotSpot(f.get(i));
-
-    /*
-
-        // Generate Json file
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                progress = new ProgressDialog(CrlPullPushTransferUsageScreen.this);
-                progress.setMessage("Please Wait...");
-                progress.setCanceledOnTouchOutside(false);
-                progress.show();
-            }
-
-            @Override
-            protected Void doInBackground(Void... voids) {
-                createJsonforTransfer();
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                if (progress.isShowing())
-                    progress.dismiss();
-                progress = new ProgressDialog(CrlPullPushTransferUsageScreen.this);
-                progress.setMessage("Please Wait...");
-                progress.setCanceledOnTouchOutside(false);
-                progress.show();
-                TreansferFile("pushNewDataToServer-");
-            }
-        }.execute();
-    */
         } else {
             Toast.makeText(CrlPullPushTransferUsageScreen.this, "There is no data to Transfer !!!", Toast.LENGTH_SHORT).show();
         }
@@ -394,16 +249,11 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
     public void createJsonforTransfer() {
         //we will push logs and scores directly to the server
 
-//        TextView msg = (TextView) findViewById(R.id.message);
-//        msg.setText("");
-
         ScoreDBHelper scoreDBHelper = new ScoreDBHelper(this);
-        List<Score> scores = scoreDBHelper.GetAll();
+        List<Score> scores = new ArrayList<>();
+        scores = scoreDBHelper.GetAll();
 
         if (scores == null) {
-        } else if (scores.size() == 0) {
-            // No Score No Transfer
-            NoDataToTransfer = true;
         } else {
             try {
                 NoDataToTransfer = false;
@@ -494,24 +344,6 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
                             attendanceData.put(attendanceObject);
                         }
 
-                        //OLD LOGIC
-                        /*for (int i = 0; i < attendanceData.length(); i++) {
-                            JSONObject jsonObject = attendanceData.getJSONObject(i);
-
-                            String ids[] = jsonObject.getString("PresentStudentIds").split(",");
-                            JSONArray presentStudents = new JSONArray();
-                            for (int j = 0; j < ids.length; j++) {
-                                JSONObject id = new JSONObject();
-                                id.put("id", ids[j]);
-
-                                presentStudents.put(id);
-                            }
-                            jsonObject.remove("PresentStudentIds");
-                            jsonObject.put("PresentStudentIds", presentStudents);
-                        }*/
-
-
-                        //pravin
                         //For New Students data
                         List<Student> studentsList = sdb.GetAllNewStudents();
                         Log.d("student_list_size::", String.valueOf(sdb.GetAllNewStudents().size()));
@@ -694,8 +526,13 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
                                 "\"newGroupsData\": " + grpData + ", " +
                                 "\"AserTableData\": " + aserData + ", " +
                                 "\"SessionTableData\": " + sessionData +
-                                "}";//Ketan
-                        WriteSettings(c, requestString, "pushNewDataToServer-" + (deviceId.equals(null) ? "0000" : deviceId));
+                                "}";
+
+                        if (scoreData.length() == 0 && logsData.length() == 0 && attendanceData.length() == 0 && studentData.length() == 0
+                                && crlData.length() == 0 && grpData.length() == 0 && aserData.length() == 0 && sessionData.length() == 0)
+                            NoDataToTransfer = true;
+                        else
+                            WriteSettings(c, requestString, "pushNewDataToServer-" + (deviceId.equals(null) ? "0000" : deviceId));
                     }
                 }
             } catch (JSONException e) {
@@ -736,37 +573,9 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
 
     // transfer usage files via bluetooth
     public void TreansferFile(String filename) {
-
-        // progress.dismiss();
-//        btAdapter = BluetoothAdapter.getDefaultAdapter();
-//        if (btAdapter == null) {
-//            Toast.makeText(getApplicationContext(), "This device doesn't give bluetooth support.", Toast.LENGTH_LONG).show();
-//        } else {
-//            intent = new Intent();
-//            intent.setAction(Intent.ACTION_SEND);
-//            intent.setType("text/plain");
-//            file = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/transferredUsage/" + filename + (deviceId.equals(null) ? "0000" : deviceId) + ".json");
         file = new File(Environment.getExternalStorageDirectory() + "/.POSDBBackups/" + filename + (deviceId.equals(null) ? "0000" : deviceId) + ".json");
         int x = 0;
         if (file.exists()) {
-//                PackageManager pm = getPackageManager();
-//                List<ResolveInfo> appsList = pm.queryIntentActivities(intent, 0);
-//                if (appsList.size() > 0) {
-
-//                    for (ResolveInfo info : appsList) {
-//                        packageName = info.activityInfo.packageName;
-//                        if (packageName.equals("com.android.bluetooth")) {
-//                            className = info.activityInfo.name;
-//                            found = true;
-//                            break;// found
-//                        }
-//                    }
-//                    if (!found) {
-//                        Toast.makeText(this, "Bluetooth not in list", Toast.LENGTH_SHORT).show();
-//                    } else {
-            // old
-//            uris.add(Uri.fromFile(file));
-//            cnt++;
 
             // Dbbackup files
             File dbFiles = new File(Environment.getExternalStorageDirectory() + "/.POSDBBackups");
@@ -780,29 +589,11 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
 
             // Creating FTP HotSpot
             MyApplication.setPath(dbFiles.getAbsolutePath());
-//            ftpConnect.createFTPHotspot();
-
-//                        Toast.makeText(CrlPullPushTransferUsageScreen.this, "Transferred Files : " + cnt, Toast.LENGTH_SHORT).show();
-//                        intent.setAction(android.content.Intent.ACTION_SEND_MULTIPLE);
-//                        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-//                        intent.setClassName(packageName, className);
-
-            // Treat Like Capture
-//                        startActivityForResult(intent, 3);
-            //setResult(1);
-
-            // Gets Executed First
-            //Toast.makeText(CrlPullPushTransferUsageScreen.this, "Data Transferred Successfully !!!", Toast.LENGTH_SHORT).show();
-
-            //sendBroadcast(intent);
-//                    }
-//                }
         } else {
             if (progress.isShowing())
                 progress.dismiss();
             Toast.makeText(getApplicationContext(), "File not found in transferredUsage content", Toast.LENGTH_LONG).show();
         }
-//        }
     }
 
 
@@ -843,14 +634,6 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
                         clearDBRecords();
                         tv.setVisibility(View.VISIBLE);
                         tv.setText("Total " + cnt + " files Transferred Successfully !!!");
-                        /*// move file to pushed usage from transferred usage
-                        File srcFolder = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/transferredUsage");
-                        File destFolder = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/pushedUsage");
-                        try {
-                            copyFolder(srcFolder, destFolder);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }*/
                         // move files from POSBackups to pushed usage ( also includes transfer usage )
                         File src = new File(Environment.getExternalStorageDirectory() + "/.POSDBBackups");
                         File dest = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/pushedUsage");
@@ -1094,6 +877,7 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
     }
 
 
+    @SuppressLint("LongLogTag")
     @Override
     public void onFilesRecievedComplete(String typeOfFile, String filename) {
         String path = Environment.getExternalStorageDirectory().toString() + "/.POSDBBackups";
