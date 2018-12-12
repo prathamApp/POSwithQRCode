@@ -313,7 +313,8 @@ public class EditStudent extends AppCompatActivity {
                             Toast.makeText(EditStudent.this, "Endline 1 Updated !", Toast.LENGTH_SHORT).show();
 
                             if (endlineDialog.isShowing())
-                                endlineDialog.dismiss();
+                                endlineDialog.cancel();
+
                         } else {
                             Toast.makeText(EditStudent.this, "Please fill all the fields !!!", Toast.LENGTH_SHORT).show();
                         }
@@ -561,7 +562,7 @@ public class EditStudent extends AppCompatActivity {
                             Toast.makeText(EditStudent.this, "Endline 2 Updated !", Toast.LENGTH_SHORT).show();
 
                             if (endlineDialog.isShowing())
-                                endlineDialog.dismiss();
+                                endlineDialog.cancel();
                         } else {
                             Toast.makeText(EditStudent.this, "Please fill all the fields !!!", Toast.LENGTH_SHORT).show();
                         }
@@ -809,7 +810,7 @@ public class EditStudent extends AppCompatActivity {
                             Toast.makeText(EditStudent.this, "Endline 3 Updated !", Toast.LENGTH_SHORT).show();
 
                             if (endlineDialog.isShowing())
-                                endlineDialog.dismiss();
+                                endlineDialog.cancel();
                         } else {
                             Toast.makeText(EditStudent.this, "Please fill all the fields !!!", Toast.LENGTH_SHORT).show();
                         }
@@ -1057,7 +1058,7 @@ public class EditStudent extends AppCompatActivity {
                             Toast.makeText(EditStudent.this, "Endline 4 Updated !", Toast.LENGTH_SHORT).show();
 
                             if (endlineDialog.isShowing())
-                                endlineDialog.dismiss();
+                                endlineDialog.cancel();
                         } else {
                             Toast.makeText(EditStudent.this, "Please fill all the fields !!!", Toast.LENGTH_SHORT).show();
                         }
