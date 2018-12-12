@@ -592,6 +592,28 @@ photo updated validation -- done
 focus add student --- done
 Imrpove UI of Edit Data --- done
 
+
+
+07 Dec
+Update UI of share data -- done
+share student even if score is not generated --- done
+dont push/ transfer data if no new data --- done
+share content module --- 
+
+12 Dec (Hamara Gaon Change)
+hide share content & receive content --- done
+hide operations of endline --- done
+add date option in endline --- done
+change endline fragment ui --- done
+dropdwn logo in all spinners addnewstd, editstd --- done 
+endline date fragment -- done
+Add options in Num reco spinner --- done
+all changes for addstudent --- done
+all changes for edit student --- done
+push data without ftp module --- done
+
+
+
 Later ... in Late December 
 aaj ka sawal ----
 

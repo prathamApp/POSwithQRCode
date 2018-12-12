@@ -27,6 +27,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
@@ -67,7 +70,7 @@ public class AddStudentProfiles extends AppCompatActivity {
     Utility util;
 
     Spinner sp_BaselineLang, sp_NumberReco;
-    Button btn_DatePicker, btn_Endline1, btn_Endline2, btn_Endline3, btn_Endline4;
+    Button btn_EndlineDatePicker, btn_DatePicker, btn_Endline1, btn_Endline2, btn_Endline3, btn_Endline4;
     LinearLayout AserForm;
     public boolean EndlineButtonClicked = false;
 
@@ -79,12 +82,22 @@ public class AddStudentProfiles extends AppCompatActivity {
     int WA = 0;
     int WS = 0;
     int IC = 0;
+    String aserDate;
+
+    @Subscribe
+    public void onEvent(String msg) {
+        if (!msg.isEmpty()) {
+            btn_EndlineDatePicker.setText(msg);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_student_profiles);
         getSupportActionBar().hide();
+
+        EventBus.getDefault().register(AddStudentProfiles.this);
 
         initializeVariables();
         initializeStatesSpinner();
@@ -122,6 +135,16 @@ public class AddStudentProfiles extends AppCompatActivity {
                 CheckBox WordAdd = endlineDialog.findViewById(R.id.WordAdd);
                 CheckBox WordSub = endlineDialog.findViewById(R.id.WordSub);
                 Button btn_Submit = endlineDialog.findViewById(R.id.btn_Submit);
+                btn_EndlineDatePicker = endlineDialog.findViewById(R.id.btn_EndlineDatePicker);
+                btn_EndlineDatePicker.setText(util.GetCurrentDate().toString());
+                btn_EndlineDatePicker.setPadding(8, 8, 8, 8);
+                btn_EndlineDatePicker.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DialogFragment newFragment = new DatePickerFragment();
+                        newFragment.show(getFragmentManager(), "EndlineDatePicker");
+                    }
+                });
 
                 // set values of endline
                 title.setText("Endline 1");
@@ -130,7 +153,7 @@ public class AddStudentProfiles extends AppCompatActivity {
                 ArrayAdapter<String> baselineAdapter = new ArrayAdapter<String>(AddStudentProfiles.this, R.layout.custom_spinner, baselineLangAdapter);
                 spinner_BaselineLang.setAdapter(baselineAdapter);
 
-                String[] NumberRecoAdapter = {"Number Recognition", "Beg", "0-9", "10-99", "100-999"};
+                String[] NumberRecoAdapter = {"Number Recognition", "Beg", "0-9", "10-99", "Sub", "Div"};
                 ArrayAdapter<String> recoAdapter = new ArrayAdapter<String>(AddStudentProfiles.this, R.layout.custom_spinner, NumberRecoAdapter);
                 spinner_NumberReco.setAdapter(recoAdapter);
 
@@ -194,7 +217,7 @@ public class AddStudentProfiles extends AppCompatActivity {
                             testT = 1;
                             langSpin = BaselineSpinnerValue;
                             numSpin = NumberSpinnerValue;
-
+                            aserDate = btn_EndlineDatePicker.getText().toString();
                             OA = OprAdd.isChecked() ? 1 : 0;
                             OS = OprSub.isChecked() ? 1 : 0;
                             OM = OprMul.isChecked() ? 1 : 0;
@@ -237,6 +260,16 @@ public class AddStudentProfiles extends AppCompatActivity {
                 CheckBox WordAdd = endlineDialog.findViewById(R.id.WordAdd);
                 CheckBox WordSub = endlineDialog.findViewById(R.id.WordSub);
                 Button btn_Submit = endlineDialog.findViewById(R.id.btn_Submit);
+                btn_EndlineDatePicker = endlineDialog.findViewById(R.id.btn_EndlineDatePicker);
+                btn_EndlineDatePicker.setText(util.GetCurrentDate().toString());
+                btn_EndlineDatePicker.setPadding(8, 8, 8, 8);
+                btn_EndlineDatePicker.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DialogFragment newFragment = new DatePickerFragment();
+                        newFragment.show(getFragmentManager(), "EndlineDatePicker");
+                    }
+                });
 
                 // set values of endline
                 title.setText("Endline 2");
@@ -245,7 +278,7 @@ public class AddStudentProfiles extends AppCompatActivity {
                 ArrayAdapter<String> baselineAdapter = new ArrayAdapter<String>(AddStudentProfiles.this, R.layout.custom_spinner, baselineLangAdapter);
                 spinner_BaselineLang.setAdapter(baselineAdapter);
 
-                String[] NumberRecoAdapter = {"Number Recognition", "Beg", "0-9", "10-99", "100-999"};
+                String[] NumberRecoAdapter = {"Number Recognition", "Beg", "0-9", "10-99", "Sub", "Div"};
                 ArrayAdapter<String> recoAdapter = new ArrayAdapter<String>(AddStudentProfiles.this, R.layout.custom_spinner, NumberRecoAdapter);
                 spinner_NumberReco.setAdapter(recoAdapter);
 
@@ -308,6 +341,7 @@ public class AddStudentProfiles extends AppCompatActivity {
                             testT = 2;
                             langSpin = BaselineSpinnerValue;
                             numSpin = NumberSpinnerValue;
+                            aserDate = btn_EndlineDatePicker.getText().toString();
 
                             OA = OprAdd.isChecked() ? 1 : 0;
                             OS = OprSub.isChecked() ? 1 : 0;
@@ -351,6 +385,16 @@ public class AddStudentProfiles extends AppCompatActivity {
                 CheckBox WordAdd = endlineDialog.findViewById(R.id.WordAdd);
                 CheckBox WordSub = endlineDialog.findViewById(R.id.WordSub);
                 Button btn_Submit = endlineDialog.findViewById(R.id.btn_Submit);
+                btn_EndlineDatePicker = endlineDialog.findViewById(R.id.btn_EndlineDatePicker);
+                btn_EndlineDatePicker.setText(util.GetCurrentDate().toString());
+                btn_EndlineDatePicker.setPadding(8, 8, 8, 8);
+                btn_EndlineDatePicker.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DialogFragment newFragment = new DatePickerFragment();
+                        newFragment.show(getFragmentManager(), "EndlineDatePicker");
+                    }
+                });
 
                 // set values of endline
                 title.setText("Endline 3");
@@ -359,7 +403,7 @@ public class AddStudentProfiles extends AppCompatActivity {
                 ArrayAdapter<String> baselineAdapter = new ArrayAdapter<String>(AddStudentProfiles.this, R.layout.custom_spinner, baselineLangAdapter);
                 spinner_BaselineLang.setAdapter(baselineAdapter);
 
-                String[] NumberRecoAdapter = {"Number Recognition", "Beg", "0-9", "10-99", "100-999"};
+                String[] NumberRecoAdapter = {"Number Recognition", "Beg", "0-9", "10-99", "Sub", "Div"};
                 ArrayAdapter<String> recoAdapter = new ArrayAdapter<String>(AddStudentProfiles.this, R.layout.custom_spinner, NumberRecoAdapter);
                 spinner_NumberReco.setAdapter(recoAdapter);
 
@@ -422,6 +466,7 @@ public class AddStudentProfiles extends AppCompatActivity {
                             testT = 3;
                             langSpin = BaselineSpinnerValue;
                             numSpin = NumberSpinnerValue;
+                            aserDate = btn_EndlineDatePicker.getText().toString();
 
                             OA = OprAdd.isChecked() ? 1 : 0;
                             OS = OprSub.isChecked() ? 1 : 0;
@@ -465,6 +510,16 @@ public class AddStudentProfiles extends AppCompatActivity {
                 CheckBox WordAdd = endlineDialog.findViewById(R.id.WordAdd);
                 CheckBox WordSub = endlineDialog.findViewById(R.id.WordSub);
                 Button btn_Submit = endlineDialog.findViewById(R.id.btn_Submit);
+                btn_EndlineDatePicker = endlineDialog.findViewById(R.id.btn_EndlineDatePicker);
+                btn_EndlineDatePicker.setText(util.GetCurrentDate().toString());
+                btn_EndlineDatePicker.setPadding(8, 8, 8, 8);
+                btn_EndlineDatePicker.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DialogFragment newFragment = new DatePickerFragment();
+                        newFragment.show(getFragmentManager(), "EndlineDatePicker");
+                    }
+                });
 
                 // set values of endline
                 title.setText("Endline 4");
@@ -473,7 +528,7 @@ public class AddStudentProfiles extends AppCompatActivity {
                 ArrayAdapter<String> baselineAdapter = new ArrayAdapter<String>(AddStudentProfiles.this, R.layout.custom_spinner, baselineLangAdapter);
                 spinner_BaselineLang.setAdapter(baselineAdapter);
 
-                String[] NumberRecoAdapter = {"Number Recognition", "Beg", "0-9", "10-99", "100-999"};
+                String[] NumberRecoAdapter = {"Number Recognition", "Beg", "0-9", "10-99", "Sub", "Div"};
                 ArrayAdapter<String> recoAdapter = new ArrayAdapter<String>(AddStudentProfiles.this, R.layout.custom_spinner, NumberRecoAdapter);
                 spinner_NumberReco.setAdapter(recoAdapter);
 
@@ -536,6 +591,7 @@ public class AddStudentProfiles extends AppCompatActivity {
                             testT = 4;
                             langSpin = BaselineSpinnerValue;
                             numSpin = NumberSpinnerValue;
+                            aserDate = btn_EndlineDatePicker.getText().toString();
 
                             OA = OprAdd.isChecked() ? 1 : 0;
                             OS = OprSub.isChecked() ? 1 : 0;
@@ -607,9 +663,11 @@ public class AddStudentProfiles extends AppCompatActivity {
                                             EndlineButtonClicked = false;
 
                                         if (!EndlineButtonClicked) {
+                                            // Baseline
                                             testT = 0;
                                             langSpin = sp_BaselineLang.getSelectedItemPosition();
                                             numSpin = sp_NumberReco.getSelectedItemPosition();
+                                            aserDate = btn_DatePicker.getText().toString();
                                             OA = 0;
                                             OS = 0;
                                             OM = 0;
@@ -624,7 +682,7 @@ public class AddStudentProfiles extends AppCompatActivity {
                                         asr.GroupID = GrpID;
                                         asr.ChildID = "";
                                         asr.TestType = testT;
-                                        asr.TestDate = btn_DatePicker.getText().toString();
+                                        asr.TestDate = aserDate;
                                         asr.Lang = langSpin;
                                         asr.Num = numSpin;
                                         asr.CreatedBy = statdb.getValue("CRL");
@@ -800,7 +858,7 @@ public class AddStudentProfiles extends AppCompatActivity {
     }
 
     private void initializeNumberRecoSpinner() {
-        String[] NumberRecoAdapter = {"Baseline (Number Recognition)", "Beg", "0-9", "10-99", "100-999"};
+        String[] NumberRecoAdapter = {"Baseline (Number Recognition)", "Beg", "0-9", "10-99", "Sub", "Div"};
         ArrayAdapter<String> recoAdapter = new ArrayAdapter<String>(this, R.layout.custom_spinner, NumberRecoAdapter);
         //sp_NumberReco.setPrompt("Number Reco Level");
         sp_NumberReco.setAdapter(recoAdapter);

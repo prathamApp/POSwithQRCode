@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    android:background="@drawable/custom_border"
     android:gravity="center"
     android:orientation="vertical">
 
@@ -32,19 +34,35 @@
         android:gravity="center"
         android:orientation="horizontal">
 
+        <!--Aser Date-->
+        <Button
+            android:id="@+id/btn_EndlineDatePicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:background="@color/button"
+            android:drawableLeft="@android:drawable/ic_menu_my_calendar"
+            android:drawablePadding="4dp"
+            android:padding="4dp"
+            android:text="Aser Date"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
         <Spinner
             android:id="@+id/spinner_BaselineLang"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:background="@drawable/custom_border" />
+            android:background="@android:drawable/btn_dropdown" />
 
         <Spinner
             android:id="@+id/spinner_NumberReco"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:background="@drawable/custom_border" />
+            android:background="@android:drawable/btn_dropdown" />
 
         <Switch
             android:id="@+id/switch_isSelected"
@@ -63,7 +81,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
@@ -121,7 +140,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tv_WordProblem"

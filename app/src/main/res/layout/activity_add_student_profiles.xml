@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_weight="1"
-                android:background="@drawable/custom_border"
+                android:background="@android:drawable/btn_dropdown"
                 android:textAlignment="center" />
 
             <!--Select Block Drop Down List-->
@@ -53,7 +53,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="16dp"
                 android:layout_weight="1"
-                android:background="@drawable/custom_border"
+                android:background="@android:drawable/btn_dropdown"
                 android:textAlignment="center" />
 
         </LinearLayout>
@@ -74,7 +74,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="8dp"
                 android:layout_weight="1"
-                android:background="@drawable/custom_border"
+                android:background="@android:drawable/btn_dropdown"
                 android:textAlignment="center" />
 
             <!--Select Groups-->
@@ -87,7 +87,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="8dp"
                 android:layout_weight="1"
-                android:background="@drawable/custom_border"
+                android:background="@android:drawable/btn_dropdown"
                 android:textAlignment="center" />
         </LinearLayout>
 
@@ -282,7 +282,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_weight="1"
-                    android:background="@drawable/custom_border" />
+                    android:background="@android:drawable/btn_dropdown" />
 
                 <!--Number Reco-->
                 <Spinner
@@ -291,7 +291,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_weight="1"
-                    android:background="@drawable/custom_border" />
+                    android:background="@android:drawable/btn_dropdown" />
 
             </LinearLayout>
 

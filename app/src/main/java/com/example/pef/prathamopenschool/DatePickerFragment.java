@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.DatePicker;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.Calendar;
 
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
@@ -14,7 +16,6 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     int year;
     int month;
     int day;
-
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -42,13 +43,21 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         Button btn = (Button) getActivity().findViewById(R.id.btn_DatePicker);
 
         if (this.month < 10 && this.day < 10) {
-            btn.setText("0" + dayOfMonth + "-0" + month + "-" + year);
+            if (btn != null)
+                btn.setText("0" + dayOfMonth + "-0" + month + "-" + year);
+            EventBus.getDefault().post("0" + dayOfMonth + "-0" + month + "-" + year);
         } else if (this.month < 10) {
-            btn.setText("" + dayOfMonth + "-0" + month + "-" + year);
+            if (btn != null)
+                btn.setText("" + dayOfMonth + "-0" + month + "-" + year);
+            EventBus.getDefault().post("" + dayOfMonth + "-0" + month + "-" + year);
         } else if (this.day < 10) {
-            btn.setText("0" + dayOfMonth + "-" + month + "-" + year);
+            if (btn != null)
+                btn.setText("0" + dayOfMonth + "-" + month + "-" + year);
+            EventBus.getDefault().post("0" + dayOfMonth + "-" + month + "-" + year);
         } else {
-            btn.setText("" + dayOfMonth + "-" + month + "-" + year);
+            if (btn != null)
+                btn.setText("" + dayOfMonth + "-" + month + "-" + year);
+            EventBus.getDefault().post("" + dayOfMonth + "-" + month + "-" + year);
         }
     }
 }
