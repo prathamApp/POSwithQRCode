@@ -747,7 +747,7 @@ public class AssignGroups extends AppCompatActivity {
                     stdObj.Age = stdJsonObject.getInt("Age");
                 }
 
-                String cls = stdJsonObject.getString("stdClass");
+                String cls = stdJsonObject.getString("Class");
                 if (cls.length() > 0) {
                     stdObj.stdClass = Integer.parseInt(cls);
                 } else {

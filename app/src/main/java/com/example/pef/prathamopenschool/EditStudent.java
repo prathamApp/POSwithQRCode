@@ -1432,7 +1432,7 @@ public class EditStudent extends AppCompatActivity {
             edt_Mname.setText("Middle Name : " + MiddleName);
             edt_Lname.setText("Last Name : " + LastName);
             edt_Age.setText("Age : " + String.valueOf(Age));
-            edt_Class.setText("stdClass : " + String.valueOf(Class));
+            edt_Class.setText("Class : " + String.valueOf(Class));
             tv_Gender.setText("Gender : " + Gender);
             btn_Capture.setVisibility(View.VISIBLE);
             btn_Capture.setOnClickListener(new View.OnClickListener() {

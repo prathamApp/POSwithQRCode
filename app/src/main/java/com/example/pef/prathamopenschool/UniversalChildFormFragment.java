@@ -162,7 +162,7 @@ public class UniversalChildFormFragment extends Fragment implements DataInterfac
         sp_NumberReco.setAdapter(recoAdapter);
 
         sp_Class = (Spinner) view.findViewById(R.id.spinner_Class);
-        String[] ClassAdapter = {"Select stdClass", "3", "4", "5"};
+        String[] ClassAdapter = {"Select Class", "3", "4", "5"};
         ArrayAdapter<String> classAdapter = new ArrayAdapter<String>(this.getActivity(), R.layout.custom_spinner, ClassAdapter);
         //sp_NumberReco.setPrompt("Number Reco Level");
         sp_Class.setAdapter(classAdapter);
@@ -544,7 +544,7 @@ public class UniversalChildFormFragment extends Fragment implements DataInterfac
                 edt_ChildID.getText().clear();
                 StdAge = 0;
                 StdGender = "Select Gender";
-                stdClass = "Select stdClass";
+                stdClass = "Select Class";
                 StdIsSelected = false;
                 imgView.setImageDrawable(null);
                 sp_BaselineLang.setSelection(0);
