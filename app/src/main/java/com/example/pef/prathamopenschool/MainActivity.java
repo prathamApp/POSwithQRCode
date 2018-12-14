@@ -959,7 +959,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                     });
                 }
 //                Collections.shuffle(cardList); // shuffle card list
-                Collections.reverse(cardList);
+                Collections.reverse(cardList); // regular content
             }
             adapter.notifyDataSetChanged();
         } catch (Exception e) {

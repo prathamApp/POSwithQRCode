@@ -79,7 +79,7 @@ public class CrlDBHelper extends DBHelper {
     // replace null values with dummy
     public void replaceNulls() {
         database = getWritableDatabase();
-        cursor = database.rawQuery("UPDATE CRL SET CRLID = IfNull(CRLID,'CRLID'), FirstName = IfNull(FirstName,'FirstName'), LastName = IfNull(LastName,'LastName'), UserName = IfNull(UserName,'UserName'), PassWord = IfNull(PassWord,'PassWord'), ProgramId = IfNull(ProgramId,'1'), Mobile = IfNull(Mobile,'0123456789'), State = IfNull(State,'State'), Email = IfNull(Email,'Email'), CreatedBy = IfNull(CreatedBy,''),NewFlag = IfNull(NewFlag,'0') ,sharedBy = IfNull(sharedBy,'') ,SharedAtDateTime = IfNull(SharedAtDateTime,'0') ,appVersion = IfNull(appVersion,'') ,appName = IfNull(appName,'') ,CreatedOn = IfNull(CreatedOn,'0') ", null);
+        cursor = database.rawQuery("UPDATE CRL SET CRLID = IfNull(CRLID,'CRLID'), FirstName = IfNull(FirstName,'FirstName'), LastName = IfNull(LastName,'LastName'), UserName = IfNull(UserName,'UserName'), PassWord = IfNull(PassWord,'PassWord'), ProgramId = IfNull(ProgramId,'1'), Mobile = IfNull(Mobile,'0123456789'), State = IfNull(State,'State'), Email = IfNull(Email,'Email'), CreatedBy = IfNull(CreatedBy,''),NewFlag = IfNull(NewFlag,'0') ,sharedBy = IfNull(sharedBy,'') ,SharedAtDateTime = IfNull(SharedAtDateTime,'0') ,appVersion = IfNull(appVersion,'') ,appName = IfNull(appName,'') ,CreatedOn = IfNull(CreatedOn,'0')", null);
         cursor.moveToFirst();
         cursor.close();
         database.close();

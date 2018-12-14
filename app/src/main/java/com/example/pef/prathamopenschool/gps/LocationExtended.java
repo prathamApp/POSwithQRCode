@@ -1,5 +1,5 @@
 /*
- * LocationExtended - Java Class for Android
+ * LocationExtended - Java stdClass for Android
  * Created by G.Capelli (BasicAirData) on 2/6/2016
  *
  * This program is free software: you can redistribute it and/or modify

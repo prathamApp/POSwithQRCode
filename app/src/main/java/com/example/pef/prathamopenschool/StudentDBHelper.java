@@ -193,7 +193,7 @@ public class StudentDBHelper extends DBHelper {
             contentValues.put("MiddleName", obj.MiddleName);
             contentValues.put("LastName", obj.LastName);
             contentValues.put("Age", obj.Age);
-            contentValues.put("Class", obj.Class);
+            contentValues.put("Class", obj.stdClass);
             contentValues.put("UpdatedDate", obj.UpdatedDate);
             contentValues.put("Gender", obj.Gender);
             contentValues.put("GroupID", obj.GroupID);
@@ -202,6 +202,7 @@ public class StudentDBHelper extends DBHelper {
             contentValues.put("StudentUID", obj.StudentUID);
             contentValues.put("IsSelected", obj.IsSelected);
             contentValues.put("CreatedOn", obj.CreatedOn);
+            contentValues.put("DOB", obj.DOB);
 
             database.replace("Student", null, contentValues);
             database.close();
@@ -220,7 +221,7 @@ public class StudentDBHelper extends DBHelper {
             contentValues.put("MiddleName", obj.MiddleName);
             contentValues.put("LastName", obj.LastName);
             contentValues.put("Age", obj.Age);
-            contentValues.put("Class", obj.Class);
+            contentValues.put("Class", obj.stdClass);
             contentValues.put("UpdatedDate", obj.UpdatedDate == null ? "" : obj.UpdatedDate);
             contentValues.put("Gender", obj.Gender);
             contentValues.put("GroupID", obj.GroupID);
@@ -234,6 +235,7 @@ public class StudentDBHelper extends DBHelper {
             contentValues.put("appVersion", obj.appVersion == null ? "" : obj.appVersion);
             contentValues.put("appName", obj.appName == null ? "" : obj.appName);
             contentValues.put("CreatedOn", obj.CreatedOn == null ? "" : obj.CreatedOn);
+            contentValues.put("DOB", obj.DOB);
 
             database.replace("Student", null, contentValues);
 
@@ -255,7 +257,7 @@ public class StudentDBHelper extends DBHelper {
             contentValues.put("MiddleName", obj.MiddleName);
             contentValues.put("LastName", obj.LastName);
             contentValues.put("Age", obj.Age);
-            contentValues.put("Class", obj.Class);
+            contentValues.put("Class", obj.stdClass);
             contentValues.put("UpdatedDate", obj.UpdatedDate);
             contentValues.put("Gender", obj.Gender);
             contentValues.put("GroupID", obj.GroupID);
@@ -264,6 +266,7 @@ public class StudentDBHelper extends DBHelper {
             contentValues.put("StudentUID", obj.StudentUID);
             contentValues.put("IsSelected", obj.IsSelected);
             contentValues.put("CreatedOn", obj.CreatedOn);
+            contentValues.put("DOB", obj.DOB);
 
             database.insert("Student", null, contentValues);
             database.close();
@@ -395,8 +398,9 @@ public class StudentDBHelper extends DBHelper {
         contentValues.put("GroupID", student.GroupID);
         contentValues.put("MiddleName", student.MiddleName);
         contentValues.put("Age", student.Age);
-        contentValues.put("Class", student.Class);
+        contentValues.put("Class", student.stdClass);
         contentValues.put("UpdatedDate", student.UpdatedDate);
+        contentValues.put("DOB", student.DOB);
 
 
     }
@@ -413,9 +417,10 @@ public class StudentDBHelper extends DBHelper {
                 student.LastName = cursor.getString((cursor.getColumnIndex("LastName")));
                 student.Gender = cursor.getString((cursor.getColumnIndex("Gender")));
                 student.GroupID = cursor.getString(cursor.getColumnIndex("GroupID"));
+                student.DOB = cursor.getString(cursor.getColumnIndex("DOB"));
                 student.MiddleName = cursor.getString(cursor.getColumnIndex("MiddleName"));
                 student.Age = cursor.getInt(cursor.getColumnIndex("Age"));
-                student.Class = cursor.getInt(cursor.getColumnIndex("Class"));
+                student.stdClass = cursor.getInt(cursor.getColumnIndex("Class"));
                 student.UpdatedDate = cursor.getString(cursor.getColumnIndex("UpdatedDate"));
                 student.newStudent = Boolean.valueOf(cursor.getString(cursor.getColumnIndex("NewFlag")));
                 cursor.moveToNext();
@@ -445,9 +450,10 @@ public class StudentDBHelper extends DBHelper {
                 student.LastName = cursor.getString(cursor.getColumnIndex("LastName"));
                 student.Gender = cursor.getString(cursor.getColumnIndex("Gender"));
                 student.GroupID = cursor.getString(cursor.getColumnIndex("GroupID"));
+                student.DOB = cursor.getString(cursor.getColumnIndex("DOB"));
                 student.MiddleName = cursor.getString(cursor.getColumnIndex("MiddleName"));
                 student.Age = cursor.getInt(cursor.getColumnIndex("Age"));
-                student.Class = cursor.getInt(cursor.getColumnIndex("Class"));
+                student.stdClass = cursor.getInt(cursor.getColumnIndex("Class"));
                 student.UpdatedDate = cursor.getString(cursor.getColumnIndex("UpdatedDate"));
                 student.CreatedBy = cursor.getString(cursor.getColumnIndex("CreatedBy"));
                 student.newStudent = Boolean.valueOf(cursor.getString(cursor.getColumnIndex("NewFlag")));
@@ -498,7 +504,7 @@ public class StudentDBHelper extends DBHelper {
     // replace null values with dummy
     public void replaceNulls() {
         database = getWritableDatabase();
-        Cursor cursor = database.rawQuery("UPDATE Student SET StudentID = IfNull(StudentID,'StudentID'), FirstName = IfNull(FirstName,''), MiddleName = IfNull(MiddleName,''), LastName = IfNull(LastName,''), Age = IfNull(Age,'0'), Class = IfNull(Class,'0'), UpdatedDate = IfNull(UpdatedDate,'0'), Gender = IfNull(Gender,'Male'), GroupID = IfNull(GroupID,'0'), CreatedBy = IfNull(CreatedBy,'0'), NewFlag= IfNull(NewFlag,'0'), StudentUID= IfNull(StudentUID,'0'), IsSelected= IfNull(IsSelected,'0') ,sharedBy = IfNull(sharedBy,'') ,SharedAtDateTime = IfNull(SharedAtDateTime,'0') ,appVersion = IfNull(appVersion,'') ,appName = IfNull(appName,'') ,CreatedOn = IfNull(CreatedOn,'0') ", null);
+        Cursor cursor = database.rawQuery("UPDATE Student SET StudentID = IfNull(StudentID,'StudentID'), FirstName = IfNull(FirstName,''), MiddleName = IfNull(MiddleName,''), LastName = IfNull(LastName,''), Age = IfNull(Age,'0'), Class = IfNull(Class,'0'), UpdatedDate = IfNull(UpdatedDate,''), Gender = IfNull(Gender,'Male'), GroupID = IfNull(GroupID,''), CreatedBy = IfNull(CreatedBy,''), NewFlag= IfNull(NewFlag,'0'), StudentUID= IfNull(StudentUID,''), IsSelected= IfNull(IsSelected,'0') ,sharedBy = IfNull(sharedBy,'') ,SharedAtDateTime = IfNull(SharedAtDateTime,'') ,appVersion = IfNull(appVersion,'') ,appName = IfNull(appName,'') ,CreatedOn = IfNull(CreatedOn,''),DOB = IfNull(DOB,'') ", null);
         cursor.moveToFirst();
         cursor.close();
         database.close();

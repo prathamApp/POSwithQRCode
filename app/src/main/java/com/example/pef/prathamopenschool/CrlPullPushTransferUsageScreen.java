@@ -356,7 +356,8 @@ public class CrlPullPushTransferUsageScreen extends AppCompatActivity implements
                                 studentObj.put("MiddleName", studentsList.get(i).MiddleName);
                                 studentObj.put("LastName", studentsList.get(i).LastName);
                                 studentObj.put("Age", studentsList.get(i).Age);
-                                studentObj.put("Class", studentsList.get(i).Class);
+                                studentObj.put("DOB", studentsList.get(i).DOB);
+                                studentObj.put("Class", studentsList.get(i).stdClass);
                                 studentObj.put("UpdatedDate", studentsList.get(i).UpdatedDate);
                                 studentObj.put("Gender", studentsList.get(i).Gender);
                                 studentObj.put("GroupID", studentsList.get(i).GroupID);

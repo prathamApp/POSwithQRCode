@@ -1,5 +1,5 @@
 /*
- * Track - Java Class for Android
+ * Track - Java stdClass for Android
  * Created by G.Capelli (BasicAirData) on 1/5/2016
  *
  * This program is free software: you can redistribute it and/or modify

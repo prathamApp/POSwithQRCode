@@ -13,8 +13,8 @@ android {
         applicationId "com.example.pef.prathamopenschool"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 3
-        versionName "2.1.18"
+        versionCode 4
+        versionName "2.1.19"
         multiDexEnabled true
     }
     buildTypes {

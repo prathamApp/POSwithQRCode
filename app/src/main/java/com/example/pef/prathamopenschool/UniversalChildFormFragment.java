@@ -162,7 +162,7 @@ public class UniversalChildFormFragment extends Fragment implements DataInterfac
         sp_NumberReco.setAdapter(recoAdapter);
 
         sp_Class = (Spinner) view.findViewById(R.id.spinner_Class);
-        String[] ClassAdapter = {"Select Class", "3", "4", "5"};
+        String[] ClassAdapter = {"Select stdClass", "3", "4", "5"};
         ArrayAdapter<String> classAdapter = new ArrayAdapter<String>(this.getActivity(), R.layout.custom_spinner, ClassAdapter);
         //sp_NumberReco.setPrompt("Number Reco Level");
         sp_Class.setAdapter(classAdapter);
@@ -442,7 +442,7 @@ public class UniversalChildFormFragment extends Fragment implements DataInterfac
         oprSubBaseline = (CheckBox) view.findViewById(R.id.OprSubBaseline);
 
 
-        // Hiding Data for Class 1 & Class 2
+        // Hiding Data for stdClass 1 & stdClass 2
         if (SelectClassForUniversalChild.ClickedClass.equals("1") || SelectClassForUniversalChild.ClickedClass.equals("2")) {
             sp_BaselineLang.setVisibility(View.GONE);
             sp_NumberReco.setVisibility(View.GONE);
@@ -458,7 +458,7 @@ public class UniversalChildFormFragment extends Fragment implements DataInterfac
             sw_Selected.setVisibility(View.GONE);
         }
 
-        // Hiding Operations, Checkbox add& sub for Class 3,4 & Class 5
+        // Hiding Operations, Checkbox add& sub for stdClass 3,4 & stdClass 5
         if (SelectClassForUniversalChild.ClickedClass.equals("3") || SelectClassForUniversalChild.ClickedClass.equals("4") || SelectClassForUniversalChild.ClickedClass.equals("5")) {
             tv_Operations.setVisibility(View.GONE);
             oprAddBaseline.setVisibility(View.GONE);
@@ -523,7 +523,7 @@ public class UniversalChildFormFragment extends Fragment implements DataInterfac
                     StdGender = StudentData.get(i).Gender;
                     StdIsSelected = StudentData.get(i).IsSelected;
                     UpdatedDate = StudentData.get(i).UpdatedDate;
-                    stdClass = String.valueOf(StudentData.get(i).Class);
+                    stdClass = String.valueOf(StudentData.get(i).stdClass);
 
                 }
 
@@ -544,7 +544,7 @@ public class UniversalChildFormFragment extends Fragment implements DataInterfac
                 edt_ChildID.getText().clear();
                 StdAge = 0;
                 StdGender = "Select Gender";
-                stdClass = "Select Class";
+                stdClass = "Select stdClass";
                 StdIsSelected = false;
                 imgView.setImageDrawable(null);
                 sp_BaselineLang.setSelection(0);
@@ -623,7 +623,7 @@ public class UniversalChildFormFragment extends Fragment implements DataInterfac
 
                 }
 
-                // Baseline Checkbox Status for Class 1 & Class 2
+                // Baseline Checkbox Status for stdClass 1 & stdClass 2
                 if (SelectClassForUniversalChild.ClickedClass.equals("1") || SelectClassForUniversalChild.ClickedClass.equals("2")) {
 
                     if (OA == 1) {
@@ -675,7 +675,7 @@ public class UniversalChildFormFragment extends Fragment implements DataInterfac
                 public void onClick(View v) {
 
 
-                    // Baseline Checkbox Status for Class 1 & Class 2
+                    // Baseline Checkbox Status for stdClass 1 & stdClass 2
                     if (SelectClassForUniversalChild.ClickedClass.equals("1") || SelectClassForUniversalChild.ClickedClass.equals("2")) {
 
                         if (EndlineButtonClicked == true) {
@@ -745,7 +745,7 @@ public class UniversalChildFormFragment extends Fragment implements DataInterfac
                                 std.FirstName = edt_ChildName.getText().toString();
                                 std.MiddleName = edt_FatherName.getText().toString();
                                 std.LastName = "";
-                                std.Class = 0;
+                                std.stdClass = 0;
                                 std.Age = Integer.parseInt(String.valueOf(edt_Age.getText()));
                                 std.Gender = gender;
                                 std.UpdatedDate = theDate;
@@ -923,7 +923,7 @@ public class UniversalChildFormFragment extends Fragment implements DataInterfac
 
                             String ChildIDSeries = String.valueOf(edt_ChildID.getText().toString().charAt(0));
 
-                            // Validate Class against Child ID
+                            // Validate stdClass against Child ID
                             if (ChildIDSeries.equals(sp_Class.getSelectedItem().toString())) {
 
                                 // Check if Child ID Exists in db or not
@@ -955,7 +955,7 @@ public class UniversalChildFormFragment extends Fragment implements DataInterfac
                                         std.FirstName = edt_ChildName.getText().toString();
                                         std.MiddleName = edt_FatherName.getText().toString();
                                         std.LastName = "";
-                                        std.Class = Integer.parseInt(sp_Class.getSelectedItem().toString());
+                                        std.stdClass = Integer.parseInt(sp_Class.getSelectedItem().toString());
                                         std.Age = Integer.parseInt(String.valueOf(edt_Age.getText()));
                                         std.Gender = gender;
                                         std.UpdatedDate = theDate;

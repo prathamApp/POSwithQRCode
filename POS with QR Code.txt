@@ -613,7 +613,25 @@ all changes for edit student --- done
 push data without ftp module --- done
 
 
+/*********************************    POS v2.1.19  ***********************************/
 
+14 Dec (DB Version 24)
+add Date of Birth in Student form --- done
+add dob in student pojo --- done
+refactor class to stdclass in student pojo --- done 
+add dob in studentdbhelper --- done
+change instances of stdclass in db to class --- done 
+push dob in transfer data, pushself, pushdata --- done
+check nulls on splash  --- done
+update dbhelper --- done
+update database initialization --- done
+check nulls for new fields --- done
+push label in transfer data, pushself, pushdata --- done
+
+
+15 Dec
+share content module (FTPConnect.java, CrlShareReceiveProfiles.java)--- 
+crlDashboard receiveData() --- 
 Later ... in Late December 
 aaj ka sawal ----
 

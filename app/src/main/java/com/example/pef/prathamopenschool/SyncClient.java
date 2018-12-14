@@ -1,9 +1,7 @@
 package com.example.pef.prathamopenschool;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -365,7 +363,7 @@ public class SyncClient extends AsyncTask<String, Void, Boolean> {
                     student.GroupID = obj.getString("GroupId");
                     student.MiddleName = obj.getString("MiddleName");
                     student.Age = obj.getInt("Age");
-                    student.Class = obj.getInt("Class");
+                    student.stdClass = obj.getInt("Class");
                     student.UpdatedDate = obj.getString("UpdatedDate");
                     studentDBHelper.Add(student, db);
                 }

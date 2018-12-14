@@ -1,5 +1,7 @@
 package com.example.pef.prathamopenschool;
 
+//http://www.deboma.com/article/mobile-development/22/android-datepicker-and-age-calculation
+
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
@@ -32,15 +34,19 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class AddStudentProfiles extends AppCompatActivity {
 
     Spinner states_spinner, blocks_spinner, villages_spinner, groups_spinner;
-    EditText edt_Fname, edt_Mname, edt_Lname, edt_Age, edt_Class;
+    EditText edt_Fname, edt_Mname, edt_Lname, edt_Class;
     RadioGroup rg_Gender;
-    Button btn_Submit, btn_Clear, btn_Capture;
+    Button btn_Submit, btn_Clear, btn_Capture, btn_BirthDatePicker;
     VillageDBHelper database;
     GroupDBHelper gdb;
     StudentDBHelper sdb;
@@ -65,6 +71,7 @@ public class AddStudentProfiles extends AppCompatActivity {
     PlayVideo playVideo;
     boolean timer;
 
+    int stdAge = 0;
     StatusDBHelper statdb;
 
     Utility util;
@@ -104,6 +111,7 @@ public class AddStudentProfiles extends AppCompatActivity {
         initializeBaselineSpinner();
         initializeNumberRecoSpinner();
         initializeAserDate();
+        initializeBirthDate();
 
         btn_Capture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -634,7 +642,16 @@ public class AddStudentProfiles extends AppCompatActivity {
                         // Validations
                         if ((edt_Fname.getText().toString().matches("[a-zA-Z.? ]*")) && (edt_Lname.getText().toString().matches("[a-zA-Z.? ]*"))
                                 && (edt_Mname.getText().toString().matches("[a-zA-Z.? ]*"))
-                                && (edt_Age.getText().toString().matches("[0-9]+")) && (edt_Class.getText().toString().matches("[0-9]+"))) {
+                                && (!btn_BirthDatePicker.getText().toString().contains("Birth")) && (edt_Class.getText().toString().matches("[0-9]+"))) {
+
+                            Calendar cal = Calendar.getInstance();
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+                            try {
+                                cal.setTime(sdf.parse(btn_BirthDatePicker.getText().toString()));
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            stdAge = Integer.parseInt(Integer.toString(calculateAge(cal.getTimeInMillis())));
 
                             if (MultiPhotoSelectActivity.programID.equalsIgnoreCase("13")) {
                                 // either baseline spinners are fully filled or not filled at all
@@ -646,8 +663,8 @@ public class AddStudentProfiles extends AppCompatActivity {
                                     stdObj.FirstName = edt_Fname.getText().toString();
                                     stdObj.MiddleName = edt_Mname.getText().toString();
                                     stdObj.LastName = edt_Lname.getText().toString();
-                                    stdObj.Age = Integer.parseInt(String.valueOf(edt_Age.getText()));
-                                    stdObj.Class = Integer.parseInt(String.valueOf(edt_Class.getText()));
+                                    stdObj.Age = stdAge;
+                                    stdObj.stdClass = Integer.parseInt(String.valueOf(edt_Class.getText()));
                                     stdObj.UpdatedDate = util.GetCurrentDateTime(false);
                                     stdObj.Gender = gender;
                                     stdObj.GroupID = GrpID;
@@ -656,8 +673,9 @@ public class AddStudentProfiles extends AppCompatActivity {
                                     stdObj.StudentUID = "";
                                     stdObj.IsSelected = true;
                                     stdObj.CreatedOn = util.GetCurrentDateTime(false).toString();
+                                    stdObj.DOB = btn_BirthDatePicker.getText().toString();
                                     sdb.insertData(stdObj);
-
+                                    BackupDatabase.backup(AddStudentProfiles.this);
                                     if (MultiPhotoSelectActivity.programID.equalsIgnoreCase("13")) {
                                         if (sp_BaselineLang.getSelectedItemPosition() > 0 || sp_NumberReco.getSelectedItemPosition() > 0)
                                             EndlineButtonClicked = false;
@@ -713,8 +731,8 @@ public class AddStudentProfiles extends AppCompatActivity {
                                 stdObj.FirstName = edt_Fname.getText().toString();
                                 stdObj.MiddleName = edt_Mname.getText().toString();
                                 stdObj.LastName = edt_Lname.getText().toString();
-                                stdObj.Age = Integer.parseInt(String.valueOf(edt_Age.getText()));
-                                stdObj.Class = Integer.parseInt(String.valueOf(edt_Class.getText()));
+                                stdObj.Age = stdAge;
+                                stdObj.stdClass = Integer.parseInt(String.valueOf(edt_Class.getText()));
                                 stdObj.UpdatedDate = util.GetCurrentDateTime(false);
                                 stdObj.Gender = gender;
                                 stdObj.GroupID = GrpID;
@@ -723,6 +741,7 @@ public class AddStudentProfiles extends AppCompatActivity {
                                 stdObj.StudentUID = "";
                                 stdObj.IsSelected = true;
                                 stdObj.CreatedOn = util.GetCurrentDateTime(false).toString();
+                                stdObj.DOB = btn_BirthDatePicker.getText().toString();
                                 sdb.insertData(stdObj);
 
                                 Toast.makeText(AddStudentProfiles.this, "Record Inserted Successfully !!!", Toast.LENGTH_SHORT).show();
@@ -749,16 +768,28 @@ public class AddStudentProfiles extends AppCompatActivity {
         });
     }
 
+
+    int calculateAge(long date) {
+        Calendar dob = Calendar.getInstance();
+        dob.setTimeInMillis(date);
+        Calendar today = Calendar.getInstance();
+        int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+        if (today.get(Calendar.DAY_OF_MONTH) < dob.get(Calendar.DAY_OF_MONTH)) {
+            age--;
+        }
+        return age;
+    }
+
     private void resetFormPartially() {
         edt_Fname.getText().clear();
         edt_Mname.getText().clear();
         edt_Lname.getText().clear();
-        edt_Age.getText().clear();
         edt_Class.getText().clear();
         imgView.setImageDrawable(null);
         UUID uuStdid = UUID.randomUUID();
         randomUUIDStudent = uuStdid.toString();
         EndlineButtonClicked = false;
+        btn_BirthDatePicker.setText("Birth Date");
         btn_DatePicker.setText(util.GetCurrentDate().toString());
         sp_BaselineLang.setSelection(0);
         sp_NumberReco.setSelection(0);
@@ -823,7 +854,6 @@ public class AddStudentProfiles extends AppCompatActivity {
         edt_Fname = (EditText) findViewById(R.id.edt_FirstName);
         edt_Mname = (EditText) findViewById(R.id.edt_MiddleName);
         edt_Lname = (EditText) findViewById(R.id.edt_LastName);
-        edt_Age = (EditText) findViewById(R.id.edt_Age);
         edt_Class = (EditText) findViewById(R.id.edt_Class);
         rg_Gender = (RadioGroup) findViewById(R.id.rg_Gender);
         btn_Capture = (Button) findViewById(R.id.btn_Capture);
@@ -832,6 +862,7 @@ public class AddStudentProfiles extends AppCompatActivity {
         btn_Clear = (Button) findViewById(R.id.btn_Clear);
         util = new Utility();
         btn_DatePicker = findViewById(R.id.btn_DatePicker);
+        btn_BirthDatePicker = findViewById(R.id.btn_BirthDatePicker);
         btn_Endline1 = findViewById(R.id.btn_Endline1);
         btn_Endline2 = findViewById(R.id.btn_Endline2);
         btn_Endline3 = findViewById(R.id.btn_Endline3);
@@ -853,6 +884,17 @@ public class AddStudentProfiles extends AppCompatActivity {
                 DialogFragment newFragment = new DatePickerFragment();
                 newFragment.show(getFragmentManager(), "DatePicker");
 
+            }
+        });
+    }
+
+    private void initializeBirthDate() {
+        btn_BirthDatePicker.setPadding(8, 8, 8, 8);
+        btn_BirthDatePicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment newFragment = new BirthDatePickerFragment();
+                newFragment.show(getFragmentManager(), "BirthDatePicker");
             }
         });
     }
@@ -981,11 +1023,11 @@ public class AddStudentProfiles extends AppCompatActivity {
         edt_Fname.getText().clear();
         edt_Mname.getText().clear();
         edt_Lname.getText().clear();
-        edt_Age.getText().clear();
         edt_Class.getText().clear();
         sp_BaselineLang.setSelection(0);
         sp_NumberReco.setSelection(0);
         btn_DatePicker.setText(util.GetCurrentDate().toString());
+        btn_BirthDatePicker.setText("Birth Date");
         imgView.setImageDrawable(null);
         EndlineButtonClicked = false;
         setDefaults();

@@ -1,5 +1,5 @@
 /**
- * EGM96 - Singleton Java Class for Android
+ * EGM96 - Singleton Java stdClass for Android
  * Created by G.Capelli (BasicAirData) on 24/4/2016
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ import java.io.OutputStream;
 
 class EGM96 {
 
-    // ---------------------------------------------------------------------------- Singleton Class
+    // ---------------------------------------------------------------------------- Singleton stdClass
     private static EGM96 instance = new EGM96();
 
     private EGM96(){}

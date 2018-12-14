@@ -1,5 +1,5 @@
 /*
- * SpikesChecker - Java Class for Android
+ * SpikesChecker - Java stdClass for Android
  * Created by G.Capelli (BasicAirData) on 15/9/2016
  *
  * This program is free software: you can redistribute it and/or modify

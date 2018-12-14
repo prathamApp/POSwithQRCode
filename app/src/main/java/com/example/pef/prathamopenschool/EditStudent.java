@@ -1411,9 +1411,9 @@ public class EditStudent extends AppCompatActivity {
                 // Default
                 Gender = "Male";
             }
-            String cls = String.valueOf(SelectedStudent.Class);
+            String cls = String.valueOf(SelectedStudent.stdClass);
             if (cls.length() > 0) {
-                Class = SelectedStudent.Class;
+                Class = SelectedStudent.stdClass;
             } else {
                 Class = 0;
             }
@@ -1432,7 +1432,7 @@ public class EditStudent extends AppCompatActivity {
             edt_Mname.setText("Middle Name : " + MiddleName);
             edt_Lname.setText("Last Name : " + LastName);
             edt_Age.setText("Age : " + String.valueOf(Age));
-            edt_Class.setText("Class : " + String.valueOf(Class));
+            edt_Class.setText("stdClass : " + String.valueOf(Class));
             tv_Gender.setText("Gender : " + Gender);
             btn_Capture.setVisibility(View.VISIBLE);
             btn_Capture.setOnClickListener(new View.OnClickListener() {

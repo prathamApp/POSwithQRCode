@@ -330,8 +330,8 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
                         stdObj.put("LastName", std.LastName);
                         Integer age = std.Age;
                         stdObj.put("Age", age == null ? 0 : std.Age);
-                        Integer cls = std.Class;
-                        stdObj.put("Class", cls == null ? 0 : std.Class);
+                        Integer cls = std.stdClass;
+                        stdObj.put("Class", cls == null ? 0 : std.stdClass);
                         stdObj.put("UpdatedDate", std.UpdatedDate);
                         stdObj.put("Gender", std.Gender.equals(null) ? "Male" : std.Gender);
                         stdObj.put("GroupID", std.GroupID.equals(null) ? "GroupID" : std.GroupID);

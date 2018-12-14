@@ -1,13 +1,9 @@
 package com.example.pef.prathamopenschool;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
-import android.view.View;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -25,7 +21,6 @@ import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.List;
 
-import static com.example.pef.prathamopenschool.CrlDashboard.copy;
 import static com.example.pef.prathamopenschool.CrlDashboard.filename;
 
 /**
@@ -340,7 +335,7 @@ public class RecieveFiles extends AsyncTask<Void, Integer, String> {
                 stdObj.MiddleName = stdJsonObject.getString("MiddleName");
                 stdObj.LastName = stdJsonObject.getString("LastName");
                 stdObj.Age = stdJsonObject.getInt("Age");
-                stdObj.Class = stdJsonObject.getInt("Class");
+                stdObj.stdClass = stdJsonObject.getInt("Class");
                 stdObj.UpdatedDate = stdJsonObject.getString("UpdatedDate");
                 stdObj.Gender = stdJsonObject.getString("Gender");
                 stdObj.GroupID = stdJsonObject.getString("GroupID");

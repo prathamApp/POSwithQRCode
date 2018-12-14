@@ -1,5 +1,5 @@
 /**
- * EventBusMSG - Java Class for Android
+ * EventBusMSG - Java stdClass for Android
  * Created by G.Capelli (BasicAirData) on 05/08/17.
  *
  * This program is free software: you can redistribute it and/or modify

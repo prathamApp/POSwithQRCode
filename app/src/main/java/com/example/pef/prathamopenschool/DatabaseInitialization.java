@@ -56,12 +56,13 @@ public final class DatabaseInitialization {
 
 
     // Constants needed for Student
-    public static final String CreateStudentTable = "CREATE TABLE Student (StudentID text PRIMARY KEY, FirstName text, MiddleName text, LastName text, Age int, Class int, UpdatedDate text, Gender text, GroupID text, CreatedBy text, NewFlag boolean, StudentUID text ,IsSelected boolean,sharedBy TEXT, SharedAtDateTime TEXT, appVersion TEXT, appName TEXT, CreatedOn TEXT);";
+    public static final String CreateStudentTable = "CREATE TABLE Student (StudentID text PRIMARY KEY, FirstName text, MiddleName text, LastName text, Age int, Class int, UpdatedDate text, Gender text, GroupID text, CreatedBy text, NewFlag boolean, StudentUID text ,IsSelected boolean,sharedBy TEXT, SharedAtDateTime TEXT, appVersion TEXT, appName TEXT, CreatedOn TEXT, DOB TEXT);";
     public static String AlterStudentTableSharedBy = "ALTER TABLE Student ADD COLUMN sharedBy TEXT";
     public static String AlterStudentTableSharedAtDateTime = "ALTER TABLE Student ADD COLUMN SharedAtDateTime TEXT";
     public static String AlterStudentTableAppVersion = "ALTER TABLE Student ADD COLUMN appVersion TEXT";
     public static String AlterStudentTableAppName = "ALTER TABLE Student ADD COLUMN appName TEXT";
     public static String AlterStudentTableCreatedOn = "ALTER TABLE Student ADD COLUMN CreatedOn TEXT";
+    public static String AlterStudentTableDOB = "ALTER TABLE Student ADD COLUMN DOB TEXT";
 
 
     // Constants needed for Group

@@ -314,7 +314,7 @@ public class splashScreenVideo extends AppCompatActivity {
                     String ver = statusDBHelper.getValue("apkVersion");
                     if (ver == null || ver.equalsIgnoreCase("null")) {
                         createDBJsonforBackup();
-                    } else if (!ver.equalsIgnoreCase("2.1.7") && !ver.equalsIgnoreCase("2.1.8") && !ver.equalsIgnoreCase("2.1.9") && !ver.equalsIgnoreCase("2.1.10") && !ver.equalsIgnoreCase("2.1.11") && !ver.equalsIgnoreCase("2.1.12") && !ver.equalsIgnoreCase("2.1.13") && !ver.equalsIgnoreCase("2.1.14") && !ver.equalsIgnoreCase("2.1.15") && !ver.equalsIgnoreCase("2.1.16") && !ver.equalsIgnoreCase("2.1.17") && !ver.equalsIgnoreCase("2.1.18")) {
+                    } else if (!ver.equalsIgnoreCase("2.1.7") && !ver.equalsIgnoreCase("2.1.8") && !ver.equalsIgnoreCase("2.1.9") && !ver.equalsIgnoreCase("2.1.10") && !ver.equalsIgnoreCase("2.1.11") && !ver.equalsIgnoreCase("2.1.12") && !ver.equalsIgnoreCase("2.1.13") && !ver.equalsIgnoreCase("2.1.14") && !ver.equalsIgnoreCase("2.1.15") && !ver.equalsIgnoreCase("2.1.16") && !ver.equalsIgnoreCase("2.1.17") && !ver.equalsIgnoreCase("2.1.18") && !ver.equalsIgnoreCase("2.1.19")) {
                         createDBJsonforBackup();
                     }
                     //check initial entries
@@ -330,7 +330,7 @@ public class splashScreenVideo extends AppCompatActivity {
                     String ver = statusDBHelper.getValue("apkVersion");
                     if (ver == null || ver.equalsIgnoreCase("null")) {
                         createDBJsonforBackup();
-                    } else if (!ver.equalsIgnoreCase("2.1.7") && !ver.equalsIgnoreCase("2.1.8") && !ver.equalsIgnoreCase("2.1.9") && !ver.equalsIgnoreCase("2.1.10") && !ver.equalsIgnoreCase("2.1.11") && !ver.equalsIgnoreCase("2.1.12") && !ver.equalsIgnoreCase("2.1.13") && !ver.equalsIgnoreCase("2.1.14") && !ver.equalsIgnoreCase("2.1.15") && !ver.equalsIgnoreCase("2.1.16") && !ver.equalsIgnoreCase("2.1.17") && !ver.equalsIgnoreCase("2.1.18")) {
+                    } else if (!ver.equalsIgnoreCase("2.1.7") && !ver.equalsIgnoreCase("2.1.8") && !ver.equalsIgnoreCase("2.1.9") && !ver.equalsIgnoreCase("2.1.10") && !ver.equalsIgnoreCase("2.1.11") && !ver.equalsIgnoreCase("2.1.12") && !ver.equalsIgnoreCase("2.1.13") && !ver.equalsIgnoreCase("2.1.14") && !ver.equalsIgnoreCase("2.1.15") && !ver.equalsIgnoreCase("2.1.16") && !ver.equalsIgnoreCase("2.1.17") && !ver.equalsIgnoreCase("2.1.18") && !ver.equalsIgnoreCase("2.1.19")) {
                         createDBJsonforBackup();
                     }
                     //check initial entries
@@ -647,7 +647,7 @@ public class splashScreenVideo extends AppCompatActivity {
         }
         if (apkType == false) {
             s = new StatusDBHelper(this);
-            s.insertInitialData("apkType", "QRCode, GPS, Regular Content");
+            s.insertInitialData("apkType", "QRCode, GPS, Regular Content"); // shuffled or regular content
         } else {
             s = new StatusDBHelper(this);
             s.Update("apkType", "QRCode, GPS, Regular Content");
@@ -1368,6 +1368,7 @@ public class splashScreenVideo extends AppCompatActivity {
                         _obj.put("StartDateTime", _score.StartTime);
                         _obj.put("EndDateTime", _score.EndTime);
                         _obj.put("Level", _score.Level);
+                        _obj.put("Label", _score.Label);
                         scoreData.put(_obj);
                     }
                 }
@@ -1460,7 +1461,7 @@ public class splashScreenVideo extends AppCompatActivity {
                         studentObj.put("MiddleName", studentsList.get(i).MiddleName);
                         studentObj.put("LastName", studentsList.get(i).LastName);
                         studentObj.put("Age", studentsList.get(i).Age);
-                        studentObj.put("Class", studentsList.get(i).Class);
+                        studentObj.put("Class", studentsList.get(i).stdClass);
                         studentObj.put("UpdatedDate", studentsList.get(i).UpdatedDate);
                         studentObj.put("Gender", studentsList.get(i).Gender);
                         studentObj.put("GroupID", studentsList.get(i).GroupID);

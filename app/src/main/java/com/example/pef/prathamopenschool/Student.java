@@ -7,7 +7,7 @@ public class Student {
     public String FirstName;
     public String MiddleName;
     public int Age;
-    public int Class;
+    public int stdClass;
     public String UpdatedDate;
     public String LastName;
     public String Gender;
@@ -22,11 +22,47 @@ public class Student {
     public String appVersion;
     public String appName;
     public String CreatedOn;
+    public String DOB;
+
+
+    Student() {
+    }
 
     public Student(String id, String name, String groupID) {
         this.StudentID = id;
         this.FirstName = name;
         this.GroupID = groupID;
+    }
+
+    Student(String Firstname, String studentImgPath) {
+        this.FirstName = Firstname;
+        this.studentPhotoPath = studentImgPath;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "StudentID='" + StudentID + '\'' +
+                ", FirstName='" + FirstName + '\'' +
+                ", MiddleName='" + MiddleName + '\'' +
+                ", Age=" + Age +
+                ", stdClass=" + stdClass +
+                ", UpdatedDate='" + UpdatedDate + '\'' +
+                ", LastName='" + LastName + '\'' +
+                ", Gender='" + Gender + '\'' +
+                ", GroupID='" + GroupID + '\'' +
+                ", CreatedBy='" + CreatedBy + '\'' +
+                ", newStudent=" + newStudent +
+                ", StudentUID='" + StudentUID + '\'' +
+                ", IsSelected=" + IsSelected +
+                ", studentPhotoPath='" + studentPhotoPath + '\'' +
+                ", sharedBy='" + sharedBy + '\'' +
+                ", SharedAtDateTime='" + SharedAtDateTime + '\'' +
+                ", appVersion='" + appVersion + '\'' +
+                ", appName='" + appName + '\'' +
+                ", CreatedOn='" + CreatedOn + '\'' +
+                ", DOB='" + DOB + '\'' +
+                '}';
     }
 
     public String getStudentID() {
@@ -59,6 +95,14 @@ public class Student {
 
     public void setAge(int age) {
         Age = age;
+    }
+
+    public int getStdClass() {
+        return stdClass;
+    }
+
+    public void setStdClass(int stdClass) {
+        this.stdClass = stdClass;
     }
 
     public String getUpdatedDate() {
@@ -173,12 +217,11 @@ public class Student {
         CreatedOn = createdOn;
     }
 
-    Student() {
+    public String getDOB() {
+        return DOB;
     }
 
-    Student(String Firstname, String studentImgPath) {
-        this.FirstName = Firstname;
-        this.studentPhotoPath = studentImgPath;
+    public void setDOB(String DOB) {
+        this.DOB = DOB;
     }
-
 }

@@ -95,7 +95,7 @@ public class EndlineDialogFragment extends android.app.DialogFragment implements
 
         tv_wp = (TextView) rootView.findViewById(R.id.tv_WordProblem);
 
-        // Hiding Checkboxes of Mul & Div for Class 1 & Class 2
+        // Hiding Checkboxes of Mul & Div for stdClass 1 & stdClass 2
         if (SelectClassForUniversalChild.ClickedClass.equals("1") || SelectClassForUniversalChild.ClickedClass.equals("2")) {
             oprMul.setVisibility(View.GONE);
             oprDiv.setVisibility(View.GONE);

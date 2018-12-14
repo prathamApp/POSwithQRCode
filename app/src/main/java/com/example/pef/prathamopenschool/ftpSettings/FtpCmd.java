@@ -102,7 +102,7 @@ public abstract class FtpCmd implements Runnable {
 
             if (cmdClasses[i].getName().equals(verb)) {
                 // We found the correct command. We retrieve the corresponding
-                // Class object, get the Constructor object for that Class, and
+                // stdClass object, get the Constructor object for that stdClass, and
                 // and use that Constructor to instantiate the correct FtpCmd
                 // subclass. Yes, I'm serious.
                 Constructor<? extends FtpCmd> constructor;

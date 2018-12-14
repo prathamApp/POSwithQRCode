@@ -1,6 +1,6 @@
 package com.example.pef.prathamopenschool;
 
-// Questions POJO Class
+// Questions POJO stdClass
 
 public class Question {
 

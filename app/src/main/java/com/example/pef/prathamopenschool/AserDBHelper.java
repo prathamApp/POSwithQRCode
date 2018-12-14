@@ -420,7 +420,7 @@ public class AserDBHelper extends DBHelper {
     // replace null values with dummy
     public void replaceNulls() {
         database = getWritableDatabase();
-        cursor = database.rawQuery("UPDATE Aser SET StudentId = IfNull(StudentId,'StudentId'), ChildID = IfNull(ChildID,'ChildID'), TestType = IfNull(TestType,'0'), TestDate = IfNull(TestDate,'0'), Lang = IfNull(Lang,'0'), Num = IfNull(Num,'0'), OAdd = IfNull(OAdd,'0'), OSub = IfNull(OSub,'0'), OMul = IfNull(OMul,'0'), ODiv = IfNull(ODiv,'0'), WAdd= IfNull(WAdd,'0'), WSub= IfNull(WSub,'0'), CreatedBy= IfNull(CreatedBy,'0'), CreatedDate= IfNull(CreatedDate,'0'), DeviceId= IfNull(DeviceId,'0'), FLAG= IfNull(FLAG,'0'), GroupID= IfNull(GroupID,'0') ,sharedBy = IfNull(sharedBy,'') ,SharedAtDateTime = IfNull(SharedAtDateTime,'0') ,appVersion = IfNull(appVersion,'') ,appName = IfNull(appName,'') ,CreatedOn = IfNull(CreatedOn,'0') ", null);
+        cursor = database.rawQuery("UPDATE Aser SET StudentId = IfNull(StudentId,'StudentId'), ChildID = IfNull(ChildID,'ChildID'), TestType = IfNull(TestType,'0'), TestDate = IfNull(TestDate,'0'), Lang = IfNull(Lang,'0'), Num = IfNull(Num,'0'), OAdd = IfNull(OAdd,'0'), OSub = IfNull(OSub,'0'), OMul = IfNull(OMul,'0'), ODiv = IfNull(ODiv,'0'), WAdd= IfNull(WAdd,'0'), WSub= IfNull(WSub,'0'), CreatedBy= IfNull(CreatedBy,'0'), CreatedDate= IfNull(CreatedDate,'0'), DeviceId= IfNull(DeviceId,'0'), FLAG= IfNull(FLAG,'0'), GroupID= IfNull(GroupID,'0') ,sharedBy = IfNull(sharedBy,'') ,SharedAtDateTime = IfNull(SharedAtDateTime,'0') ,appVersion = IfNull(appVersion,'') ,appName = IfNull(appName,'') ,CreatedOn = IfNull(CreatedOn,'')", null);
         cursor.moveToFirst();
         cursor.close();
         database.close();

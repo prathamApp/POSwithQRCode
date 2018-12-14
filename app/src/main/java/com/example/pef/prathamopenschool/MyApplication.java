@@ -6,7 +6,7 @@ package com.example.pef.prathamopenschool;
 
 
 // MHM
-// Class for Checking internet connection
+// stdClass for Checking internet connection
 
 import android.Manifest;
 import android.app.Application;

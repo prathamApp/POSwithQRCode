@@ -355,7 +355,7 @@ public class ScoreDBHelper extends DBHelper {
     // replace null values with dummy
     public void replaceNulls() {
         database = getWritableDatabase();
-        Cursor cursor = database.rawQuery("UPDATE Scores SET SessionID = IfNull(SessionID,'0'), GroupID = IfNull(GroupID,'0'), DeviceID = IfNull(DeviceID,'0'), ResourceID = IfNull(ResourceID,'0'), QuestionID = IfNull(QuestionID,'0'), ScoredMarks = IfNull(ScoredMarks,'0'), TotalMarks = IfNull(TotalMarks,'0'), StartDateTime = IfNull(StartDateTime,'0'), EndDateTime = IfNull(EndDateTime,'0'), Level = IfNull(Level,'0')", null);
+        Cursor cursor = database.rawQuery("UPDATE Scores SET SessionID = IfNull(SessionID,'0'), GroupID = IfNull(GroupID,'0'), DeviceID = IfNull(DeviceID,'0'), ResourceID = IfNull(ResourceID,'0'), QuestionID = IfNull(QuestionID,'0'), ScoredMarks = IfNull(ScoredMarks,'0'), TotalMarks = IfNull(TotalMarks,'0'), StartDateTime = IfNull(StartDateTime,'0'), EndDateTime = IfNull(EndDateTime,'0'), Level = IfNull(Level,'0'), Label = IfNull(Label,'')", null);
         cursor.moveToFirst();
         cursor.close();
         database.close();
