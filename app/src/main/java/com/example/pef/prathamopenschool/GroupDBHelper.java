@@ -464,7 +464,7 @@ public class GroupDBHelper extends DBHelper {
     // replace null values with dummy
     public void replaceNulls() {
         database = getWritableDatabase();
-        Cursor cursor = database.rawQuery("UPDATE Groups SET GroupID = IfNull(GroupID,'0'), GroupName = IfNull(GroupName,''), DeviceID = IfNull(DeviceID,'0'), VillageID = IfNull(VillageID,'0'), programId = IfNull(ProgramId,'0'), CreatedBy = IfNull(CreatedBy,'0'), NewFlag = IfNull(NewFlag,'0'), VillageName = IfNull(VillageName,'0'), SchoolName = IfNull(SchoolName,'0') ,sharedBy = IfNull(sharedBy,'') ,SharedAtDateTime = IfNull(SharedAtDateTime,'0') ,appVersion = IfNull(appVersion,'') ,appName = IfNull(appName,'') ,CreatedOn = IfNull(CreatedOn,'0') ", null);
+        Cursor cursor = database.rawQuery("UPDATE Groups SET GroupID = IfNull(GroupID,'0'), GroupName = IfNull(GroupName,''), DeviceID = IfNull(DeviceID,'0'), VillageID = IfNull(VillageID,'0'), programId = IfNull(ProgramId,'0'), CreatedBy = IfNull(CreatedBy,'0'), NewFlag = IfNull(NewFlag,'0'), VillageName = IfNull(VillageName,''), SchoolName = IfNull(SchoolName,'') ,sharedBy = IfNull(sharedBy,'') ,SharedAtDateTime = IfNull(SharedAtDateTime,'') ,appVersion = IfNull(appVersion,'') ,appName = IfNull(appName,'') ,CreatedOn = IfNull(CreatedOn,'') ", null);
         cursor.moveToFirst();
         cursor.close();
         database.close();

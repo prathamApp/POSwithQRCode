@@ -55,14 +55,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:background="@android:drawable/btn_dropdown" />
+            android:background="@drawable/spinner_background" />
 
         <Spinner
             android:id="@+id/spinner_NumberReco"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:background="@android:drawable/btn_dropdown" />
+            android:background="@drawable/spinner_background" />
 
         <Switch
             android:id="@+id/switch_isSelected"

@@ -32,6 +32,7 @@
             android:layout_below="@+id/title"
             android:layout_centerHorizontal="true"
             android:layout_margin="32dp"
+            android:background="@drawable/spinner_background"
             android:textAlignment="center" />
 
         <!--Select Block Drop Down List-->
@@ -42,6 +43,7 @@
             android:layout_below="@+id/spinner_SelectState"
             android:layout_centerHorizontal="true"
             android:layout_margin="32dp"
+            android:background="@drawable/spinner_background"
             android:textAlignment="center" />
 
         <!--Village Drop Down List-->
@@ -52,6 +54,7 @@
             android:layout_below="@+id/spinner_SelectBlock"
             android:layout_centerHorizontal="true"
             android:layout_margin="32dp"
+            android:background="@drawable/spinner_background"
             android:textAlignment="center" />
 
         <EditText
