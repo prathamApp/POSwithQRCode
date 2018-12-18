@@ -141,7 +141,7 @@
                 android:layout_margin="16dp"
                 android:background="@color/button"
                 android:onClick="receiveData"
-                android:text="  Receive Usage/ Profiles/ Jsons  "
+                android:text="  Receive Data  "
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp" />

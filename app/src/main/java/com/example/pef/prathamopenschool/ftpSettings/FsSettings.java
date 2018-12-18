@@ -54,19 +54,21 @@ public class FsSettings {
 
     public static File getChrootDir() {
         final SharedPreferences sp = getSharedPreferences();
-        String dirName = sp.getString("chrootDir", "");
+        String dirName ="";// sp.getString("chrootDir", "");
         File chrootDir = new File(dirName);
         // when the stored dirName was not initialized, initialize to good default
         // or when the chrootDir is garbage, initialize to good default
-        if (dirName.equals("") || !chrootDir.isDirectory()) {
-            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                chrootDir = new File(MyApplication.getPath()/*+"/PraDigi/"*/);
-                Log.d("fssetting::",chrootDir.getAbsolutePath());
-            } else {
-                chrootDir = new File(MyApplication.getPath()/*+"/PraDigi/"*/);
-                Log.d("fssetting::",chrootDir.getAbsolutePath());
-            }
+
+            if (dirName.equals("") || !chrootDir.isDirectory()) {
+                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                    chrootDir = new File(MyApplication.getPath()/*+"/PraDigi/"*/);
+                    Log.d("fssetting::", chrootDir.getAbsolutePath());
+                } else {
+                    chrootDir = new File(MyApplication.getPath()/*+"/PraDigi/"*/);
+                    Log.d("fssetting::", chrootDir.getAbsolutePath());
+                }
         }
+
         if (!chrootDir.isDirectory()) {
             Log.e(TAG, "getChrootDir: not a directory");
             // if this happens, we are screwed
@@ -86,7 +88,7 @@ public class FsSettings {
     public static boolean setChrootDir(String dir) {
         File chrootTest = new File(dir);
         if (!chrootTest.isDirectory() || !chrootTest.canRead())
-                return false;
+            return false;
         final SharedPreferences sp = getSharedPreferences();
         sp.edit().putString("chrootDir", dir).apply();
         return true;

@@ -630,8 +630,21 @@ push label in transfer data, pushself, pushdata --- done
 
 
 15 Dec
-share content module (FTPConnect.java, CrlShareReceiveProfiles.java)--- 
-crlDashboard receiveData() --- 
+groups not sharing --- done
+replace nulls in groupdb helper --- done
+add student xml next click focus --- done
+change all spinner background of all forms --- done
+spinner style -- done
+new drawable drop down arrow --- done
+
+
+18 Dec
+MyApplication class changes --- done
+pdutility class --- done
+share content module FTPConnect.java --- done
+share content module CrlShareReceiveProfiles.java --- done
+crlDashboard receiveData() --- done
+
 Later ... in Late December 
 aaj ka sawal ----
 

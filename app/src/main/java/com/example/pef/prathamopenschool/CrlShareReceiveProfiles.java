@@ -1,5 +1,7 @@
 package com.example.pef.prathamopenschool;
 
+import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -10,13 +12,16 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -31,13 +36,17 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.pef.prathamopenschool.ftpSettings.FsService;
+import com.example.pef.prathamopenschool.ftpSettings.WifiApControl;
 import com.example.pef.prathamopenschool.interfaces.ExtractInterface;
 import com.github.angads25.filepicker.controller.DialogSelectionListener;
 import com.github.angads25.filepicker.model.DialogConfigs;
@@ -55,6 +64,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -83,7 +94,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
     Boolean FlagShareOff = false, FlagReceiveOff = false;
     File newJson;
     String ReceivePath, TargetPath, shareItPath;
-
+    int PraDigiPath = 99;
     int SDCardLocationChooser = 7, ZipFilePicker = 9;
     String zipPath;
 
@@ -117,41 +128,24 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
     private ProgressDialog dialog;
     ListView lst_networks;
 
+    private Uri treeUri;
+    private String networkSSID = "PrathamHotSpot";
+    public static ProgressDialog pd;
+    Dialog ftpdialog;
+    Switch sw_FtpServer;
+    PowerManager.WakeLock wl;
+    PowerManager pm;
+    public static boolean shareContent = false;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crl_share_receive_profiles);
-        ftpConnect = new FTPConnect(CrlShareReceiveProfiles.this, CrlShareReceiveProfiles.this,
-                CrlShareReceiveProfiles.this);
-
-        MainActivity.sessionFlg = false;
-        sessionContex = this;
-        playVideo = new PlayVideo();
-
-        // Hide Actionbar
         getSupportActionBar().hide();
 
-        progressDialog = new ProgressDialog(CrlShareReceiveProfiles.this);
+        initializeVariables();
 
-
-        c = this;
-        sdb = new StudentDBHelper(c);
-        cdb = new CrlDBHelper(c);
-        gdb = new GroupDBHelper(c);
-        adb = new AserDBHelper(c);
-
-        wipeSentFiles();
-
-        tv_Students = (TextView) findViewById(R.id.tv_studentsShared);
-        tv_Crls = (TextView) findViewById(R.id.tv_crlsShared);
-        tv_Groups = (TextView) findViewById(R.id.tv_groupssShared);
-
-        tv_Students.setVisibility(View.GONE);
-        tv_Crls.setVisibility(View.GONE);
-        tv_Groups.setVisibility(View.GONE);
-
-        btn_updateMedia = (Button) findViewById(R.id.btn_updateMedia);
-        // btn_updateMedia.setVisibility(View.GONE);
         btn_updateMedia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -173,6 +167,41 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
             }
         });
 
+    }
+
+    @SuppressLint("InvalidWakeLockTag")
+    private void initializeVariables() {
+        ftpConnect = new FTPConnect(CrlShareReceiveProfiles.this, CrlShareReceiveProfiles.this, CrlShareReceiveProfiles.this);
+        MainActivity.sessionFlg = false;
+        playVideo = new PlayVideo();
+        progressDialog = new ProgressDialog(CrlShareReceiveProfiles.this);
+        sdb = new StudentDBHelper(this);
+        cdb = new CrlDBHelper(this);
+        gdb = new GroupDBHelper(this);
+        adb = new AserDBHelper(this);
+        tv_Students = (TextView) findViewById(R.id.tv_studentsShared);
+        tv_Crls = (TextView) findViewById(R.id.tv_crlsShared);
+        tv_Groups = (TextView) findViewById(R.id.tv_groupssShared);
+        btn_updateMedia = (Button) findViewById(R.id.btn_updateMedia);
+        // Memory Allocation
+        sdb = new StudentDBHelper(CrlShareReceiveProfiles.this);
+        cdb = new CrlDBHelper(CrlShareReceiveProfiles.this);
+        gdb = new GroupDBHelper(CrlShareReceiveProfiles.this);
+        adb = new AserDBHelper(CrlShareReceiveProfiles.this);
+        tv_Students = (TextView) findViewById(R.id.tv_studentsShared);
+        tv_Crls = (TextView) findViewById(R.id.tv_crlsShared);
+        tv_Groups = (TextView) findViewById(R.id.tv_groupssShared);
+
+        wipeSentFiles();
+        tv_Students.setVisibility(View.GONE);
+        tv_Crls.setVisibility(View.GONE);
+        tv_Groups.setVisibility(View.GONE);
+
+        // Wake lock for disabling sleep
+        pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "My Tag");
+        wl.acquire();
+        pd = new ProgressDialog(this);
     }
 
     // Update Media
@@ -903,10 +932,18 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 
     }
 
+    @Override
+    protected void onDestroy() {
+        wl.release();
+        shareContent = false;
+        super.onDestroy();
+    }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        shareContent = false;
+
         if (ftpConnect.checkServiceRunning()) {
             ftpConnect.stopServer();
         }
@@ -1301,9 +1338,28 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
                 getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
                 try {
                     // check path is correct or not
-                    extractToSDCard(path, treeUri);
+                    extractToSDCard(path, treeUri, 1);
                 } catch (Exception e) {
                     e.printStackTrace();
+                }
+            } else if (requestCode == PraDigiPath) {
+                if (data != null && data.getData() != null) {
+                    treeUri = data.getData();
+                    String path = SDCardUtil.getFullPathFromTreeUri(treeUri, this);
+                    final int takeFlags = data.getFlags()
+                            & (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
+                    try {
+                        // check path is correct or not
+                        extractToSDCard(path, treeUri, 0);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    Toast.makeText(this, "SD Card Selected !!!", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(this, "Please select SD Card!!!", Toast.LENGTH_LONG).show();
                 }
             }
         } catch (Exception e) {
@@ -1315,7 +1371,7 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
     }
 
     // method to copy files to sd card
-    private void extractToSDCard(String path, final Uri treeUri) {
+    private void extractToSDCard(String path, final Uri treeUri, int option) {
         String base_path = FileUtil.getExtSdCardFolder(new File(path), CrlShareReceiveProfiles.this);
         if (base_path != null && base_path.equalsIgnoreCase(path)) {
             Log.d("Base path :::", base_path);
@@ -1325,10 +1381,12 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
                     .edit().putString("URI", treeUri.toString()).apply();
             PreferenceManager.getDefaultSharedPreferences(CrlShareReceiveProfiles.this)
                     .edit().putString("PATH", path).apply();
+            PreferenceManager.getDefaultSharedPreferences(CrlShareReceiveProfiles.this).edit().putBoolean("IS_SDCARD",
+                    true).apply();
+            MyApplication.setPath(PreferenceManager.getDefaultSharedPreferences(CrlShareReceiveProfiles.this).getString("PATH", ""));
 
-//            new UnZipTask(CrlShareReceiveProfiles.this, shareItPath).execute();
-            new CopyFiles(shareItPath, CrlShareReceiveProfiles.this,
-                    CrlShareReceiveProfiles.this).execute();
+            if (option == 1)
+                new CopyFiles(shareItPath, CrlShareReceiveProfiles.this, CrlShareReceiveProfiles.this).execute();
         } else {
             // Alert Dialog Call itself if wrong path selected
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(CrlShareReceiveProfiles.this);
@@ -1343,7 +1401,10 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
 
                             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
                             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                            startActivityForResult(intent, SDCardLocationChooser);
+                            if (option == 1)
+                                startActivityForResult(intent, SDCardLocationChooser);
+                            else if (option == 0)
+                                startActivityForResult(intent, PraDigiPath);
                         }
                     });
             AlertDialog alertDialog = alertDialogBuilder.create();
@@ -1372,6 +1433,13 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
             MultiPhotoSelectActivity.pauseFlg = false;
             MultiPhotoSelectActivity.duration = MultiPhotoSelectActivity.timeout;
         }
+        Boolean serviceRunning = checkServiceRunning();
+        // check service is running or not
+        if (ftpdialog != null)
+            if (ftpdialog.isShowing())
+                if (!serviceRunning)
+                    sw_FtpServer.setChecked(false);
+
     }
 
     @Override
@@ -1521,8 +1589,300 @@ public class CrlShareReceiveProfiles extends AppCompatActivity implements Extrac
         }
     }
 
+    // Share New Content
     public void shareContent(View view) {
+        // start Wifi
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        boolean wifiEnabled = wifiManager.isWifiEnabled();
+        if (!wifiEnabled) {
+            wifiManager.setWifiEnabled(true);
+        }
+        // choose sd card
+        if (PreferenceManager.getDefaultSharedPreferences(CrlShareReceiveProfiles.this).getString("URI", null) == null
+                && PreferenceManager.getDefaultSharedPreferences(CrlShareReceiveProfiles.this).getString("PATH", "").equals("")) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(CrlShareReceiveProfiles.this);
+            LayoutInflater factory = LayoutInflater.from(CrlShareReceiveProfiles.this);
+            view = factory.inflate(R.layout.custom_alert_box_sd_card, null);
+            alertDialogBuilder.setView(view);
+            alertDialogBuilder.setPositiveButton("Ok",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                            startActivityForResult(intent, PraDigiPath);
+                        }
+                    });
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.setIcon(android.R.drawable.ic_dialog_alert);
+            alertDialog.setTitle("एसडी कार्ड स्थान का चयन करें");
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.setView(view);
+            alertDialog.show();
 
+        } else {
+            // SD Card Selected
+            // check new content available or not
+            File newContentFolder = new File(PreferenceManager.getDefaultSharedPreferences(CrlShareReceiveProfiles.this).getString("PATH", "") + "/.POSExternal/New Content");
+            if (newContentFolder.exists()) {
+                // todo Share New Content
+                MyApplication.setPath(PreferenceManager.getDefaultSharedPreferences(CrlShareReceiveProfiles.this).getString("PATH", "") + "/.POSExternal/New Content/");
+
+                String pat = MyApplication.getPath();
+                ftpdialog = new Dialog(CrlShareReceiveProfiles.this);
+                ftpdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                ftpdialog.setContentView(R.layout.start_ftp_switch);
+                ftpdialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+                TextView tv_note = ftpdialog.findViewById(R.id.tv_note);
+                sw_FtpServer = ftpdialog.findViewById(R.id.btn_ftpSettings);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                    tv_note.setVisibility(View.VISIBLE);
+                else
+                    tv_note.setVisibility(View.GONE);
+
+                // Switch Press Action
+                sw_FtpServer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (isChecked == true) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                if (!Settings.System.canWrite(getApplicationContext())) {
+                                    sw_FtpServer.setChecked(false);
+                                    Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS, Uri.parse("package:" + getPackageName()));
+                                    startActivityForResult(intent, 200);
+                                } else {
+                                    CreateWifiAccessPointOnHigherAPI createOneHAPI = new CreateWifiAccessPointOnHigherAPI();
+                                    createOneHAPI.execute((Void) null);
+                                }
+                            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) {
+                                if (!Settings.System.canWrite(getApplicationContext())) {
+                                    sw_FtpServer.setChecked(false);
+                                    Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS, Uri.parse("package:" + getPackageName()));
+                                    startActivityForResult(intent, 200);
+                                } else {
+                                    CreateWifiAccessPointOnHigherAPI createOneHAPI = new CreateWifiAccessPointOnHigherAPI();
+                                    createOneHAPI.execute((Void) null);
+                                }
+                            } else {
+                                CrlShareReceiveProfiles.CreateWifiAccessPoint createOne = new CrlShareReceiveProfiles.CreateWifiAccessPoint();
+                                createOne.execute((Void) null);
+                            }
+                        } else if (isChecked == false) {
+                            // Stop Hotspot
+                            turnOnOffHotspot(CrlShareReceiveProfiles.this, false);
+                            // Stop Server
+                            stopServer();
+                            Toast.makeText(CrlShareReceiveProfiles.this, "Server Stopped!!!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                ftpdialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        if (sw_FtpServer.isChecked()) {
+                            // Stop Hotspot
+                            turnOnOffHotspot(CrlShareReceiveProfiles.this, false);
+                            // Stop Server
+                            stopServer();
+                            Toast.makeText(CrlShareReceiveProfiles.this, "Server Stopped!!!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                ftpdialog.setCanceledOnTouchOutside(false);
+                ftpdialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                ftpdialog.show();
+            } else {
+                Toast.makeText(this, "You Don't have New Content Folder !!!", Toast.LENGTH_LONG).show();
+            }
+
+        }
+
+    }
+
+
+    private class CreateWifiAccessPointOnHigherAPI extends AsyncTask<Void, Void, Boolean> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(CrlShareReceiveProfiles.this);
+            pd.setMessage("Starting Server ... Please wait !!!");
+            pd.setCanceledOnTouchOutside(false);
+            pd.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            setWifiTetheringEnabled(true);
+            return null;
+        }
+
+        public void setWifiTetheringEnabled(boolean enable) {
+            //Log.d(TAG,"setWifiTetheringEnabled: "+enable);
+            String SSID = networkSSID; // my function is to get a predefined SSID
+            @SuppressLint("WifiManagerLeak") WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+            if (enable) {
+                wifiManager.setWifiEnabled(!enable);    // Disable all existing WiFi Network
+            } else {
+                if (!wifiManager.isWifiEnabled())
+                    wifiManager.setWifiEnabled(!enable);
+            }
+            Method[] methods = wifiManager.getClass().getDeclaredMethods();
+            for (Method method : methods) {
+                if (method.getName().equals("setWifiApEnabled")) {
+                    WifiConfiguration netConfig = new WifiConfiguration();
+                    if (!SSID.isEmpty()) {
+                        netConfig.SSID = SSID;
+                        netConfig.status = WifiConfiguration.Status.ENABLED;
+                        netConfig.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+                        netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+                        netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+//                        netConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+                        netConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+                        netConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+                        netConfig.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+                        netConfig.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+                    }
+                    try {
+                        method.invoke(wifiManager, netConfig, enable);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                    break;
+                }
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            // delay for creating hotspot
+            try {
+                Toast.makeText(CrlShareReceiveProfiles.this, "HotSpot Created !!!", Toast.LENGTH_SHORT).show();
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            // Start Server
+            startServer();
+            if (pd != null)
+                pd.dismiss();
+            Toast.makeText(CrlShareReceiveProfiles.this, "Server Started !!!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private class CreateWifiAccessPoint extends AsyncTask<Void, Void, Boolean> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(CrlShareReceiveProfiles.this);
+            pd.setMessage("Starting Server ... Please wait !!!");
+            pd.setCanceledOnTouchOutside(false);
+            pd.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            @SuppressLint("WifiManagerLeak") WifiManager wifiManager = (WifiManager) getBaseContext().getSystemService(Context.WIFI_SERVICE);
+            if (wifiManager.isWifiEnabled()) {
+                wifiManager.setWifiEnabled(false);
+            }
+            Method[] wmMethods = wifiManager.getClass().getDeclaredMethods();
+            boolean methodFound = false;
+            for (Method method : wmMethods) {
+                if (method.getName().equals("setWifiApEnabled")) {
+                    methodFound = true;
+                    WifiConfiguration netConfig = new WifiConfiguration();
+                    netConfig.SSID = networkSSID;
+                    netConfig.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+                    netConfig.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+                    netConfig.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+                    netConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+                    netConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+                    netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+                    netConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+                    try {
+                        final boolean apStatus = (Boolean) method.invoke(wifiManager, netConfig, true);
+                        for (Method isWifiApEnabledMethod : wmMethods)
+                            if (isWifiApEnabledMethod.getName().equals("isWifiApEnabled")) {
+                                while (!(Boolean) isWifiApEnabledMethod.invoke(wifiManager)) {
+                                }
+                                for (Method method1 : wmMethods) {
+                                    if (method1.getName().equals("getWifiApState")) {
+                                    }
+                                }
+                            }
+
+                    } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return methodFound;
+
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+
+            // delay for creating hotspot
+            try {
+                // Snackbar instead of Toast
+                Toast.makeText(CrlShareReceiveProfiles.this, "HotSpot Created !!!", Toast.LENGTH_SHORT).show();
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            // Start Server
+            startServer();
+            if (pd != null)
+                pd.dismiss();
+            Toast.makeText(CrlShareReceiveProfiles.this, "Server Started !!!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Turns off WiFi HotSpot
+    public static void turnOnOffHotspot(Context context, boolean isTurnToOn) {
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+
+        WifiApControl apControl = WifiApControl.getApControl(wifiManager);
+        if (apControl != null) {
+
+            // TURN OFF YOUR WIFI BEFORE ENABLE HOTSPOT
+            //if (isWifiOn(context) && isTurnToOn) {
+            //  turnOnOffWifi(context, false);
+            //}
+
+            apControl.setWifiApEnabled(apControl.getWifiApConfiguration(),
+                    isTurnToOn);
+        }
+    }
+
+    // Checking FTP Service is on or not
+    public boolean checkServiceRunning() {
+        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (service.service.getClassName().contains("ftpSettings.FsService")) {
+                return true;
+            }
+
+/*
+            if ("ftpSettings.FsService".contains(service.service.getClassName())) {
+                return true;
+            }
+*/
+        }
+        return false;
+    }
+
+    private void startServer() {
+        sendBroadcast(new Intent(FsService.ACTION_START_FTPSERVER));
+    }
+
+    private void stopServer() {
+        sendBroadcast(new Intent(FsService.ACTION_STOP_FTPSERVER));
     }
 
 

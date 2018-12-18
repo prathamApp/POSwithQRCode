@@ -1,5 +1,6 @@
 package com.example.pef.prathamopenschool;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -11,7 +12,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -19,9 +23,12 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.PowerManager;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.v4.provider.DocumentFile;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -38,16 +45,21 @@ import android.widget.Toast;
 import com.example.pef.prathamopenschool.ftpSettings.hotspot_android.Hotspot;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CrlDashboard extends AppCompatActivity implements FTPInterface.PushPullInterface {
@@ -68,23 +80,35 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
     Dialog receiverDialog;
     private ProgressBar recievingProgress;
     private String LoginMode = "";
+    private int SDCardLocationChooser = 7;
+    private Uri treeUri;
+    public static ProgressDialog pd;
+    private boolean connected = false;
+    private String networkSSID = "PrathamHotSpot";
+    PowerManager pm;
+    PowerManager.WakeLock wl;
+    private String treeUriPath;
+    private static ArrayList<File_Model> data = new ArrayList<File_Model>();
+    DocumentFile temp_documentFile;
+    private File tempFile;
 
 
+
+    @SuppressLint("InvalidWakeLockTag")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crl_dashboard);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getSupportActionBar().hide();
 
-        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                "MyWakelockTag");
-        wakeLock.acquire();
+        // Wake lock for disabling sleep
+        pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "My Tag");
+        wl.acquire();
 
         deviceID = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        // Hide Actionbar
-        getSupportActionBar().hide();
 
         // FTP initialization
         ftpConnect = new FTPConnect(this, this, this);
@@ -330,30 +354,393 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
 
     /********************************************** RECEIVE DATA ******************************************************/
     // Start FTP Server for receiving Usage/ Profiles/ Jsons
+    // 08 Dec 2018
     public void receiveData(View view) {
-        // get CRL Name by ID
-//        ArrayList<String> f = ftpConnect.scanNearbyWifi();
-        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        wifiManager.setWifiEnabled(false);
-        if (!ftpConnect.checkServiceRunning()) {
-            CrlDBHelper crlObj = new CrlDBHelper(this);
-            List<Crl> crlData = crlObj.GetCRLByID(CreatedBy);
+        CrlDBHelper crlObj = new CrlDBHelper(this);
+        List<Crl> crlData = crlObj.GetCRLByID(CreatedBy);
+        // Set HotSpot Name after crl name
+        MyApplication.networkSSID = "PrathamHotSpot_" + crlData.get(0).FirstName + "_" + crlData.get(0).getLastName();
 
-            // Set HotSpot Name after crl name
-            MyApplication.networkSSID = "PrathamHotSpot_" + crlData.get(0).FirstName + "_" + crlData.get(0).getLastName();
-            File f = new File(Environment.getExternalStorageDirectory() + "/FTPRecieved");
-            if (!f.exists())
-                f.mkdir();
-            MyApplication.setPath(Environment.getExternalStorageDirectory() + "/FTPRecieved");
-            // Create FTP Server
-            ftpConnect.createFTPHotspot();
-        } else {
-            Toast.makeText(CrlDashboard.this, "Server already running", Toast.LENGTH_SHORT).show();
+        // Receive Profile/json or Content Dialog
+        Dialog receiveDialog = new Dialog(this);
+        receiveDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        receiveDialog.setContentView(R.layout.receive_datatype_chooser);
+        Button regular = (Button) receiveDialog.findViewById(R.id.btn_ReceiveProfileJsonUsage);
+        Button newContent = (Button) receiveDialog.findViewById(R.id.btn_ReceiveNewContent);
+
+        regular.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Receive Profiles/ Json/ Usage
+                File f = new File(Environment.getExternalStorageDirectory() + "/FTPRecieved");
+                if (!f.exists())
+                    f.mkdir();
+                MyApplication.setPath(Environment.getExternalStorageDirectory() + "/FTPRecieved");
+
+                // Create FTP Server
+                ftpConnect.createFTPHotspot();
+
+                receiveDialog.dismiss();
+            }
+        });
+
+        newContent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (PreferenceManager.getDefaultSharedPreferences(CrlDashboard.this).getString("URI", null) == null
+                        && PreferenceManager.getDefaultSharedPreferences(CrlDashboard.this).getString("PATH", "").equals("")) {
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(CrlDashboard.this);
+                    LayoutInflater factory = LayoutInflater.from(CrlDashboard.this);
+                    final View view = factory.inflate(R.layout.custom_alert_box_sd_card, null);
+                    alertDialogBuilder.setView(view);
+                    alertDialogBuilder.setPositiveButton("Ok",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface arg0, int arg1) {
+                                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                                    intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                                    startActivityForResult(intent, SDCardLocationChooser);
+                                }
+                            });
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.setIcon(android.R.drawable.ic_dialog_alert);
+                    alertDialog.setTitle("एसडी कार्ड स्थान का चयन करें");
+                    alertDialog.setCanceledOnTouchOutside(false);
+                    alertDialog.setView(view);
+                    alertDialog.show();
+
+                } else {
+                    WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                    boolean wifiEnabled = wifiManager.isWifiEnabled();
+                    if (!wifiEnabled) {
+                        wifiManager.setWifiEnabled(true);
+                    }
+
+                    // Proceed if SD Card is selected Receive New Content
+                    // todo apply reverse case i.e create ftp server at senders end instead receiver's as unable to copy in sd card
+                    Dialog ftpConnectDialog;
+                    ftpConnectDialog = new Dialog(CrlDashboard.this);
+                    ftpConnectDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    ftpConnectDialog.setContentView(R.layout.ftp_connect_dialog);
+                    ftpConnectDialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+                    EditText edt_HostName = ftpConnectDialog.findViewById(R.id.edt_HostName);
+                    EditText edt_Port = ftpConnectDialog.findViewById(R.id.edt_Port);
+                    EditText edt_Login = ftpConnectDialog.findViewById(R.id.edt_Login);
+                    EditText edt_Password = ftpConnectDialog.findViewById(R.id.edt_Password);
+                    Button btn_Connect = ftpConnectDialog.findViewById(R.id.btn_Connect);
+                    Button btn_Reset = ftpConnectDialog.findViewById(R.id.btn_Reset);
+                    btn_Reset.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            edt_HostName.getText().clear();
+                            edt_Port.getText().clear();
+                            edt_Login.getText().clear();
+                            edt_Password.getText().clear();
+                        }
+                    });
+                    btn_Connect.setOnClickListener(new View.OnClickListener() {
+                        @SuppressLint("StaticFieldLeak")
+                        @Override
+                        public void onClick(View view) {
+                            // todo connect to FTP Server
+                            FTPClient temp_ftpclient = new FTPClient();
+
+                            new AsyncTask<Void, Void, String>() {
+                                @Override
+                                protected void onPreExecute() {
+                                    super.onPreExecute();
+                                    if (pd != null) {
+                                        pd.setMessage("Connecting ... Please wait !!!");
+                                        pd.setCanceledOnTouchOutside(false);
+                                        pd.show();
+                                    }
+                                }
+
+                                @Override
+                                protected String doInBackground(Void... voids) {
+                                    // Check if already connected to PrathamHotspot
+                                    String SSID = getWifiName(CrlDashboard.this).replace("\"", "");
+                                    if (SSID.equalsIgnoreCase(networkSSID)) {
+                                        // Connected to PrathamHotspot
+                                        connected = true;
+                                    } else {
+                                        // todo automatically connect to PrathamHotSpot
+                                        connectToPrathamHotSpot();
+                                        String recheckSSID = getWifiName(CrlDashboard.this).replace("\"", "");
+                                        if (recheckSSID.equalsIgnoreCase(networkSSID)) {
+                                            connected = true;
+                                        } else {
+                                            return "notconnected";
+                                        }
+                                    }
+                                    // todo Validate fields & if Connected to FTP Server then Open File Explorer if correct
+                                    if (edt_HostName.getText().toString().trim().length() > 0
+                                            && edt_Port.getText().toString().trim().length() > 0
+                                            && edt_Login.getText().toString().trim().length() > 0
+                                            && edt_Password.getText().toString().trim().length() > 0) {
+                                        // todo if connected to FTP Server
+                                        try {
+                                            temp_ftpclient.connect(edt_HostName.getText().toString(), Integer.parseInt(edt_Port.getText().toString()));
+                                            temp_ftpclient.login(edt_Login.getText().toString(), edt_Password.getText().toString());
+                                            return "connected";
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    } else {
+                                        return "empty";
+                                    }
+                                    return "notfound";
+                                }
+
+                                @Override
+                                protected void onPostExecute(String str) {
+                                    super.onPostExecute(str);
+                                    if (pd != null)
+                                        pd.dismiss();
+                                    switch (str) {
+                                        case "connected":
+                                            new AsyncTask<Void, String, Void>() {
+                                                @Override
+                                                protected void onPreExecute() {
+                                                    super.onPreExecute();
+                                                    if (pd != null) {
+                                                        pd.setTitle("Downloading ...");
+                                                        pd.setMessage("Downloading New Content ... Please wait !!!\nIt might take few minutes ...");
+                                                        pd.setCanceledOnTouchOutside(false);
+                                                        pd.show();
+                                                    }
+                                                }
+
+                                                @Override
+                                                protected Void doInBackground(Void... voids) {
+                                                    if (temp_ftpclient != null && temp_ftpclient.isConnected()) {
+                                                        // todo Download data from New Content Folder in .POSExternal
+                                                        treeUriPath = PreferenceManager.getDefaultSharedPreferences(CrlDashboard.this).getString("URI", "");
+                                                        try {
+                                                            // show available files
+                                                            FTPFile[] fileName = temp_ftpclient.listFiles();
+                                                            temp_documentFile = DocumentFile.fromTreeUri(CrlDashboard.this, Uri.parse(treeUriPath));
+
+                                                            //create .POSExternal folder
+                                                            DocumentFile documentFile1 = temp_documentFile.findFile(".POSexternal");
+                                                            if (documentFile1 == null)
+                                                                temp_documentFile = temp_documentFile.createDirectory(".POSexternal");
+                                                            else
+                                                                temp_documentFile = documentFile1;
+
+                                                            //create New Content folder
+                                                            DocumentFile documentFile2 = temp_documentFile.findFile("New Content");
+                                                            if (documentFile2 == null)
+                                                                temp_documentFile = temp_documentFile.createDirectory("New Content");
+                                                            else
+                                                                temp_documentFile = documentFile2;
+
+
+                                                            for (FTPFile aFile : fileName) {
+                                                                Log.d("list : ", aFile.getName());
+                                                                if (aFile.isDirectory())
+                                                                    downloadDirectoryToSdCard(temp_ftpclient, temp_documentFile, aFile);
+                                                                else
+                                                                    downloadFile(temp_ftpclient, aFile, temp_documentFile);
+                                                            }
+
+                                                        } catch (IOException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }
+                                                    return null;
+                                                }
+
+                                                // todo put in async task downdir and file
+                                                private void downloadDirectoryToSdCard(FTPClient ftpClient, DocumentFile documentFile, FTPFile name) {
+                                                    try {
+                                                        FTPClient tempClient = ftpClient;
+                                                        DocumentFile tempDocument = documentFile;
+                                                        if (tempDocument.findFile(name.getName()) == null)
+                                                            tempDocument = tempDocument.createDirectory(name.getName());
+
+                                                        tempClient.changeWorkingDirectory(name.getName());
+                                                        FTPFile[] subFiles = tempClient.listFiles();
+                                                        Log.d("file_size::", subFiles.length + "");
+                                                        if (subFiles != null && subFiles.length > 0) {
+                                                            for (FTPFile aFile : subFiles) {
+                                                                Log.d("name::", aFile.getName() + "");
+                                                                String currentFileName = aFile.getName();
+                                                                if (currentFileName.equals(".") || currentFileName.equals("..")) {
+                                                                    continue;
+                                                                }
+                                                                if (aFile.isDirectory()) {
+                                                                    downloadDirectoryToSdCard(tempClient, tempDocument, aFile);
+                                                                } else {
+                                                                    downloadFile(tempClient, aFile, tempDocument);
+                                                                }
+                                                            }
+                                                            documentFile = tempDocument.getParentFile();
+                                                            tempClient.changeToParentDirectory();
+                                                        }
+                                                    } catch (IOException e) {
+                                                        e.printStackTrace();
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+
+                                                // replace file if exists
+                                                private void downloadFile(FTPClient ftpClient, FTPFile ftpFile, DocumentFile tempFile) {
+                                                    try {
+                                                        DocumentFile df = tempFile.findFile(ftpFile.getName());
+                                                        if (df == null)
+                                                            tempFile = tempFile.createFile("image", ftpFile.getName());
+                                                        else
+                                                            tempFile = df;
+
+                                                        if (pd != null)
+                                                            publishProgress("Downloading... " + ftpFile.getName());
+
+                                                        OutputStream outputStream = CrlDashboard.this.getContentResolver().openOutputStream(tempFile.getUri());
+                                                        ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+                                                        ftpClient.retrieveFile(ftpFile.getName(), outputStream);
+                                                    } catch (FileNotFoundException e) {
+                                                        e.printStackTrace();
+                                                    } catch (IOException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+
+                                                @Override
+                                                protected void onProgressUpdate(String... values) {
+                                                    super.onProgressUpdate(values);
+                                                    if (pd != null)
+                                                        pd.setMessage(values[0]);
+                                                }
+
+                                                @Override
+                                                protected void onPostExecute(Void aVoid) {
+                                                    super.onPostExecute(aVoid);
+                                                    // todo replace config in .POSInternal jsons
+                                                    // delete old json
+                                                    File oldJson = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/Config.json");
+                                                    if (!oldJson.isFile())
+                                                        oldJson.delete();
+                                                    // Copy new Config.json from New Contents folder in .POSExternal
+                                                    File sourceLocation = new File(splashScreenVideo.fpath + "New Content/Config.json");
+                                                    File targetLocation = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/Json/Config.json");
+                                                    try {
+                                                        if (sourceLocation.exists()) {
+                                                            InputStream in = new FileInputStream(sourceLocation);
+                                                            OutputStream out = new FileOutputStream(targetLocation);
+                                                            // Copy the bits from instream to outstream
+                                                            byte[] buf = new byte[1024];
+                                                            int len;
+                                                            while ((len = in.read(buf)) > 0) {
+                                                                out.write(buf, 0, len);
+                                                            }
+                                                            in.close();
+                                                            out.close();
+                                                        } else {
+                                                            Toast.makeText(CrlDashboard.this, "Config.json NOT present in New Content !", Toast.LENGTH_LONG).show();
+                                                        }
+                                                    } catch (IOException e) {
+                                                        e.printStackTrace();
+                                                        Toast.makeText(CrlDashboard.this, "Config.Json file NOT copied !", Toast.LENGTH_SHORT).show();
+                                                    }
+
+                                                    // todo dismiss all dialogs
+                                                    Toast.makeText(CrlDashboard.this, "Content Transferred Successfully !!!", Toast.LENGTH_LONG).show();
+                                                    if (pd != null)
+                                                        pd.dismiss();
+                                                    onBackPressed();
+                                                }
+                                            }.execute();
+
+                                            break;
+
+                                        case "notconnected":
+                                            Toast.makeText(CrlDashboard.this, "Manually connect to PrathamHotspot !!!", Toast.LENGTH_LONG).show();
+                                            break;
+                                        case "empty":
+                                            edt_HostName.setText("");
+                                            edt_Port.setText("");
+                                            edt_Login.setText("");
+                                            edt_Password.setText("");
+                                            Toast.makeText(CrlDashboard.this, "Please enter all fields", Toast.LENGTH_SHORT).show();
+                                            break;
+                                        case "notfound":
+                                            edt_HostName.setText("");
+                                            edt_Port.setText("");
+                                            edt_Login.setText("");
+                                            edt_Password.setText("");
+                                            Toast.makeText(CrlDashboard.this, "No ftp found on this network", Toast.LENGTH_SHORT).show();
+                                            break;
+                                    }
+                                }
+                            }.execute();
+
+                        }
+                    });
+
+                    ftpConnectDialog.setCanceledOnTouchOutside(false);
+                    ftpConnectDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    ftpConnectDialog.show();
+                }
+
+            }
+        });
+
+        receiveDialog.show();
+
+
+    }
+
+    public String getWifiName(Context context) {
+        String ssid = null;
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        if (WifiInfo.getDetailedStateOf(wifiInfo.getSupplicantState()) == NetworkInfo.DetailedState.CONNECTED) {
         }
-//        for (int i = 0; i < f.size(); i++) {
-//            if ((f.get(i)).equalsIgnoreCase("PrathamHotspot"))
-//        }
-//        ftpConnect.connectToPrathamHotSpot(f.get(i));
+
+        ssid = wifiInfo.getSSID();
+        Log.d("ssaid::", ssid);
+        return ssid;
+    }
+
+    private void connectToPrathamHotSpot() {
+        try {
+            WifiConfiguration wifiConfiguration = new WifiConfiguration();
+            wifiConfiguration.SSID = String.format("\"%s\"", networkSSID);
+            wifiConfiguration.priority = 99999;
+
+            WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+            int netId = wifiManager.addNetwork(wifiConfiguration);
+
+            if (wifiManager.isWifiEnabled()) { //---wifi is turned on---
+                //---disconnect it first---
+                wifiManager.disconnect();
+            } else { //---wifi is turned off---
+                //---turn on wifi---
+                wifiManager.setWifiEnabled(true);
+                wifiManager.disconnect();
+            }
+
+            wifiManager.enableNetwork(netId, true);
+            try {
+                Thread.sleep(2000);
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            wifiManager.reconnect();
+            try {
+                Thread.sleep(6000);
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     ProgressDialog recievingDialog;
@@ -939,4 +1326,75 @@ public class CrlDashboard extends AppCompatActivity implements FTPInterface.Push
 
         super.onBackPressed();
     }
+
+    // 08 Dec 2018
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        try {
+            if (requestCode == SDCardLocationChooser) {
+                treeUri = data.getData();
+                String path = SDCardUtil.getFullPathFromTreeUri(treeUri, this);
+                final int takeFlags = data.getFlags()
+                        & (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
+                try {
+                    // check path is correct or not
+                    extractToSDCard(path, treeUri);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
+            Toast.makeText(CrlDashboard.this, "You haven't selected anything !!!", Toast.LENGTH_SHORT).show();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
+
+    // 08 Dec 2018
+    // method to copy files to sd card
+    private void extractToSDCard(String path, final Uri treeUri) {
+        String base_path = FileUtil.getExtSdCardFolder(new File(path), CrlDashboard.this);
+        if (base_path != null && base_path.equalsIgnoreCase(path)) {
+            Log.d("Base path :::", base_path);
+            Log.d("targetPath :::", path);
+            // Path ( Selected )
+            PreferenceManager.getDefaultSharedPreferences(CrlDashboard.this)
+                    .edit().putString("URI", treeUri.toString()).apply();
+            PreferenceManager.getDefaultSharedPreferences(CrlDashboard.this)
+                    .edit().putString("PATH", path).apply();
+            PreferenceManager.getDefaultSharedPreferences(CrlDashboard.this).edit().putBoolean("IS_SDCARD",
+                    true).apply();
+            MyApplication.setPath(PreferenceManager.getDefaultSharedPreferences(CrlDashboard.this).getString("PATH", ""));
+
+        } else {
+            // Alert Dialog Call itself if wrong path selected
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(CrlDashboard.this);
+            //  alertDialogBuilder.setMessage("Keep your Tablet Sufficiently charged & Select External SD Card Path !!!");
+            LayoutInflater factory = LayoutInflater.from(CrlDashboard.this);
+            final View view = factory.inflate(R.layout.custom_alert_box_sd_card, null);
+            alertDialogBuilder.setView(view);
+            alertDialogBuilder.setPositiveButton("Ok",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+
+                            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                            startActivityForResult(intent, SDCardLocationChooser);
+                        }
+                    });
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.setIcon(android.R.drawable.ic_dialog_alert);
+            alertDialog.setTitle("Select External SD Card Location");
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.setView(view);
+            alertDialog.show();
+
+            Toast.makeText(CrlDashboard.this, "Please Select SD Card Only !!!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }

@@ -16,4 +16,28 @@
     <color name="ratingFilled">#FFC107</color>
     <color name="album_title">#4c4c4c</color>
     <color name="selected">#4c4c4c</color>
+
+    <!--FTP Module-->
+    <color name="action_bar_text">#FFFFFF</color>
+    <color name="toolbar_text">#000000</color>
+    <color name="toolbar">#DDDDDD</color>
+    <color name="selection_toolbar_text">#FFFFFF</color>
+    <color name="selection_toolbar">#62890F</color>
+    <color name="selected_item">#EBF2DC</color>
+    <color name="unselected_item">#FFFFFF</color>
+    <color name="background">#FFFFFF</color>
+    <color name="text">#000000</color>
+
+    <!-- Sign-in Button Colors -->
+    <color name="common_signin_btn_dark_text_default">@android:color/white</color>
+    <color name="common_signin_btn_dark_text_pressed">@android:color/white</color>
+    <color name="common_signin_btn_dark_text_disabled">#FFAAAAAA</color>
+    <color name="common_signin_btn_dark_text_focused">@android:color/white</color>
+    <color name="common_signin_btn_light_text_default">#FF737373</color>
+    <color name="common_signin_btn_light_text_pressed">@android:color/white</color>
+    <color name="common_signin_btn_light_text_disabled">#FFAAAAAA</color>
+    <color name="common_signin_btn_light_text_focused">#FF737373</color>
+    <color name="common_signin_btn_default_background">#FFDD4B39</color>
+    <color name="common_action_bar_splitter">#d2d2d2</color>
+
 </resources>

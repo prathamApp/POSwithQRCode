@@ -21,10 +21,6 @@ package com.example.pef.prathamopenschool.ftpSettings;
 
 import android.util.Log;
 
-import com.example.pef.prathamopenschool.MessageEvent;
-
-import org.greenrobot.eventbus.EventBus;
-
 import java.io.File;
 import java.lang.reflect.Constructor;
 

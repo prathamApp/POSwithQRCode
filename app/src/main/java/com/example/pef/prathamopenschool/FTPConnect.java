@@ -253,6 +253,9 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
             } else if (typeOfFile.equalsIgnoreCase("ReceiveProfiles") && !typeOfFile.equalsIgnoreCase("ReceiveJson")) {
                 //todo parse and show count of files
 //                pushPullInterface.onFilesRecievedComplete(typeOfFile,"");
+            }else if (typeOfFile.equalsIgnoreCase("shareContent")) {
+                //todo parse and show count of files
+//                pushPullInterface.onFilesRecievedComplete(typeOfFile,"");
             }
         }
     }
@@ -396,6 +399,12 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
                         tempFtpClient = MyApplication.ftpClient;
                         File f = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/Json");
                         new DownloadTHroughFTP(null, f, false, temp_file).execute();
+                    } else if (typeOfFile.equalsIgnoreCase("shareContent")) {
+                        tempFtpClient = MyApplication.ftpClient;
+
+                        // todo make changes
+//                        File f = new File(Environment.getExternalStorageDirectory() + "/.POSinternal/Json");
+//                        new DownloadTHroughFTP(null, f, false, temp_file).execute();
                     }
                 }
             }
@@ -517,6 +526,24 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
                     }
                     temp.logout();
                     temp.disconnect();
+                } else if (sendingClient.equalsIgnoreCase("shareContent")) {
+                    // todo for share Content
+                    boolean ifDirExists = checkDirectoryExists(temp, "New Content");
+//                    if (!ifDirExists)
+                    temp.makeDirectory("New Content");
+                    // check folder exist if not found toast n disconnect
+                    String path = splashScreenVideo.fpath + "New Content";
+                    File directory = new File(path);
+                    File[] files = directory.listFiles();
+                    for (int i = 0; i < files.length; i++) {
+                        Log.d("Files", "FileName:" + files[i].getName());
+                        String data = path + "/" + files[i].getName();
+                        FileInputStream in = new FileInputStream(new File(data));
+                        result = temp.storeFile("/New Content/" + files[i].getName(), in);
+                        Log.v("upload_result:::", files[i].getName() + "...." + result);
+                    }
+                    temp.logout();
+                    temp.disconnect();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -542,6 +569,8 @@ public class FTPConnect implements FTPInterface.FTPConnectInterface {
                     pushPullInterface.onFilesRecievedComplete("", "");
                 } else if (typeOfFile.equalsIgnoreCase("TransferProfiles")) {
                     pushPullInterface.onFilesRecievedComplete("TransferProfiles", "");
+                } else if (typeOfFile.equalsIgnoreCase("shareContent")) {
+                    pushPullInterface.onFilesRecievedComplete("shareContent", "");
                 } else {
                     pushPullInterface.onFilesRecievedComplete("TransferJson", "");
                 }

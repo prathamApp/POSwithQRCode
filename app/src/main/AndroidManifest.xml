@@ -210,7 +210,8 @@
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".CrlDashboard"
-            android:screenOrientation="sensorLandscape" />
+            android:screenOrientation="sensorLandscape"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".CrlAddEditScreen"
             android:screenOrientation="sensorLandscape" />

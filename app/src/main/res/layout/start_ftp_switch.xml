@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/share"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <!--Self FTP Server-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        android:gravity="center_horizontal"
+        android:text="Host FTP Server for Sharing"
+        android:textColor="@color/common_signin_btn_default_background"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        tools:ignore="HardcodedText" />
+
+    <Switch
+        android:id="@+id/btn_ftpSettings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="32dp"
+        android:background="#E0E0E0"
+        android:padding="16dp"
+        android:text="   Network SSID : PrathamHotSpot\n   Login : ftp\n   Pass : ftp"
+        android:textAllCaps="false"
+        android:textColor="#424242"
+        android:textStyle="normal"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="1. Click on the Switch to Start the FTP Server.\n2. Ask receiver to Click on Receive Data on the Dashboard\n3. Ask the receiver to Click on Receive New Content to start the transfer."
+        android:textColor="@color/selection_toolbar"
+        android:textSize="18sp"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/tv_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        android:text="Note : If redirected to Settings then\n 1. Click on Set up WLAN hotspot \n 2. Set Network name as PrathamHotSpot \n 3. Set Security as None &amp; Save \n 4. Click on Portable WLAN hotspot"
+        android:textColor="@color/common_signin_btn_default_background"
+        android:textSize="20sp"
+        android:textStyle="normal"
+        tools:ignore="HardcodedText" />
+
+</LinearLayout>
