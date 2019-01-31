@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -73,6 +74,23 @@ public class JSInterface extends Activity {
         this.webView = w;
         VideoFlag = 0;
     }
+
+    @JavascriptInterface
+    public static long getAudioDuration(String fileName) {
+        String filePath = Environment.getExternalStorageDirectory() + "/.POSinternal/recordings/" + fileName + ".mp3";
+        MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
+        metaRetriever.setDataSource(filePath);
+        String out = "";
+        String duration = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+        Log.v("time", duration);
+        long dur = Long.parseLong(duration);
+        String seconds = String.valueOf((dur % 60000) / 1000);
+
+        // close object
+        metaRetriever.release();
+        return dur;
+    }
+
 
     private void createRecordingFolder() {
         if (!new File(Environment.getExternalStorageDirectory() + "/.POSinternal/recordings").exists()) {
