@@ -69,6 +69,8 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
         // Hide Actionbar
         getSupportActionBar().hide();
 
+        pd = new ProgressDialog(PullData.this);
+
         context = this;
         database = new VillageDBHelper(context);
 
@@ -112,7 +114,6 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
 
                         Toast.makeText(context, "Connected to the Internet !!!", Toast.LENGTH_SHORT).show();
                         // Executed When internet
-                        pd = new ProgressDialog(PullData.this);
                         pd.setCancelable(false);
                         pd.setMessage("Pulling Data Online ... Please Wait ...");
                         pd.show();
@@ -136,15 +137,17 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
 
                                 try {
                                     UpdateCrlAndVillageJson();
+                                    removeDeletedRecords();
                                 } catch (JSONException e) {
                                     e.printStackTrace();
+                                } finally {
+                                    MultiPhotoSelectActivity.dilog.dismissDilog();
+                                    PullData.this.runOnUiThread(new Runnable() {
+                                        public void run() {
+                                            Toast.makeText(PullData.this, "Crl & Villages updated in database successfully !!!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                                 }
-                                MultiPhotoSelectActivity.dilog.dismissDilog();
-                                PullData.this.runOnUiThread(new Runnable() {
-                                    public void run() {
-                                        Toast.makeText(PullData.this, "Crl & Villages updated in database successfully !!!", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
                             }
                         };
                         mThread.start();
@@ -172,6 +175,10 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
                                 // Update fetched CRL & Village data in DB
                                 try {
                                     UpdateCrlAndVillageJson();
+                                    removeDeletedRecords();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                } finally {
                                     PullData.this.runOnUiThread(new Runnable() {
                                         public void run() {
                                             Toast.makeText(PullData.this, "Database Updated", Toast.LENGTH_LONG).show();
@@ -180,8 +187,6 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
                                             startActivity(i);
                                         }
                                     });
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
                                 }
                             }
                         };
@@ -550,6 +555,90 @@ public class PullData extends AppCompatActivity implements ConnectivityReceiver.
                 }
             }
         });
+    }
+
+
+    // Check entries from Json & delete records from db if exists
+    public void removeDeletedRecords() throws JSONException {
+        JSONArray grpJsonArray = new JSONArray(loadGrpJSONFromAsset());
+        JSONArray stdJsonArray = new JSONArray(loadStdJSONFromAsset());
+
+        // DELETE WHOLE GROUP
+        try {
+            for (int i = 0; i < grpJsonArray.length(); i++) {
+                JSONObject grpObject = grpJsonArray.getJSONObject(i);
+                String grpID = grpObject.getString("GroupId");
+                String status = grpObject.getString("DeviceId");
+                if (status.equalsIgnoreCase("deleted")) {
+
+                    // Delete From Group Table
+                    GroupDBHelper groupDBHelper = new GroupDBHelper(PullData.this);
+                    boolean isDeleted = groupDBHelper.Delete(grpID);
+
+                    // Delete Associated Students
+                    StudentDBHelper studentDBHelper = new StudentDBHelper(this);
+                    boolean res = studentDBHelper.deleteDeletedGrpsStdRecords(grpID);
+
+                    // Delete assigned group (Activated Groups & Assigned Groups in Status Table)
+                    StatusDBHelper statusDBHelper = new StatusDBHelper(PullData.this);
+                    String grp1 = statusDBHelper.getValue("group1");
+                    String grp2 = statusDBHelper.getValue("group2");
+                    String grp3 = statusDBHelper.getValue("group3");
+                    String grp4 = statusDBHelper.getValue("group4");
+                    String grp5 = statusDBHelper.getValue("group5");
+                    if (grpID.equalsIgnoreCase(grp1)) {
+                        statusDBHelper.Update("group1", "0");
+                        String act = statusDBHelper.getValue("ActivatedForGroups");
+                        act = act.replace(grp1, "0");
+                        statusDBHelper.Update("ActivatedForGroups", act);
+                    }
+                    if (grpID.equalsIgnoreCase(grp2)) {
+                        statusDBHelper.Update("group2", "0");
+                        String act = statusDBHelper.getValue("ActivatedForGroups");
+                        act = act.replace(grp2, "0");
+                        statusDBHelper.Update("ActivatedForGroups", act);
+                    }
+                    if (grpID.equalsIgnoreCase(grp3)) {
+                        statusDBHelper.Update("group3", "0");
+                        String act = statusDBHelper.getValue("ActivatedForGroups");
+                        act = act.replace(grp3, "0");
+                        statusDBHelper.Update("ActivatedForGroups", act);
+                    }
+                    if (grpID.equalsIgnoreCase(grp4)) {
+                        statusDBHelper.Update("group4", "0");
+                        String act = statusDBHelper.getValue("ActivatedForGroups");
+                        act = act.replace(grp4, "0");
+                        statusDBHelper.Update("ActivatedForGroups", act);
+                    }
+                    if (grpID.equalsIgnoreCase(grp5)) {
+                        statusDBHelper.Update("group5", "0");
+                        String act = statusDBHelper.getValue("ActivatedForGroups");
+                        act = act.replace(grp5, "0");
+                        statusDBHelper.Update("ActivatedForGroups", act);
+                    }
+                }
+            }// Delete Whole Grp
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        // DELETE STUDENTS
+        try {
+            for (int i = 0; i < stdJsonArray.length(); i++) {
+                JSONObject stdObject = stdJsonArray.getJSONObject(i);
+                String stdID = stdObject.getString("StudentId");
+                String status = stdObject.getString("Gender");
+                if (status.equalsIgnoreCase("deleted")) {
+                    // Delete Student
+                    StudentDBHelper studentDBHelper = new StudentDBHelper(PullData.this);
+                    Boolean isDeleted = studentDBHelper.Delete(stdID);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 

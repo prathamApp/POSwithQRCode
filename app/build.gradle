@@ -12,9 +12,9 @@ android {
         vectorDrawables.useSupportLibrary = true
         applicationId "com.example.pef.prathamopenschool"
         minSdkVersion 19
-        targetSdkVersion 23
+        targetSdkVersion 28
         versionCode 4
-        versionName "2.2.1"
+        versionName "2.2.2"
         multiDexEnabled true
     }
     buildTypes {
